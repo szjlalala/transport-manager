@@ -44,7 +44,7 @@ public class DeliverOrder extends BaseModel {
     }
 
     public enum DeliverOrderState {
-        UNALLOCATED,LOADED, TRANSPORTING, COMPLETE,CANCEL
+        UNALLOCATED, TRANSPORTING, COMPLETE,CANCEL
     }
 
     public String getDeliverOrderNo() {

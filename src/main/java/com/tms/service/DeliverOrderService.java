@@ -11,6 +11,10 @@ public interface DeliverOrderService {
 
     void spreadDeliverOrder(DeliverOrder deliverOrder);
 
-    DeliverOrder allocateVoyageAndDriver(Long deliverOrderId, Long voyageId, Long driverId);
+    DeliverOrder allocateVoyageAndDriver(String deliverOrderNo, Long voyageId, Long driverId);
+
+    void startDeliver(String deliverOrderNo);
+
+    void completeDeliver(String deliverOrderNo);
 
 }

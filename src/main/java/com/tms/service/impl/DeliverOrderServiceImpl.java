@@ -5,6 +5,7 @@ import com.tms.repository.DeliverOrderRepository;
 import com.tms.repository.DriverRepository;
 import com.tms.repository.SysCodeRepository;
 import com.tms.repository.VoyageRepository;
+import com.tms.service.CustomerOrderService;
 import com.tms.service.DeliverOrderService;
 import com.tms.service.MQProducer;
 import com.tms.service.RouteService;
@@ -27,6 +28,9 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     private DriverRepository driverRepository;
     @Autowired
     private MQProducer mqProducer;
+
+    @Autowired
+    private CustomerOrderService customerOrderService;
 
     @Override
     public List<DeliverOrder> createDeliverOrder(CustomerOrderDetail customerOrderDetail) {
@@ -56,14 +60,44 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     }
 
     @Override
-    public DeliverOrder allocateVoyageAndDriver(Long deliverId, Long voyageId, Long driverId) {
-        DeliverOrder deliverOrder = deliverOrderRepository.findOne(deliverId);
+    public DeliverOrder allocateVoyageAndDriver(String deliverOrderNo, Long voyageId, Long driverId) {
+        DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
         Driver driver = driverRepository.findOne(driverId);
         Voyage voyage = voyageRepository.findOne(voyageId);
         deliverOrder.setDriver(driver);
         deliverOrder.setVoyage(voyage);
-        deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.LOADED);
-        return deliverOrderRepository.save(deliverOrder);
+        deliverOrder.preUpdate();
+        deliverOrderRepository.save(deliverOrder);
+        customerOrderService.startCustomerOrderDetail(deliverOrder.getCustomerOrderDetail().getOrderDetailNo());
+        return deliverOrder;
+    }
+
+    @Override
+    public void startDeliver(String deliverOrderNo) {
+        DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
+        deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.TRANSPORTING);
+        deliverOrder.preUpdate();
+        deliverOrderRepository.save(deliverOrder);
+    }
+
+
+    @Override
+    public void completeDeliver(String deliverOrderNo) {
+        DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
+        deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.COMPLETE);
+        deliverOrder.preUpdate();
+        deliverOrderRepository.save(deliverOrder);
+        boolean isComplete = true;
+        List<DeliverOrder> deliverOrders = deliverOrder.getCustomerOrderDetail().getDeliverOrders();
+        for (DeliverOrder deliverOrder1 : deliverOrders) {
+            if (deliverOrder1.getDeliverOrderState() != DeliverOrder.DeliverOrderState.COMPLETE) {
+                isComplete = false;
+                break;
+            }
+        }
+        if (isComplete) {
+            customerOrderService.completeCustomerOrderDetail(deliverOrder.getCustomerOrderDetail().getOrderDetailNo());
+        }
     }
 
 

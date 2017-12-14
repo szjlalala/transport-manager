@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface DeliverOrderRepository extends PagingAndSortingRepository<DeliverOrder, Long> {
     List<DeliverOrder> findByCustomerOrderDetailAndDeliverOrderStateOrderBySequenceAsc(CustomerOrderDetail customerOrderDetail, DeliverOrder.DeliverOrderState deliverOrderState);
+
+    DeliverOrder findByDeliverOrderNo(String deliverOrderNo);
 }

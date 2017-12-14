@@ -65,12 +65,31 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         }
         if (canCancel) {
             customerOrderDetail.setState(CustomerOrderDetail.OrderDetailState.INVALID);
+            customerOrderDetail.preUpdate();
             customerOrderDetailRepository.save(customerOrderDetail);
             for (DeliverOrder deliverOrder : customerOrderDetail.getDeliverOrders()) {
                 deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.CANCEL);
+                deliverOrder.preUpdate();
                 deliverOrderRepository.save(deliverOrder);
             }
+            //TODO 退款
         }
+    }
+
+    @Override
+    public void startCustomerOrderDetail(String orderDetailNo) {
+        CustomerOrderDetail customerOrderDetail = customerOrderDetailRepository.findByOrOrderDetailNo(orderDetailNo);
+        customerOrderDetail.setState(CustomerOrderDetail.OrderDetailState.TRANSPORTING);
+        customerOrderDetail.preUpdate();
+        customerOrderDetailRepository.save(customerOrderDetail);
+    }
+
+    @Override
+    public void completeCustomerOrderDetail(String orderDetailNo) {
+        CustomerOrderDetail customerOrderDetail = customerOrderDetailRepository.findByOrOrderDetailNo(orderDetailNo);
+        customerOrderDetail.setState(CustomerOrderDetail.OrderDetailState.COMPLETE);
+        customerOrderDetail.preUpdate();
+        customerOrderDetailRepository.save(customerOrderDetail);
     }
 
 
