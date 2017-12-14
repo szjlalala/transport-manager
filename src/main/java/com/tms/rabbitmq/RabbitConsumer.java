@@ -68,7 +68,7 @@ public class RabbitConsumer {
     public void routerReceive(DeliverOrder deliverOrder) {
         Map<String, Long> result = routeService.autoAllocate(deliverOrder);
         if (result != null && result.size() > 0) {
-            deliverOrderService.allocateVoyageAndDriver(deliverOrder.getId(), result.get("voyageId"), result.get("driverId"));
+            deliverOrderService.allocateVoyageAndDriver(deliverOrder.getDeliverOrderNo(), result.get("voyageId"), result.get("driverId"));
         }
         //TODO 如果自动分配没有结果，那么该订单该怎样？
     }
