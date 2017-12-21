@@ -4,6 +4,7 @@ import com.tms.model.Customer;
 import com.tms.model.CustomerOrder;
 import com.tms.model.CustomerOrderDetail;
 import com.tms.model.Payment;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ public class CustomerOrderVo implements Serializable {
     private Date expireTime;//过期时间
     private BigDecimal originalPrice;//订单应付金额
     private BigDecimal payPrice;//订单实付金额
+    @NotEmpty(message = "支付方式不能为空")
     private Payment.PayType payType;
     private Customer customer;
     private List<CustomerOrderDetail> orderDetails;

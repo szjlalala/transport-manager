@@ -1,6 +1,8 @@
 package com.tms.model;
 
 import com.tms.controller.vo.CustomerOrderVo;
+import com.tms.controller.vo.request.CreateOrderDetailRequestVo;
+import com.tms.controller.vo.request.CreateOrderRequestVo;
 import com.tms.util.IDGen;
 
 import javax.persistence.*;
@@ -37,10 +39,10 @@ public class CustomerOrder extends BaseModel {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerOrder")
     private List<CustomerOrderDetail> orderDetails;
 
-    public CustomerOrder(CustomerOrderVo customerOrderVo) {
+    public CustomerOrder(CreateOrderRequestVo createOrderRequestVo) {
         Calendar calendar = Calendar.getInstance();
         this.customerOrderNo = genOrderNo();
-        switch (customerOrderVo.getPayType()) {
+        switch (createOrderRequestVo.getPayType()) {
             case SENDER_PAY:
                 this.state = OrderState.TEMP;
                 calendar.add(Calendar.MINUTE, 30);
@@ -54,19 +56,19 @@ public class CustomerOrder extends BaseModel {
                 break;
         }
         this.payState = Payment.PayState.UNPAY;
-        this.customerRemark = customerOrderVo.getCustomerRemark();
-        this.source = customerOrderVo.getSource();
-        this.payType = customerOrderVo.getPayType();
-        this.originalPrice = countPrice(customerOrderVo.getOrderDetails());
+        this.customerRemark = createOrderRequestVo.getCustomerRemark();
+        this.source = createOrderRequestVo.getSource();
+        this.payType = createOrderRequestVo.getPayType();
+        this.originalPrice = countPrice(createOrderRequestVo.getOrderDetails());
         this.payPrice = this.originalPrice;
-        this.customer = customerOrderVo.getCustomer();
+        this.customer = new Customer(createOrderRequestVo.getCustomerId());
         preInsert();
     }
 
-    private BigDecimal countPrice(List<CustomerOrderDetail> orderDetails) {
+    private BigDecimal countPrice(List<CreateOrderDetailRequestVo> orderDetails) {
         List<CustomerOrderDetail> domains = new ArrayList<>();
         BigDecimal amount = new BigDecimal("0");
-        for (CustomerOrderDetail customerOrderDetail : orderDetails) {
+        for (CreateOrderDetailRequestVo customerOrderDetail : orderDetails) {
             CustomerOrderDetail domain = new CustomerOrderDetail(customerOrderDetail);
             domain.setCustomerOrder(this);
             amount.add(domain.getOriginalPrice());
@@ -102,9 +104,6 @@ public class CustomerOrder extends BaseModel {
 
     public void setPayType(Payment.PayType payType) {
         this.payType = payType;
-    }
-
-    public CustomerOrder() {
     }
 
     public Long getId() {

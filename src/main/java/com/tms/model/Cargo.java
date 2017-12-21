@@ -1,5 +1,8 @@
 package com.tms.model;
 
+import com.tms.controller.vo.request.CreateOrderCargoRequestVo;
+import org.springframework.beans.BeanUtils;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -22,6 +25,10 @@ public class Cargo extends BaseModel {
     @JoinColumn
     private CustomerOrderDetail orderDetail;
 
+    public Cargo() {
+
+    }
+
     public CustomerOrderDetail getOrderDetail() {
         return orderDetail;
     }
@@ -30,7 +37,8 @@ public class Cargo extends BaseModel {
         this.orderDetail = orderDetail;
     }
 
-    public Cargo() {
+    public Cargo(CreateOrderCargoRequestVo requestVo) {
+        BeanUtils.copyProperties(requestVo,this);
     }
 
     public CargoType getCargoType() {

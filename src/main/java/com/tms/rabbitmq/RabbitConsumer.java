@@ -7,8 +7,6 @@ import com.tms.model.Message;
 import com.tms.repository.DeliverOrderRepository;
 import com.tms.repository.DriverRepository;
 import com.tms.repository.MessageRepository;
-import com.tms.security.SysUser;
-import com.tms.security.SysUserRepository;
 import com.tms.service.DeliverOrderService;
 import com.tms.service.RouteService;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -24,8 +22,8 @@ public class RabbitConsumer {
     private RouteService routeService;
     @Autowired
     private DeliverOrderRepository deliverOrderRepository;
-    @Autowired
-    private SysUserRepository sysUserRepository;
+//    @Autowired
+//    private SysUserRepository sysUserRepository;
     @Autowired
     private MessageRepository messageRepository;
     @Autowired
@@ -51,16 +49,16 @@ public class RabbitConsumer {
     @RabbitHandler
     @RabbitListener(queues = RabbitMqConfig.MANAGER_ORDER_QUEUE)
     public void managerReceive(DeliverOrder deliverOrder) {
-        Message message = new Message();
-        message.setDeliverOrder(deliverOrder);
-        message.setMsgType(Message.MsgType.NEW_ORDER);
-        message.setRead(false);
-        message.setMsgAuth(Message.MsgAuth.MANAGER);
-        Iterable<SysUser> sysUsers = sysUserRepository.findAll();
-        sysUsers.forEach(user -> {
-            message.setSysUser(user);
-            messageRepository.save(message);
-        });
+//        Message message = new Message();
+//        message.setDeliverOrder(deliverOrder);
+//        message.setMsgType(Message.MsgType.NEW_ORDER);
+//        message.setRead(false);
+//        message.setMsgAuth(Message.MsgAuth.MANAGER);
+//        Iterable<SysUser> sysUsers = sysUserRepository.findAll();
+//        sysUsers.forEach(user -> {
+//            message.setSysUser(user);
+//            messageRepository.save(message);
+//        });
     }
 
     @RabbitHandler

@@ -1,11 +1,15 @@
 package com.tms.model;
 
+import com.tms.controller.vo.request.CreateOrderCargoRequestVo;
+import com.tms.controller.vo.request.CreateOrderDetailRequestVo;
 import com.tms.util.IDGen;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +23,7 @@ public class CustomerOrderDetail extends BaseModel {
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
     private CustomerOrder customerOrder;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "orderDetail",fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderDetail", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<Cargo> cargoes;
     private OrderDetailState state;
@@ -31,31 +35,43 @@ public class CustomerOrderDetail extends BaseModel {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private Location to;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "customerOrderDetail",fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerOrderDetail", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<DeliverOrder> deliverOrders;
     private CustomerOrder.DeliverType deliverType;
     private String orderDetailNo;
+
     public CustomerOrderDetail() {
     }
 
-    public CustomerOrderDetail(CustomerOrderDetail customerOrderDetail) {
-        this.from=customerOrderDetail.getFrom();
-        this.to = customerOrderDetail.getTo();
+    public CustomerOrderDetail(CreateOrderDetailRequestVo customerOrderDetail) {
+        this.state = OrderDetailState.UNALLOCATED;
+        this.from = new Location(customerOrderDetail.getFrom());
+        this.to = new Location(customerOrderDetail.getTo());
         this.orderDetailNo = genOrderNo();
-        List<Cargo> cargoes = customerOrderDetail.getCargoes();
-        cargoes.forEach(cargo -> cargo.setOrderDetail(this));
-        this.cargoes = cargoes;
+        this.cargoes = formatCargoes(customerOrderDetail.getCargoes());
         this.originalPrice = countPrice(customerOrderDetail);
         this.payPrice = this.originalPrice;
-        this.deliverType = from.getCityCode().equals(to.getCityCode())?CustomerOrder.DeliverType.SAME_CITY:CustomerOrder.DeliverType.NATIONAL;
+        this.deliverType = from.getCityCode().equals(to.getCityCode()) ? CustomerOrder.DeliverType.SAME_CITY : CustomerOrder.DeliverType.NATIONAL;
         preInsert();
     }
+
     public enum OrderDetailState {
-         UNALLOCATED, TRANSPORTING, COMPLETE, INVALID
+        UNALLOCATED, TRANSPORTING, COMPLETE, INVALID
     }
+
+    private List<Cargo> formatCargoes(List<CreateOrderCargoRequestVo> requestVos) {
+        List<Cargo> cargoes = new ArrayList<>();
+        requestVos.forEach(requestVo -> {
+            Cargo cargo = new Cargo(requestVo);
+            cargo.setOrderDetail(this);
+            cargoes.add(cargo);
+        });
+        return cargoes;
+    }
+
     //TODO 计算运费
-    private BigDecimal countPrice(CustomerOrderDetail customerOrderDetail) {
+    private BigDecimal countPrice(CreateOrderDetailRequestVo customerOrderDetail) {
         return new BigDecimal("1000");
     }
 

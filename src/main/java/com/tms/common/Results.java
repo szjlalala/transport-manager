@@ -3,23 +3,32 @@ package com.tms.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
 /**
  * Created by szj on 2017/11/10.
  */
+@ApiModel
 @JsonInclude(Include.ALWAYS)
 public class Results<T> implements Serializable {
 
+    @ApiModelProperty(value = "网关返回码", name = "网关返回码")
     private String code;
 
+    @ApiModelProperty(value = "网关返回码描述", name = "网关返回码描述")
     private String msg;
+
+    @ApiModelProperty(value = "业务返回码", name = "业务返回码")
 
     private String sub_code;
 
+    @ApiModelProperty(value = "业务返回码描述", name = "业务返回码描述")
     private String sub_msg;
 
+    @ApiModelProperty(value = "数据对象", name = "数据对象")
     private T result;
 
     public Results(ErrorCode errorCode) {

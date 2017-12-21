@@ -11,7 +11,7 @@ public class DeliverOrder extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String deliverOrderNo;
+    private String deliverOrderNo;//运单No
     @OneToOne
     @JoinColumn
     private Location from;
@@ -41,10 +41,11 @@ public class DeliverOrder extends BaseModel {
         this.to = customerOrderDetail.getTo();
         this.customerOrderDetail = customerOrderDetail;
         this.deliverOrderState = DeliverOrderState.UNALLOCATED;
+        preInsert();
     }
 
     public enum DeliverOrderState {
-        UNALLOCATED, TRANSPORTING, COMPLETE,CANCEL
+        UNALLOCATED, UNLOAD, TRANSPORTING, COMPLETE, CANCEL
     }
 
     public String getDeliverOrderNo() {

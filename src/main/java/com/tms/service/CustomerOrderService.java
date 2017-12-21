@@ -1,12 +1,13 @@
 package com.tms.service;
 
 
-import com.tms.controller.vo.CustomerOrderVo;
+import com.tms.controller.vo.request.CreateOrderRequestVo;
+import org.springframework.validation.annotation.Validated;
 
 public interface CustomerOrderService {
-    String createCustomerOrder(CustomerOrderVo customerOrderVo);
+    String createCustomerOrder(@Validated CreateOrderRequestVo createOrderRequestVo);
 
-    void cancelCustomerOrderDetail(String orderDetailNo);
+    boolean cancelCustomerOrderDetail(String orderDetailNo);
 
     void startCustomerOrderDetail(String orderDetailNo);
 

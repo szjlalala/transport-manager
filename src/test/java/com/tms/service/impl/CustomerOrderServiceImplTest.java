@@ -15,9 +15,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {TransportManagerApplication.class},webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {TransportManagerApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CustomerOrderServiceImplTest {
     @Autowired
     CustomerOrderService customerOrderService;
@@ -25,7 +24,7 @@ public class CustomerOrderServiceImplTest {
     @Test
     public void createCustomerOrder() {
         CustomerOrderVo customerOrderVo = new CustomerOrderVo();
-        customerOrderVo.setPayType(Payment.PayType.RECEIVER_PAY);
+//        customerOrderVo.setPayType(Payment.PayType.RECEIVER_PAY);
         customerOrderVo.setCustomerRemark("123");
         customerOrderVo.setSource(CustomerOrder.OrderSource.BACK);
         List<CustomerOrderDetail> customerOrderDetails = new ArrayList<>();
@@ -61,6 +60,11 @@ public class CustomerOrderServiceImplTest {
         customerOrderDetails.add(customerOrderDetail1);
         customerOrderDetails.add(customerOrderDetail2);
         customerOrderVo.setOrderDetails(customerOrderDetails);
-        customerOrderService.createCustomerOrder(customerOrderVo);
+//        customerOrderService.createCustomerOrder(customerOrderVo);
+    }
+
+    @Test
+    public void cancelCustomerOrderDetail() {
+        customerOrderService.cancelCustomerOrderDetail("D31607614406658");
     }
 }

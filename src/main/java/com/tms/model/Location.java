@@ -1,5 +1,8 @@
 package com.tms.model;
 
+import com.tms.controller.vo.request.CreateOrderLocationRequestVo;
+import org.springframework.beans.BeanUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,6 +27,10 @@ public class Location extends BaseModel {
     private String y;
 
     public Location() {
+    }
+
+    public Location(CreateOrderLocationRequestVo locationRequestVo) {
+        BeanUtils.copyProperties(locationRequestVo, this);
     }
 
     public enum LocationType {

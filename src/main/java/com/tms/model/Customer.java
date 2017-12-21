@@ -10,4 +10,8 @@ public class Customer extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    public Customer(Long customerId) {
+        this.id=customerId;
+    }
 }

@@ -12,6 +12,7 @@ import com.tms.service.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -67,6 +68,8 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         deliverOrder.setDriver(driver);
         deliverOrder.setVoyage(voyage);
         deliverOrder.preUpdate();
+        deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.UNLOAD);
+        deliverOrder.setStartTime(new Date());
         deliverOrderRepository.save(deliverOrder);
         customerOrderService.startCustomerOrderDetail(deliverOrder.getCustomerOrderDetail().getOrderDetailNo());
         return deliverOrder;
@@ -85,6 +88,7 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     public void completeDeliver(String deliverOrderNo) {
         DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
         deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.COMPLETE);
+        deliverOrder.setEndTime(new Date());
         deliverOrder.preUpdate();
         deliverOrderRepository.save(deliverOrder);
         boolean isComplete = true;

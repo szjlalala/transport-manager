@@ -1,9 +1,8 @@
 package com.tms.service.impl;
 
 
-import com.tms.common.BizException;
-import com.tms.common.Results;
 import com.tms.controller.vo.CustomerOrderVo;
+import com.tms.controller.vo.request.CreateOrderRequestVo;
 import com.tms.model.CustomerOrder;
 import com.tms.model.CustomerOrderDetail;
 import com.tms.model.DeliverOrder;
@@ -35,11 +34,11 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     private CustomerOrderDetailRepository customerOrderDetailRepository;
 
     @Override
-    public String createCustomerOrder(CustomerOrderVo customerOrderVo) {
+    public String createCustomerOrder(CreateOrderRequestVo createOrderRequestVo) {
         //验证
-        validate(customerOrderVo);
+        validate(createOrderRequestVo);
         //生成用户订单
-        CustomerOrder customerOrder = new CustomerOrder(customerOrderVo);
+        CustomerOrder customerOrder = new CustomerOrder(createOrderRequestVo);
         customerOrder = customerOrderRepository.save(customerOrder);
         //生成运单
         for (CustomerOrderDetail customerOrderDetail : customerOrder.getOrderDetails()) {
@@ -54,11 +53,12 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     }
 
     @Override
-    public void cancelCustomerOrderDetail(String orderDetailNo) {
+    public boolean cancelCustomerOrderDetail(String orderDetailNo) {
         boolean canCancel = true;
         CustomerOrderDetail customerOrderDetail = customerOrderDetailRepository.findByOrOrderDetailNo(orderDetailNo);
         for (DeliverOrder deliverOrder : customerOrderDetail.getDeliverOrders()) {
-            if (deliverOrder.getDeliverOrderState() != DeliverOrder.DeliverOrderState.UNALLOCATED) {
+            if (deliverOrder.getDeliverOrderState() == DeliverOrder.DeliverOrderState.TRANSPORTING ||
+                    deliverOrder.getDeliverOrderState() == DeliverOrder.DeliverOrderState.COMPLETE) {
                 canCancel = false;
                 break;
             }
@@ -74,6 +74,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             }
             //TODO 退款
         }
+        return canCancel;
     }
 
     @Override
@@ -93,14 +94,14 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     }
 
 
-    private void validate(CustomerOrderVo customerOrderVo) {
-        if (customerOrderVo == null
-                || customerOrderVo.getPayType() == null
-                || customerOrderVo.getSource() == null
-                || customerOrderVo.getOrderDetails() == null
-                || customerOrderVo.getOrderDetails().size() == 0) {
-            throw new BizException(Results.ErrorCode.MISSING_PARAMETER);
-        }
+    private void validate(CreateOrderRequestVo customerOrderVo) {
+//        if (customerOrderVo == null
+//                || customerOrderVo.getPayType() == null
+//                || customerOrderVo.getSource() == null
+//                || customerOrderVo.getOrderDetails() == null
+//                || customerOrderVo.getOrderDetails().size() == 0) {
+//            throw new BizException(Results.ErrorCode.MISSING_PARAMETER);
+//        }
     }
 
 

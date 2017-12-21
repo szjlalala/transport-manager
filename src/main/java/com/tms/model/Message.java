@@ -1,6 +1,5 @@
 package com.tms.model;
 
-import com.tms.security.SysUser;
 
 import javax.persistence.*;
 
@@ -15,9 +14,9 @@ public class Message extends BaseModel {
     private Customer customer;
     private MsgAuth msgAuth;
     private Boolean isRead;
-    @ManyToOne
-    @JoinColumn
-    private SysUser sysUser;
+//    @ManyToOne
+//    @JoinColumn
+//    private SysUser sysUser;
     @ManyToOne
     @JoinColumn
     private Driver driver;
@@ -56,14 +55,14 @@ public class Message extends BaseModel {
     public MsgAuth getMsgAuth() {
         return msgAuth;
     }
-
-    public SysUser getSysUser() {
-        return sysUser;
-    }
-
-    public void setSysUser(SysUser sysUser) {
-        this.sysUser = sysUser;
-    }
+//
+//    public SysUser getSysUser() {
+//        return sysUser;
+//    }
+//
+//    public void setSysUser(SysUser sysUser) {
+//        this.sysUser = sysUser;
+//    }
 
     public void setMsgAuth(MsgAuth msgAuth) {
         this.msgAuth = msgAuth;
