@@ -3,6 +3,7 @@ package com.tms.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.google.common.collect.ImmutableMap;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -212,8 +213,9 @@ public class Results<T> implements Serializable {
         INVALID_APPINFO(CODE.UNAUTHORIZED.code + "05", "App不可用"),
         OVER_LIMIT_API(CODE.FORBIDDEN.code + "01", "超出调用限额"),
         OVER_LIMIT_SMS_PHONE(CODE.FORBIDDEN.code + "02", "超出短信发送限额"),
-        TEMPLATE_NOT_EXIST(CODE.NOT_FOUND.code + "01", "模版不存在"),
-        TEMPLATE_CATALOG_NOT_EXIST(CODE.NOT_FOUND.code + "02", "模版分类不存在"),
+        ORDER_NOT_EXIST(CODE.NOT_FOUND.code + "01", "订单不存在"),
+        DRIVER_CATALOG_NOT_EXIST(CODE.NOT_FOUND.code + "02", "模版分类不存在"),
+        VOYAGE_CATALOG_NOT_EXIST(CODE.NOT_FOUND.code + "03", "模版分类不存在"),
         SERVER_ERROR(CODE.INTERNAL_SERVER_ERROR.code + "00", "服务错误"),
         BIZ_FAIL(CODE.INTERNAL_SERVER_ERROR.code + "01", "业务处理失败");
 
@@ -233,5 +235,27 @@ public class Results<T> implements Serializable {
         public String getMessage() {
             return message;
         }
+    }
+
+    private static ImmutableMap<Integer, CODE> codeMap;
+
+    static {
+        ImmutableMap.Builder<Integer, CODE> builder = ImmutableMap.builder();
+        codeMap = builder
+                .put(CODE.SUCCESS.code(), CODE.SUCCESS)
+                .put(CODE.BAD_REQUEST.code(), CODE.BAD_REQUEST)
+                .put(CODE.UNAUTHORIZED.code(), CODE.UNAUTHORIZED)
+                .put(CODE.FORBIDDEN.code(), CODE.FORBIDDEN)
+                .put(CODE.NOT_FOUND.code(), CODE.NOT_FOUND)
+                .put(CODE.METHOD_NOT_ALLOWED.code(), CODE.METHOD_NOT_ALLOWED)
+                .put(CODE.UNSUPPORTED_MEDIA_TYPE.code(), CODE.UNSUPPORTED_MEDIA_TYPE)
+                .put(CODE.INTERNAL_SERVER_ERROR.code(), CODE.INTERNAL_SERVER_ERROR)
+                .put(CODE.NOT_IMPLEMENTED.code(), CODE.NOT_IMPLEMENTED)
+                .put(CODE.SERVICE_UNAVAILABLE.code(), CODE.SERVICE_UNAVAILABLE)
+                .build();
+    }
+
+    public static CODE ofCode(int sc) {
+        return codeMap.getOrDefault(sc, null);
     }
 }

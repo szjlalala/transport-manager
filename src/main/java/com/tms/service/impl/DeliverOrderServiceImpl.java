@@ -1,5 +1,7 @@
 package com.tms.service.impl;
 
+import com.tms.common.BizException;
+import com.tms.common.Results;
 import com.tms.model.*;
 import com.tms.repository.DeliverOrderRepository;
 import com.tms.repository.DriverRepository;
@@ -63,8 +65,18 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     @Override
     public DeliverOrder allocateVoyageAndDriver(String deliverOrderNo, Long voyageId, Long driverId) {
         DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
+        if (deliverOrder == null) {
+            throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
+        }
         Driver driver = driverRepository.findOne(driverId);
+        if (driver == null) {
+            throw new BizException(Results.ErrorCode.DRIVER_CATALOG_NOT_EXIST);
+        }
         Voyage voyage = voyageRepository.findOne(voyageId);
+
+        if (voyage == null) {
+            throw new BizException(Results.ErrorCode.VOYAGE_CATALOG_NOT_EXIST);
+        }
         deliverOrder.setDriver(driver);
         deliverOrder.setVoyage(voyage);
         deliverOrder.preUpdate();
@@ -78,6 +90,9 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     @Override
     public void startDeliver(String deliverOrderNo) {
         DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
+        if (deliverOrder == null) {
+            throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
+        }
         deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.TRANSPORTING);
         deliverOrder.preUpdate();
         deliverOrderRepository.save(deliverOrder);
@@ -87,6 +102,9 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     @Override
     public void completeDeliver(String deliverOrderNo) {
         DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
+        if (deliverOrder == null) {
+            throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
+        }
         deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.COMPLETE);
         deliverOrder.setEndTime(new Date());
         deliverOrder.preUpdate();

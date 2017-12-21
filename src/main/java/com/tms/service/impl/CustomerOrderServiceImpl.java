@@ -1,6 +1,8 @@
 package com.tms.service.impl;
 
 
+import com.tms.common.BizException;
+import com.tms.common.Results;
 import com.tms.controller.vo.CustomerOrderVo;
 import com.tms.controller.vo.request.CreateOrderRequestVo;
 import com.tms.model.CustomerOrder;
@@ -56,24 +58,29 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     public boolean cancelCustomerOrderDetail(String orderDetailNo) {
         boolean canCancel = true;
         CustomerOrderDetail customerOrderDetail = customerOrderDetailRepository.findByOrOrderDetailNo(orderDetailNo);
-        for (DeliverOrder deliverOrder : customerOrderDetail.getDeliverOrders()) {
-            if (deliverOrder.getDeliverOrderState() == DeliverOrder.DeliverOrderState.TRANSPORTING ||
-                    deliverOrder.getDeliverOrderState() == DeliverOrder.DeliverOrderState.COMPLETE) {
-                canCancel = false;
-                break;
-            }
-        }
-        if (canCancel) {
-            customerOrderDetail.setState(CustomerOrderDetail.OrderDetailState.INVALID);
-            customerOrderDetail.preUpdate();
-            customerOrderDetailRepository.save(customerOrderDetail);
+        if(customerOrderDetail!=null){
             for (DeliverOrder deliverOrder : customerOrderDetail.getDeliverOrders()) {
-                deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.CANCEL);
-                deliverOrder.preUpdate();
-                deliverOrderRepository.save(deliverOrder);
+                if (deliverOrder.getDeliverOrderState() == DeliverOrder.DeliverOrderState.TRANSPORTING ||
+                        deliverOrder.getDeliverOrderState() == DeliverOrder.DeliverOrderState.COMPLETE) {
+                    canCancel = false;
+                    break;
+                }
             }
-            //TODO 退款
+            if (canCancel) {
+                customerOrderDetail.setState(CustomerOrderDetail.OrderDetailState.INVALID);
+                customerOrderDetail.preUpdate();
+                customerOrderDetailRepository.save(customerOrderDetail);
+                for (DeliverOrder deliverOrder : customerOrderDetail.getDeliverOrders()) {
+                    deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.CANCEL);
+                    deliverOrder.preUpdate();
+                    deliverOrderRepository.save(deliverOrder);
+                }
+                //TODO 退款
+            }
+        }else{
+            throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
         }
+
         return canCancel;
     }
 
