@@ -25,7 +25,7 @@ public class DeliverOrder extends BaseModel {
     private Driver driver;
     @OneToOne
     @JoinColumn
-    private Voyage voyage;
+    private Vehicle vehicle;
     @ManyToOne
     @JoinColumn(name = "customer_order_detail_id")
     private CustomerOrderDetail customerOrderDetail;
@@ -124,12 +124,12 @@ public class DeliverOrder extends BaseModel {
         this.driver = driver;
     }
 
-    public Voyage getVoyage() {
-        return voyage;
+    public Vehicle getVehicle() {
+        return vehicle;
     }
 
-    public void setVoyage(Voyage voyage) {
-        this.voyage = voyage;
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
     }
 
     public DeliverOrderState getDeliverOrderState() {

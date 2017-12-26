@@ -2,11 +2,17 @@ package com.tms.controller;
 
 import com.tms.common.Results;
 import com.tms.controller.vo.request.CreateOrderRequestVo;
+import com.tms.controller.vo.request.QueryOrderRequestVo;
+import com.tms.model.CustomerOrder;
 import com.tms.service.CustomerOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @Api(value = "/customerOrder", description = "用户订单API")
@@ -28,5 +34,13 @@ public class CustomerOrderController {
     public Results cancelOrder(@ApiParam(name = "订单号", required = true) @PathVariable String orderDetailNo) {
         boolean result = customerOrderService.cancelCustomerOrderDetail(orderDetailNo);
         return Results.setSuccessMessage(result);
+    }
+
+    @ApiOperation(value = "查询订单", response = Results.class)
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    public Results queryOrder( QueryOrderRequestVo queryOrderRequestVo,
+                               @PageableDefault(page = 1,value = 10,sort = { "id" }, direction = Sort.Direction.DESC) Pageable page) {
+        Page<CustomerOrder> customerOrderPage = customerOrderService.queryOrder(queryOrderRequestVo,page);
+        return Results.setSuccessMessage(customerOrderPage);
     }
 }

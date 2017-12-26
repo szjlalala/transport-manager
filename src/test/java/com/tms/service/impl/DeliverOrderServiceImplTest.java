@@ -20,8 +20,8 @@ public class DeliverOrderServiceImplTest {
     }
 
     @Test
-    public void allocateVoyageAndDriver() {
-        deliverOrderService.allocateVoyageAndDriver("D31607614406660",1l,1l);
+    public void allocateVehicleAndDriver() {
+        deliverOrderService.allocateVehicleAndDriver("D31607614406660",1l,1l);
     }
 
     @Test

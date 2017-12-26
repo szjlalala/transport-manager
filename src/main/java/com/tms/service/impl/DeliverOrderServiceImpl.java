@@ -6,7 +6,7 @@ import com.tms.model.*;
 import com.tms.repository.DeliverOrderRepository;
 import com.tms.repository.DriverRepository;
 import com.tms.repository.SysCodeRepository;
-import com.tms.repository.VoyageRepository;
+import com.tms.repository.VehicleRepository;
 import com.tms.service.CustomerOrderService;
 import com.tms.service.DeliverOrderService;
 import com.tms.service.MQProducer;
@@ -26,7 +26,7 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     @Autowired
     private SysCodeRepository sysCodeRepository;
     @Autowired
-    private VoyageRepository voyageRepository;
+    private VehicleRepository vehicleRepository;
     @Autowired
     private DriverRepository driverRepository;
     @Autowired
@@ -63,22 +63,22 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     }
 
     @Override
-    public DeliverOrder allocateVoyageAndDriver(String deliverOrderNo, Long voyageId, Long driverId) {
+    public DeliverOrder allocateVehicleAndDriver(String deliverOrderNo, Long voyageId, Long driverId) {
         DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
         if (deliverOrder == null) {
             throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
         }
         Driver driver = driverRepository.findOne(driverId);
         if (driver == null) {
-            throw new BizException(Results.ErrorCode.DRIVER_CATALOG_NOT_EXIST);
+            throw new BizException(Results.ErrorCode.DRIVER_NOT_EXIST);
         }
-        Voyage voyage = voyageRepository.findOne(voyageId);
+        Vehicle vehicle = vehicleRepository.findOne(voyageId);
 
-        if (voyage == null) {
-            throw new BizException(Results.ErrorCode.VOYAGE_CATALOG_NOT_EXIST);
+        if (vehicle == null) {
+            throw new BizException(Results.ErrorCode.VEHICLE_NOT_EXIST);
         }
         deliverOrder.setDriver(driver);
-        deliverOrder.setVoyage(voyage);
+        deliverOrder.setVehicle(vehicle);
         deliverOrder.preUpdate();
         deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.UNLOAD);
         deliverOrder.setStartTime(new Date());

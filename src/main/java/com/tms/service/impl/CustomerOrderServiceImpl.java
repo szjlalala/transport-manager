@@ -5,6 +5,7 @@ import com.tms.common.BizException;
 import com.tms.common.Results;
 import com.tms.controller.vo.CustomerOrderVo;
 import com.tms.controller.vo.request.CreateOrderRequestVo;
+import com.tms.controller.vo.request.QueryOrderRequestVo;
 import com.tms.model.CustomerOrder;
 import com.tms.model.CustomerOrderDetail;
 import com.tms.model.DeliverOrder;
@@ -16,6 +17,8 @@ import com.tms.service.CustomerOrderService;
 import com.tms.service.DeliverOrderService;
 import com.tms.service.MQProducer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -98,6 +101,11 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         customerOrderDetail.setState(CustomerOrderDetail.OrderDetailState.COMPLETE);
         customerOrderDetail.preUpdate();
         customerOrderDetailRepository.save(customerOrderDetail);
+    }
+
+    @Override
+    public Page<CustomerOrder> queryOrder(QueryOrderRequestVo queryOrderRequestVo, Pageable page) {
+        return null;
     }
 
 

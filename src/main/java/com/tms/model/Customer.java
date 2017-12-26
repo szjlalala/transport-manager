@@ -14,4 +14,12 @@ public class Customer extends BaseModel {
     public Customer(Long customerId) {
         this.id=customerId;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

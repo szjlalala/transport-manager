@@ -214,8 +214,8 @@ public class Results<T> implements Serializable {
         OVER_LIMIT_API(CODE.FORBIDDEN.code + "01", "超出调用限额"),
         OVER_LIMIT_SMS_PHONE(CODE.FORBIDDEN.code + "02", "超出短信发送限额"),
         ORDER_NOT_EXIST(CODE.NOT_FOUND.code + "01", "订单不存在"),
-        DRIVER_CATALOG_NOT_EXIST(CODE.NOT_FOUND.code + "02", "模版分类不存在"),
-        VOYAGE_CATALOG_NOT_EXIST(CODE.NOT_FOUND.code + "03", "模版分类不存在"),
+        DRIVER_NOT_EXIST(CODE.NOT_FOUND.code + "02", "模版分类不存在"),
+        VEHICLE_NOT_EXIST(CODE.NOT_FOUND.code + "03", "模版分类不存在"),
         SERVER_ERROR(CODE.INTERNAL_SERVER_ERROR.code + "00", "服务错误"),
         BIZ_FAIL(CODE.INTERNAL_SERVER_ERROR.code + "01", "业务处理失败");
 

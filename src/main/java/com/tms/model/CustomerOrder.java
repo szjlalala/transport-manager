@@ -61,7 +61,7 @@ public class CustomerOrder extends BaseModel {
         this.payType = createOrderRequestVo.getPayType();
         this.originalPrice = countPrice(createOrderRequestVo.getOrderDetails());
         this.payPrice = this.originalPrice;
-        this.customer = new Customer(createOrderRequestVo.getCustomerId());
+//        this.customer = new Customer(createOrderRequestVo.getCustomerId());
         preInsert();
     }
 

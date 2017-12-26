@@ -3,7 +3,7 @@ package com.tms.model;
 import javax.persistence.*;
 
 @Entity
-public class Voyage extends BaseModel {
+public class Vehicle extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,7 +17,7 @@ public class Voyage extends BaseModel {
     private String driveLicense;//行驶证
     private String operatorLicense;//运营证
 
-    public Voyage() {
+    public Vehicle() {
     }
 
     public Long getId() {
