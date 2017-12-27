@@ -38,8 +38,6 @@ public class CustomerOrderServiceImplTest {
         from.setDistrictCode(2l);
         from.setProvinceCode(3l);
         from.setPhone("18518491538");
-        from.setX("123");
-        from.setY("456");
         List<Cargo> cargoes = new ArrayList<>();
         Cargo cargo = new Cargo();
         cargo.setCargoType(Cargo.CargoType.NORMAL);

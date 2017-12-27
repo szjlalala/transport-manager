@@ -1,62 +1,27 @@
-package com.tms.model;
+package com.tms.controller.vo.response;
 
-import com.tms.controller.vo.request.CreateOrderLocationRequestVo;
-import org.springframework.beans.BeanUtils;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.geo.Point;
 
-import javax.persistence.*;
+import java.io.Serializable;
 
-/**
- * Created by szj on 2017/12/5.
- */
-@Entity
-public class Location extends BaseModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private LocationType locationType;
+public class LocationResponseVo implements Serializable {
+    @ApiModelProperty(value = "姓名", name = "name")
     private String name;
+    @ApiModelProperty(value = "电话", name = "phone")
     private String phone;
+    @ApiModelProperty(value = "省编码", name = "provinceCode")
     private Long provinceCode;
+    @ApiModelProperty(value = "市编码", name = "cityCode")
     private Long cityCode;
+    @ApiModelProperty(value = "区编码", name = "districtCode")
     private Long districtCode;
+    @ApiModelProperty(value = "地址", name = "address")
     private String address;
-    @Column(columnDefinition = "Point")
+    @ApiModelProperty(value = "坐标", name = "geo")
     private Point geo;
 
-    public Location() {
-    }
-
-    public Point getGeo() {
-        return geo;
-    }
-
-    public void setGeo(Point geo) {
-        this.geo = geo;
-    }
-
-    public Location(CreateOrderLocationRequestVo locationRequestVo) {
-        BeanUtils.copyProperties(locationRequestVo, this);
-    }
-
-    public enum LocationType {
-        CUSTOMER, DISTRIBUTION
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocationType getLocationType() {
-        return locationType;
-    }
-
-    public void setLocationType(LocationType locationType) {
-        this.locationType = locationType;
+    public LocationResponseVo() {
     }
 
     public String getName() {
@@ -105,5 +70,13 @@ public class Location extends BaseModel {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Point getGeo() {
+        return geo;
+    }
+
+    public void setGeo(Point geo) {
+        this.geo = geo;
     }
 }

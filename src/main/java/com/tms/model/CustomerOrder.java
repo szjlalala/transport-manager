@@ -78,6 +78,9 @@ public class CustomerOrder extends BaseModel {
         return amount;
     }
 
+    public CustomerOrder() {
+    }
+
     public List<Payment> getPayments() {
         return payments;
     }

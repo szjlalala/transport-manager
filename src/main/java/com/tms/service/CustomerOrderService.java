@@ -3,7 +3,7 @@ package com.tms.service;
 
 import com.tms.controller.vo.request.CreateOrderRequestVo;
 import com.tms.controller.vo.request.QueryOrderRequestVo;
-import com.tms.model.CustomerOrder;
+import com.tms.controller.vo.response.OrderResponseVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -17,5 +17,5 @@ public interface CustomerOrderService {
 
     void completeCustomerOrderDetail(String orderDetailNo);
 
-    Page<CustomerOrder> queryOrder(QueryOrderRequestVo queryOrderRequestVo, Pageable page);
+    Page<OrderResponseVo> queryOrder(QueryOrderRequestVo queryOrderRequestVo, Pageable page);
 }

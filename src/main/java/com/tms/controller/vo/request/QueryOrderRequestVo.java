@@ -6,26 +6,43 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Date;
 
-@ApiModel(value = "创建订单详情请求参数")
+@ApiModel(value = "查询订单详情请求参数")
 public class QueryOrderRequestVo implements Serializable {
-    @ApiModelProperty(value = "用户备注", name = "customerRemark", example = "轻拿轻放")
-    private String customerRemark;
-    @ApiModelProperty(value = "订单来源", name = "source",required=true)
-    private CustomerOrder.OrderSource source;
-    @ApiModelProperty(value = "支付方式", name = "payType",required=true)
-    private Payment.PayType payType;
-    @ApiModelProperty(value = "订单详情", name = "orderDetails",required=true)
-    private List<CreateOrderDetailRequestVo> orderDetails;
-    @ApiModelProperty(value = "下单用户", name = "customerId")
+    @ApiModelProperty(value = "订单状态", name = "state")
+    private CustomerOrder.OrderState state;
+    @ApiModelProperty(value = "订单号", name = "customerOrderNo")
+    private String customerOrderNo;
+    @ApiModelProperty(value = "用户Id", name = "customerId")
     private Long customerId;
+    @ApiModelProperty(value = "开始时间", name = "startTime")
+    private Date startTime;
+    @ApiModelProperty(value = "结束时间", name = "endTime")
+    private Date endTime;
+    @ApiModelProperty(value = "支付状态", name = "payState")
+    private Payment.PayState payState;
+    @ApiModelProperty(value = "支付方式", name = "payType")
+    private Payment.PayType payType;
+    @ApiModelProperty(value = "发货人", name = "from")
+    private QueryLocationQuestVo from;
+    @ApiModelProperty(value = "收货人", name = "to")
+    private QueryLocationQuestVo to;
 
-    public QueryOrderRequestVo() {
+    public CustomerOrder.OrderState getState() {
+        return state;
     }
 
-    public String getCustomerRemark() {
-        return customerRemark;
+    public void setState(CustomerOrder.OrderState state) {
+        this.state = state;
+    }
+
+    public String getCustomerOrderNo() {
+        return customerOrderNo;
+    }
+
+    public void setCustomerOrderNo(String customerOrderNo) {
+        this.customerOrderNo = customerOrderNo;
     }
 
     public Long getCustomerId() {
@@ -36,16 +53,28 @@ public class QueryOrderRequestVo implements Serializable {
         this.customerId = customerId;
     }
 
-    public void setCustomerRemark(String customerRemark) {
-        this.customerRemark = customerRemark;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public CustomerOrder.OrderSource getSource() {
-        return source;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public void setSource(CustomerOrder.OrderSource source) {
-        this.source = source;
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Payment.PayState getPayState() {
+        return payState;
+    }
+
+    public void setPayState(Payment.PayState payState) {
+        this.payState = payState;
     }
 
     public Payment.PayType getPayType() {
@@ -56,11 +85,23 @@ public class QueryOrderRequestVo implements Serializable {
         this.payType = payType;
     }
 
-    public List<CreateOrderDetailRequestVo> getOrderDetails() {
-        return orderDetails;
+    public QueryLocationQuestVo getFrom() {
+        return from;
     }
 
-    public void setOrderDetails(List<CreateOrderDetailRequestVo> orderDetails) {
-        this.orderDetails = orderDetails;
+    public void setFrom(QueryLocationQuestVo from) {
+        this.from = from;
     }
+
+    public QueryLocationQuestVo getTo() {
+        return to;
+    }
+
+    public void setTo(QueryLocationQuestVo to) {
+        this.to = to;
+    }
+
+    public QueryOrderRequestVo() {
+    }
+
 }

@@ -31,7 +31,7 @@ public class Payment extends BaseModel {
 
     }
 
-    enum PayChannel {
+    public enum PayChannel {
         ALIPAY("ALIPAY", "支付宝"),
         WECHATPAY("WECHATPAY", "微信(APP)"),
         POS("POS", "POS"),

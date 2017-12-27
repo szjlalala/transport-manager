@@ -3,7 +3,7 @@ package com.tms.controller;
 import com.tms.common.Results;
 import com.tms.controller.vo.request.CreateOrderRequestVo;
 import com.tms.controller.vo.request.QueryOrderRequestVo;
-import com.tms.model.CustomerOrder;
+import com.tms.controller.vo.response.OrderResponseVo;
 import com.tms.service.CustomerOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,9 +38,9 @@ public class CustomerOrderController {
 
     @ApiOperation(value = "查询订单", response = Results.class)
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Results queryOrder( QueryOrderRequestVo queryOrderRequestVo,
-                               @PageableDefault(page = 1,value = 10,sort = { "id" }, direction = Sort.Direction.DESC) Pageable page) {
-        Page<CustomerOrder> customerOrderPage = customerOrderService.queryOrder(queryOrderRequestVo,page);
+    public Results queryOrder(QueryOrderRequestVo queryOrderRequestVo,
+                              @PageableDefault(page = 0, value = 10, sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) {
+        Page<OrderResponseVo> customerOrderPage = customerOrderService.queryOrder(queryOrderRequestVo, page);
         return Results.setSuccessMessage(customerOrderPage);
     }
 }
