@@ -1,12 +1,10 @@
-package com.tms.controller.vo.response;
+package com.tms.controller.vo.request;
 
+import com.tms.controller.vo.response.DriverResponseVo;
 import com.tms.model.Driver;
-import io.swagger.annotations.ApiModelProperty;
+import com.tms.model.SysDriver;
 
-import java.io.Serializable;
-
-public class DriverResponseVo implements Serializable {
-    @ApiModelProperty(value = "司机id", name = "id")
+public class CreateDriverRequestVo {
     private Long id;
     private String name;
     private Driver.Gender gender;
@@ -15,9 +13,17 @@ public class DriverResponseVo implements Serializable {
     private String education;
     private String bankCard;
     private String phone;
-    private DriverResponseVo driver;
+    private SysDriverRequestVo sysDriver;
 
-    public DriverResponseVo() {
+    public CreateDriverRequestVo() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -76,19 +82,11 @@ public class DriverResponseVo implements Serializable {
         this.phone = phone;
     }
 
-    public DriverResponseVo getDriver() {
-        return driver;
+    public SysDriverRequestVo getSysDriver() {
+        return sysDriver;
     }
 
-    public void setDriver(DriverResponseVo driver) {
-        this.driver = driver;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setSysDriver(SysDriverRequestVo sysDriver) {
+        this.sysDriver = sysDriver;
     }
 }

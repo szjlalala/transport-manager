@@ -1,34 +1,25 @@
 package com.tms.model;
 
-
-import org.springframework.data.geo.Point;
-
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-public class Trace extends BaseModel {
+public class Attendance implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(columnDefinition = "Point")
-    private Point geo;
     @OneToOne
     @JoinColumn
     private Vehicle vehicle;
     @OneToOne
     @JoinColumn
     private Driver driver;
+    private Type type;
+    private Date createTime;
 
-
-    public Trace() {
-    }
-
-    public Point getGeo() {
-        return geo;
-    }
-
-    public void setGeo(Point geo) {
-        this.geo = geo;
+    public enum Type {
+        ON, OFF
     }
 
     public Vehicle getVehicle() {
@@ -45,6 +36,22 @@ public class Trace extends BaseModel {
 
     public void setDriver(Driver driver) {
         this.driver = driver;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public Long getId() {

@@ -39,7 +39,7 @@ public class CustomerOrderController {
     @ApiOperation(value = "查询订单", response = Results.class)
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Results queryOrder(QueryOrderRequestVo queryOrderRequestVo,
-                              @PageableDefault(page = 0, value = 10, sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) {
+                              @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) {
         Page<OrderResponseVo> customerOrderPage = customerOrderService.queryOrder(queryOrderRequestVo, page);
         return Results.setSuccessMessage(customerOrderPage);
     }
