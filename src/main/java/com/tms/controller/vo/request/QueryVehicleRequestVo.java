@@ -9,18 +9,28 @@ import java.util.Date;
 
 @ApiModel(value = "创建订单详情请求参数")
 public class QueryVehicleRequestVo implements Serializable {
-    @ApiModelProperty(value = "用户备注", name = "customerRemark")
-    private Long vehicleType;//交通工具大类别 airplane vehicle ship
-    private Long vehicleSubType;//子类别 卡车 货车。。。
-    private String plateNumber;//牌号
-    private String driveLicense;//行驶证
-    private String operatorLicense;//运营证
+    @ApiModelProperty(value = "车型", name = "vehicleType")
+    private Long vehicleType;
+    @ApiModelProperty(value = "品牌", name = "vehicleSubType")
+    private Long vehicleSubType;
+    @ApiModelProperty(value = "牌号", name = "plateNumber")
+    private String plateNumber;
+    @ApiModelProperty(value = "行驶证", name = "driveLicense")
+    private String driveLicense;
+    @ApiModelProperty(value = "运营证", name = "operatorLicense")
+    private String operatorLicense;
+    @ApiModelProperty(value = "车辆状态", name = "state")
     private Vehicle.VehicleState state;
-    private String brand;//商标
-    private String company;//所属公司
-    private String owner;//车主
-    private String ownerPhone;//车主电话
-    private Float loads;//载重量
+    @ApiModelProperty(value = "商标", name = "brand")
+    private String brand;
+    @ApiModelProperty(value = "所属公司", name = "company")
+    private String company;
+    @ApiModelProperty(value = "车主", name = "owner")
+    private String owner;
+    @ApiModelProperty(value = "车主电话", name = "ownerPhone")
+    private String ownerPhone;
+    @ApiModelProperty(value = "载重量", name = "loads")
+    private Float loads;
     @ApiModelProperty(value = "开始时间", name = "startTime")
     private Date startTime;
     @ApiModelProperty(value = "结束时间", name = "endTime")

@@ -1,17 +1,16 @@
 package com.tms.controller.vo.request;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.List;
 
 public class CreateOrderDetailRequestVo implements Serializable {
-    @ApiModelProperty(value = "发货地址", name = "from",required=true)
+    @ApiModelProperty(value = "发货地址", name = "from", required = true)
     private CreateOrderLocationRequestVo from;
-    @ApiModelProperty(value = "收货地址", name = "to",required=true)
+    @ApiModelProperty(value = "收货地址", name = "to", required = true)
     private CreateOrderLocationRequestVo to;
-    @ApiModelProperty(value = "货物列表", name = "cargoes",required=true)
+    @ApiModelProperty(value = "货物列表", name = "cargoes", required = true)
     private List<CreateOrderCargoRequestVo> cargoes;
 
     public CreateOrderDetailRequestVo() {
