@@ -1,6 +1,7 @@
 package com.tms.service.impl;
 
 import com.tms.common.BizException;
+import com.tms.common.Constant;
 import com.tms.common.Results;
 import com.tms.controller.vo.request.QueryDeliverOrderRequestVo;
 import com.tms.controller.vo.response.DeliverOrderResponseVo;
@@ -45,8 +46,8 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     private CustomerOrderService customerOrderService;
 
     @Override
-    public List<DeliverOrder> createDeliverOrder(CustomerOrderDetail customerOrderDetail) {
-        List<DeliverOrder> deliverOrders = routeService.designRoute(customerOrderDetail);
+    public List<DeliverOrder> createDeliverOrder(CustomerOrder customerOrder) {
+        List<DeliverOrder> deliverOrders = routeService.designRoute(customerOrder);
         for (DeliverOrder deliverOrder : deliverOrders) {
             deliverOrderRepository.save(deliverOrder);
         }
@@ -57,7 +58,7 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     public void spreadDeliverOrder(DeliverOrder deliverOrder) {
         //根据当前调度模式进行派单
         SysCode sysCode = sysCodeRepository.findByCode("allocate_type");
-        SysCode.AllocateType allocateType = SysCode.AllocateType.values()[Integer.parseInt(sysCode.getaValue())];
+        Constant.AllocateType allocateType = Constant.AllocateType.values()[Integer.parseInt(sysCode.getaValue())];
         switch (allocateType) {
             case AUTO:
                 mqProducer.sendDeliverOrderToRouter(deliverOrder);
@@ -89,10 +90,10 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         deliverOrder.setDriver(driver);
         deliverOrder.setVehicle(vehicle);
         deliverOrder.preUpdate();
-        deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.UNLOAD);
+        deliverOrder.setDeliverOrderState(Constant.DeliverOrderState.UNLOAD);
         deliverOrder.setStartTime(new Date());
         deliverOrderRepository.save(deliverOrder);
-        customerOrderService.startCustomerOrderDetail(deliverOrder.getCustomerOrderDetail().getOrderDetailNo());
+        customerOrderService.startCustomerOrderDetail(deliverOrder.getCustomerOrder().getCustomerOrderNo());
         return deliverOrder;
     }
 
@@ -102,7 +103,7 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         if (deliverOrder == null) {
             throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
         }
-        deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.TRANSPORTING);
+        deliverOrder.setDeliverOrderState(Constant.DeliverOrderState.TRANSPORTING);
         deliverOrder.preUpdate();
         deliverOrderRepository.save(deliverOrder);
     }
@@ -114,20 +115,20 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         if (deliverOrder == null) {
             throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
         }
-        deliverOrder.setDeliverOrderState(DeliverOrder.DeliverOrderState.COMPLETE);
+        deliverOrder.setDeliverOrderState(Constant.DeliverOrderState.COMPLETE);
         deliverOrder.setEndTime(new Date());
         deliverOrder.preUpdate();
         deliverOrderRepository.save(deliverOrder);
         boolean isComplete = true;
-        List<DeliverOrder> deliverOrders = deliverOrder.getCustomerOrderDetail().getDeliverOrders();
+        List<DeliverOrder> deliverOrders = deliverOrder.getCustomerOrder().getDeliverOrders();
         for (DeliverOrder deliverOrder1 : deliverOrders) {
-            if (deliverOrder1.getDeliverOrderState() != DeliverOrder.DeliverOrderState.COMPLETE) {
+            if (deliverOrder1.getDeliverOrderState() != Constant.DeliverOrderState.COMPLETE) {
                 isComplete = false;
                 break;
             }
         }
         if (isComplete) {
-            customerOrderService.completeCustomerOrderDetail(deliverOrder.getCustomerOrderDetail().getOrderDetailNo());
+            customerOrderService.completeCustomerOrderDetail(deliverOrder.getCustomerOrder().getCustomerOrderNo());
         }
     }
 
@@ -162,7 +163,7 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
                 predicate.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class), queryDeliverOrderRequestVo.getEndTime()));
             }
             if (queryDeliverOrderRequestVo.getState() != null) {
-                predicate.add(criteriaBuilder.equal(root.get("state").as(DeliverOrder.DeliverOrderState.class), queryDeliverOrderRequestVo.getState()));
+                predicate.add(criteriaBuilder.equal(root.get("state").as(Constant.DeliverOrderState.class), queryDeliverOrderRequestVo.getState()));
             }
             return criteriaQuery.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
         }, page);

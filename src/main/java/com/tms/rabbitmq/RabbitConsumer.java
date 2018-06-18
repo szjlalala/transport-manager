@@ -1,5 +1,6 @@
 package com.tms.rabbitmq;
 
+import com.tms.common.Constant;
 import com.tms.config.RabbitMqConfig;
 import com.tms.model.DeliverOrder;
 import com.tms.model.Driver;
@@ -36,9 +37,9 @@ public class RabbitConsumer {
     public void driverReceive(DeliverOrder deliverOrder) {
         Message message = new Message();
         message.setDeliverOrder(deliverOrder);
-        message.setMsgType(Message.MsgType.NEW_ORDER);
+        message.setMsgType(Constant.MsgType.NEW_ORDER);
         message.setRead(false);
-        message.setMsgAuth(Message.MsgAuth.DRIVER);
+        message.setMsgAuth(Constant.MsgAuth.DRIVER);
         Iterable<Driver> drivers = driverRepository.findAll();
         drivers.forEach(driver -> {
             message.setDriver(driver);

@@ -1,5 +1,6 @@
 package com.tms.model;
 
+import com.tms.common.Constant;
 import com.tms.controller.vo.request.CreateDriverRequestVo;
 import org.springframework.beans.BeanUtils;
 
@@ -11,7 +12,7 @@ public class Driver extends BaseModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Gender gender;
+    private Constant.Gender gender;
     private String drivingLicense;
     private String idCard;
     private String education;
@@ -25,10 +26,6 @@ public class Driver extends BaseModel {
 
     public Driver(CreateDriverRequestVo createDriverRequestVo) {
         BeanUtils.copyProperties(createDriverRequestVo,this);
-    }
-
-    public enum Gender {
-        MALE, FEMALE
     }
 
 
@@ -46,14 +43,6 @@ public class Driver extends BaseModel {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
     }
 
     public String getDrivingLicense() {

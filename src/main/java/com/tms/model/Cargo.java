@@ -1,10 +1,13 @@
 package com.tms.model;
 
-import com.tms.controller.vo.request.CreateOrderCargoRequestVo;
+import com.tms.common.Constant;
+import com.tms.controller.vo.request.PostOrderDto;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by szj on 2017/12/5.
@@ -19,33 +22,32 @@ public class Cargo extends BaseModel {
     private BigDecimal weight;//重量单位kg
     private BigDecimal volume;//体积单位立方
     private BigDecimal price;//价值
-    private CargoType cargoType;//货物类型
+    private Constant.CargoType cargoType;//货物类型
     private String remark;//备注
     @ManyToOne
     @JoinColumn
-    private CustomerOrderDetail orderDetail;
+    private CustomerOrder customerOrder;
 
     public Cargo() {
-
     }
 
-    public CustomerOrderDetail getOrderDetail() {
-        return orderDetail;
+    public Cargo(PostOrderDto.CargoDto cargoDto) {
+        BeanUtils.copyProperties(cargoDto, this);
     }
 
-    public void setOrderDetail(CustomerOrderDetail orderDetail) {
-        this.orderDetail = orderDetail;
+    public CustomerOrder getCustomerOrder() {
+        return customerOrder;
     }
 
-    public Cargo(CreateOrderCargoRequestVo requestVo) {
-        BeanUtils.copyProperties(requestVo,this);
+    public void setCustomerOrder(CustomerOrder customerOrder) {
+        this.customerOrder = customerOrder;
     }
 
-    public CargoType getCargoType() {
+    public Constant.CargoType getCargoType() {
         return cargoType;
     }
 
-    public void setCargoType(CargoType cargoType) {
+    public void setCargoType(Constant.CargoType cargoType) {
         this.cargoType = cargoType;
     }
 
@@ -105,7 +107,14 @@ public class Cargo extends BaseModel {
         this.remark = remark;
     }
 
-    public enum CargoType {
-        NORMAL, FRAGILE
+    public static List<Cargo> formatCargoes(List<PostOrderDto.CargoDto> cargoes,CustomerOrder customerOrder) {
+
+        List<Cargo> domainList = new ArrayList<>();
+        cargoes.forEach(cargoDto -> {
+            Cargo cargo = new Cargo(cargoDto);
+            cargo.setCustomerOrder(customerOrder);
+            domainList.add(cargo);
+        });
+        return domainList;
     }
 }

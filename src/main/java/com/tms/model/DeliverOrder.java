@@ -1,6 +1,7 @@
 package com.tms.model;
 
 
+import com.tms.common.Constant;
 import com.tms.util.IDGen;
 
 import javax.persistence.*;
@@ -27,25 +28,30 @@ public class DeliverOrder extends BaseModel {
     @JoinColumn
     private Vehicle vehicle;
     @ManyToOne
-    @JoinColumn(name = "customer_order_detail_id")
-    private CustomerOrderDetail customerOrderDetail;
+    @JoinColumn(name = "customer_order_id")
+    private CustomerOrder customerOrder;
 
-    private DeliverOrderState deliverOrderState;
+    private Constant.DeliverOrderState deliverOrderState;
 
     private Integer sequence;
+    private Long distance;
 
-    public DeliverOrder(CustomerOrderDetail customerOrderDetail, Integer sequence) {
+    public DeliverOrder(CustomerOrder customerOrder, Integer sequence) {
         this.deliverOrderNo = genOrderNo();
         this.sequence = sequence;
-        this.from=customerOrderDetail.getFrom();
-        this.to = customerOrderDetail.getTo();
-        this.customerOrderDetail = customerOrderDetail;
-        this.deliverOrderState = DeliverOrderState.UNALLOCATED;
+        this.from = customerOrder.getFrom();
+        this.to = customerOrder.getTo();
+        this.customerOrder = customerOrder;
+        this.deliverOrderState = Constant.DeliverOrderState.UNALLOCATED;
         preInsert();
     }
 
-    public enum DeliverOrderState {
-        UNALLOCATED, UNLOAD, TRANSPORTING, COMPLETE, CANCEL
+    public Long getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Long distance) {
+        this.distance = distance;
     }
 
     public String getDeliverOrderNo() {
@@ -56,12 +62,12 @@ public class DeliverOrder extends BaseModel {
         this.deliverOrderNo = deliverOrderNo;
     }
 
-    public CustomerOrderDetail getCustomerOrderDetail() {
-        return customerOrderDetail;
+    public CustomerOrder getCustomerOrder() {
+        return customerOrder;
     }
 
-    public void setCustomerOrderDetail(CustomerOrderDetail customerOrderDetail) {
-        this.customerOrderDetail = customerOrderDetail;
+    public void setCustomerOrder(CustomerOrder customerOrder) {
+        this.customerOrder = customerOrder;
     }
 
     public DeliverOrder() {
@@ -132,11 +138,11 @@ public class DeliverOrder extends BaseModel {
         this.vehicle = vehicle;
     }
 
-    public DeliverOrderState getDeliverOrderState() {
+    public Constant.DeliverOrderState getDeliverOrderState() {
         return deliverOrderState;
     }
 
-    public void setDeliverOrderState(DeliverOrderState deliverOrderState) {
+    public void setDeliverOrderState(Constant.DeliverOrderState deliverOrderState) {
         this.deliverOrderState = deliverOrderState;
     }
 

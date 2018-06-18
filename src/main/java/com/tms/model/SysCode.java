@@ -18,9 +18,6 @@ public class SysCode extends BaseModel {
 
     public SysCode() {
     }
-    public enum AllocateType{
-        AUTO,MANUAL,COMPETE
-    }
     public Long getId() {
         return id;
     }

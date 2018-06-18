@@ -1,8 +1,14 @@
 package com.tms.model;
 
+import com.tms.common.Constant;
+import com.tms.controller.vo.request.PostOrderDto;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by szj on 2017/12/5.
@@ -12,49 +18,36 @@ public class Payment extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private PayState payState;
-    private BigDecimal payPrice;//应支付价格
-    @Enumerated(EnumType.STRING)
-    private PayChannel payChannel;//对接支付平台支付方式
-    private String tradeNo;//支付平台异步返回交易流水编号
-    private Date finishTime;//交易完成时间
-    @ManyToOne
-    @JoinColumn(name = "customer_order_id")
-    private CustomerOrder customerOrder;//订单号
-
-    public enum PayState {
-        UNPAY, COMPLETE, PARTPAY;
-
-    }
-    public enum PayType {
-        SENDER_PAY, RECEIVER_PAY, SENDER_ORDER_PAY;
-
-    }
-
-    public enum PayChannel {
-        ALIPAY("ALIPAY", "支付宝"),
-        WECHATPAY("WECHATPAY", "微信(APP)"),
-        POS("POS", "POS"),
-        CASH("CASH", "现金");
-
-        private String channel;
-        private String desc;
-
-        private PayChannel(String channel, String desc) {
-            this.channel = channel;
-            this.desc = desc;
-        }
-
-        public String getChannel() {
-            return this.channel;
-        }
-
-        public void setChannel(String channel) {
-            this.channel = channel;
-        }
-    }
+    private Constant.PayState payState;
+    private Date finishTime;//完成时间
+    private Date expireTime;//过期时间
+    private BigDecimal originalPrice;//订单应付金额
+    private BigDecimal payPrice;//订单实付金额
+    private Constant.PayType payType;
+    @OneToOne
+    @JoinColumn
+    private Customer customer;
+    @OneToMany(mappedBy = "payment")
+    private List<PaymentItem> paymentItems;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "payment")
+    private List<CustomerOrder> customerOrders;
 
     public Payment() {
+    }
+
+    public Payment(PostOrderDto postOrderDto) {
+        this.payState = Constant.PayState.UNPAY;
+        this.originalPrice = postOrderDto.getPayment().getPayPrice();
+        this.payPrice = postOrderDto.getPayment().getPayPrice();
+        this.customerOrders = CustomerOrder.buildOrders(postOrderDto,this);
+        if (postOrderDto.getPayment().getPayType().equals(Constant.PayType.SENDER_PAY)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MINUTE, 30);
+            this.expireTime = calendar.getTime();
+        }
+//        this.customer = new Customer(postOrderDto.getCustomerId());
+        this.payType = postOrderDto.getPayment().getPayType();
+        preInsert();
     }
 
     public Long getId() {
@@ -65,36 +58,12 @@ public class Payment extends BaseModel {
         this.id = id;
     }
 
-    public PayState getPayState() {
+    public Constant.PayState getPayState() {
         return payState;
     }
 
-    public void setPayState(PayState payState) {
+    public void setPayState(Constant.PayState payState) {
         this.payState = payState;
-    }
-
-    public BigDecimal getPayPrice() {
-        return payPrice;
-    }
-
-    public void setPayPrice(BigDecimal payPrice) {
-        this.payPrice = payPrice;
-    }
-
-    public PayChannel getPayChannel() {
-        return payChannel;
-    }
-
-    public void setPayChannel(PayChannel payChannel) {
-        this.payChannel = payChannel;
-    }
-
-    public String getTradeNo() {
-        return tradeNo;
-    }
-
-    public void setTradeNo(String tradeNo) {
-        this.tradeNo = tradeNo;
     }
 
     public Date getFinishTime() {
@@ -105,11 +74,59 @@ public class Payment extends BaseModel {
         this.finishTime = finishTime;
     }
 
-    public CustomerOrder getCustomerOrder() {
-        return customerOrder;
+    public Date getExpireTime() {
+        return expireTime;
     }
 
-    public void setCustomerOrder(CustomerOrder customerOrder) {
-        this.customerOrder = customerOrder;
+    public void setExpireTime(Date expireTime) {
+        this.expireTime = expireTime;
+    }
+
+    public BigDecimal getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(BigDecimal originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public BigDecimal getPayPrice() {
+        return payPrice;
+    }
+
+    public void setPayPrice(BigDecimal payPrice) {
+        this.payPrice = payPrice;
+    }
+
+    public Constant.PayType getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Constant.PayType payType) {
+        this.payType = payType;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public List<PaymentItem> getPaymentItems() {
+        return paymentItems;
+    }
+
+    public void setPaymentItems(List<PaymentItem> paymentItems) {
+        this.paymentItems = paymentItems;
+    }
+
+    public List<CustomerOrder> getCustomerOrders() {
+        return customerOrders;
+    }
+
+    public void setCustomerOrders(List<CustomerOrder> customerOrders) {
+        this.customerOrders = customerOrders;
     }
 }

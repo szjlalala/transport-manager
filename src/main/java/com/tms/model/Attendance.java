@@ -1,5 +1,7 @@
 package com.tms.model;
 
+import com.tms.common.Constant;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -15,12 +17,8 @@ public class Attendance implements Serializable {
     @OneToOne
     @JoinColumn
     private Driver driver;
-    private Type type;
+    private Constant.AttendanceType type;
     private Date createTime;
-
-    public enum Type {
-        ON, OFF
-    }
 
     public Vehicle getVehicle() {
         return vehicle;
@@ -38,11 +36,11 @@ public class Attendance implements Serializable {
         this.driver = driver;
     }
 
-    public Type getType() {
+    public Constant.AttendanceType getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(Constant.AttendanceType type) {
         this.type = type;
     }
 

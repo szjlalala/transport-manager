@@ -1,5 +1,6 @@
 package com.tms.model;
 
+import com.tms.common.Constant;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.tomcat.util.security.MD5Encoder;
 
@@ -15,7 +16,7 @@ public class SysDriver extends BaseModel {
     private String password;
     private String lastIp;
     private Date lastLoginTime;
-    private DriverState driverState;
+    private Constant.DriverState driverState;
     private String token;
     @OneToOne
     @JoinColumn
@@ -28,12 +29,9 @@ public class SysDriver extends BaseModel {
         this.driver = driver;
         this.userName = driver.getPhone();
         this.password = MD5Encoder.encode("123456".getBytes());
-        this.driverState = DriverState.OFF;
+        this.driverState = Constant.DriverState.OFF;
     }
 
-    public enum DriverState {
-        ON, OFF
-    }
 
     public Driver getDriver() {
         return driver;
@@ -83,11 +81,11 @@ public class SysDriver extends BaseModel {
         this.lastLoginTime = lastLoginTime;
     }
 
-    public DriverState getDriverState() {
+    public Constant.DriverState getDriverState() {
         return driverState;
     }
 
-    public void setDriverState(DriverState driverState) {
+    public void setDriverState(Constant.DriverState driverState) {
         this.driverState = driverState;
     }
 

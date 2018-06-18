@@ -27,24 +27,24 @@ public class DeliverOrderController {
 
     @ApiOperation(value = "分配运单", response = Results.class)
     @RequestMapping(value = "/execute", method = RequestMethod.PUT)
-    public Results executeDeliverOrder(@ApiParam(name = "订单号", required = true) String orderDetailNo,
+    public Results executeDeliverOrder(@ApiParam(name = "订单号", required = true) String customerOrderNo,
                                        @ApiParam(name = "车辆编号", required = true) Long vehicleId,
                                        @ApiParam(name = "司机编号", required = true) Long driverId) {
-        deliverOrderService.allocateVehicleAndDriver(orderDetailNo, vehicleId, driverId);
+        deliverOrderService.allocateVehicleAndDriver(customerOrderNo, vehicleId, driverId);
         return Results.setSuccessMessage(null);
     }
 
     @ApiOperation(value = "开始运单", response = Results.class)
-    @RequestMapping(value = "/start/{orderDetailNo}", method = RequestMethod.PUT)
-    public Results startOrder(@ApiParam(name = "订单号", required = true) @PathVariable String orderDetailNo) {
-        deliverOrderService.startDeliver(orderDetailNo);
+    @RequestMapping(value = "/start/{customerOrderNo}", method = RequestMethod.PUT)
+    public Results startOrder(@ApiParam(name = "订单号", required = true) @PathVariable String customerOrderNo) {
+        deliverOrderService.startDeliver(customerOrderNo);
         return Results.setSuccessMessage(null);
     }
 
     @ApiOperation(value = "完成运单", response = Results.class)
-    @RequestMapping(value = "/complete/{orderDetailNo}", method = RequestMethod.PUT)
-    public Results completeOrder(@ApiParam(name = "订单号", required = true) @PathVariable String orderDetailNo) {
-        deliverOrderService.completeDeliver(orderDetailNo);
+    @RequestMapping(value = "/complete/{customerOrderNo}", method = RequestMethod.PUT)
+    public Results completeOrder(@ApiParam(name = "订单号", required = true) @PathVariable String customerOrderNo) {
+        deliverOrderService.completeDeliver(customerOrderNo);
         return Results.setSuccessMessage(null);
     }
 

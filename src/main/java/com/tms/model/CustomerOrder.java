@@ -1,15 +1,15 @@
 package com.tms.model;
 
-import com.tms.controller.vo.CustomerOrderVo;
-import com.tms.controller.vo.request.CreateOrderDetailRequestVo;
-import com.tms.controller.vo.request.CreateOrderRequestVo;
+import com.tms.common.Constant;
+import com.tms.controller.vo.request.PostOrderDto;
+import com.tms.controller.vo.response.LocationResponseVo;
 import com.tms.util.IDGen;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,93 +20,70 @@ public class CustomerOrder extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    @JoinColumn
+    private Payment payment;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerOrder", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Cargo> cargoes;
+    private BigDecimal deliverPrice;//运费
+    private BigDecimal insurancePrice;//保价金额
+    private BigDecimal originalPrice;//应付金额
+    private BigDecimal payPrice;//实付金额
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private Location from;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private Location to;
+    @OneToMany(mappedBy = "customerOrder", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<DeliverOrder> deliverOrders;
+    private Constant.DeliverType deliverType;
     private String customerOrderNo;
-    private OrderState state;
-    private Payment.PayState payState;
+    private Long distance;
+    private Constant.OrderState state;
+    private Constant.OrderSource source;//订单来源
     private String customerRemark;//用户备注
     private String innerRemark;//内部备注
-    private Date finishTime;//完成时间
-    private OrderSource source;//订单来源
-    private Date expireTime;//过期时间
-    private BigDecimal originalPrice;//订单应付金额
-    private BigDecimal payPrice;//订单实付金额
-    private Payment.PayType payType;
-    @OneToOne
-    @JoinColumn
-    private Customer customer;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerOrder")
-    private List<Payment> payments;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerOrder")
-    private List<CustomerOrderDetail> orderDetails;
-
-    public CustomerOrder(CreateOrderRequestVo createOrderRequestVo) {
-        Calendar calendar = Calendar.getInstance();
-        this.customerOrderNo = genOrderNo();
-        switch (createOrderRequestVo.getPayType()) {
-            case SENDER_PAY:
-                this.state = OrderState.TEMP;
-                calendar.add(Calendar.MINUTE, 30);
-                this.expireTime = calendar.getTime();
-                break;
-            case RECEIVER_PAY:
-                this.state = OrderState.UNALLOCATED;
-                break;
-            case SENDER_ORDER_PAY:
-                this.state = OrderState.UNALLOCATED;
-                break;
-        }
-        this.payState = Payment.PayState.UNPAY;
-        this.customerRemark = createOrderRequestVo.getCustomerRemark();
-        this.source = createOrderRequestVo.getSource();
-        this.payType = createOrderRequestVo.getPayType();
-        this.originalPrice = countPrice(createOrderRequestVo.getOrderDetails());
-        this.payPrice = this.originalPrice;
-//        this.customer = new Customer(createOrderRequestVo.getCustomerId());
-        preInsert();
-    }
-
-    private BigDecimal countPrice(List<CreateOrderDetailRequestVo> orderDetails) {
-        List<CustomerOrderDetail> domains = new ArrayList<>();
-        BigDecimal amount = new BigDecimal("0");
-        for (CreateOrderDetailRequestVo customerOrderDetail : orderDetails) {
-            CustomerOrderDetail domain = new CustomerOrderDetail(customerOrderDetail);
-            domain.setCustomerOrder(this);
-            amount.add(domain.getOriginalPrice());
-            domains.add(domain);
-        }
-        this.orderDetails = domains;
-        return amount;
-    }
 
     public CustomerOrder() {
     }
 
-    public List<Payment> getPayments() {
-        return payments;
+    public static List<CustomerOrder> buildOrders(PostOrderDto postOrderDto, Payment payment) {
+        List<CustomerOrder> domains = new ArrayList<>();
+        for (PostOrderDto.OrderDto orderDto : postOrderDto.getOrders()) {
+            CustomerOrder domain = new CustomerOrder();
+            if (postOrderDto.getPayment().getPayType().equals(Constant.PayType.SENDER_PAY)) {
+                domain.state = Constant.OrderState.TEMP;
+            } else {
+                domain.state = Constant.OrderState.UNALLOCATED;
+            }
+            domain.from = new Location(postOrderDto.getFrom());
+            domain.to = new Location(orderDto.getTo());
+            domain.customerOrderNo = genOrderNo();
+            domain.cargoes = Cargo.formatCargoes(orderDto.getCargoes(), domain);
+            domain.originalPrice = orderDto.getPayment().getPayPrice();
+            domain.payPrice = orderDto.getPayment().getPayPrice();
+            domain.insurancePrice = orderDto.getPayment().getInsurancePrice();
+            domain.deliverPrice = orderDto.getPayment().getDeliverPrice();
+            domain.payPrice = orderDto.getPayment().getPayPrice();
+            domain.deliverType = domain.from.getCity().equals(domain.to.getCity()) ? Constant.DeliverType.SAME_CITY : Constant.DeliverType.NATIONAL;
+            domain.distance = orderDto.getDistance();
+            domain.preInsert();
+            domain.setPayment(payment);
+            domains.add(domain);
+        }
+        return domains;
     }
 
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
-    }
+    //TODO 计算运费
+//    private BigDecimal countPrice(CreateOrderRequestVo customerOrderDetail) {
+//        return new BigDecimal("1000");
+//    }
 
-    public enum OrderState {
-        TEMP, UNALLOCATED, TRANSPORTING, COMPLETE, INVALID
-    }
-
-    public enum OrderSource {
-        PC, WAP, BACK, IOS, ANDROID
-    }
-
-    public enum DeliverType {
-        SAME_CITY, NATIONAL
-    }
-
-    public Payment.PayType getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Payment.PayType payType) {
-        this.payType = payType;
+    private static String genOrderNo() {
+        return "C" + IDGen.nextId();
     }
 
     public Long getId() {
@@ -117,68 +94,36 @@ public class CustomerOrder extends BaseModel {
         this.id = id;
     }
 
-    public String getCustomerOrderNo() {
-        return customerOrderNo;
+    public Payment getPayment() {
+        return payment;
     }
 
-    public void setCustomerOrderNo(String customerOrderNo) {
-        this.customerOrderNo = customerOrderNo;
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
-    public OrderState getState() {
-        return state;
+    public List<Cargo> getCargoes() {
+        return cargoes;
     }
 
-    public void setState(OrderState state) {
-        this.state = state;
+    public void setCargoes(List<Cargo> cargoes) {
+        this.cargoes = cargoes;
     }
 
-    public Payment.PayState getPayState() {
-        return payState;
+    public BigDecimal getDeliverPrice() {
+        return deliverPrice;
     }
 
-    public void setPayState(Payment.PayState payState) {
-        this.payState = payState;
+    public void setDeliverPrice(BigDecimal deliverPrice) {
+        this.deliverPrice = deliverPrice;
     }
 
-    public String getCustomerRemark() {
-        return customerRemark;
+    public BigDecimal getInsurancePrice() {
+        return insurancePrice;
     }
 
-    public void setCustomerRemark(String customerRemark) {
-        this.customerRemark = customerRemark;
-    }
-
-    public String getInnerRemark() {
-        return innerRemark;
-    }
-
-    public void setInnerRemark(String innerRemark) {
-        this.innerRemark = innerRemark;
-    }
-
-    public Date getFinishTime() {
-        return finishTime;
-    }
-
-    public void setFinishTime(Date finishTime) {
-        this.finishTime = finishTime;
-    }
-
-    public OrderSource getSource() {
-        return source;
-    }
-
-    public void setSource(OrderSource source) {
-        this.source = source;
-    }
-
-    public Date getExpireTime() {
-        return expireTime;
-    }
-
-    public void setExpireTime(Date expireTime) {
-        this.expireTime = expireTime;
+    public void setInsurancePrice(BigDecimal insurancePrice) {
+        this.insurancePrice = insurancePrice;
     }
 
     public BigDecimal getOriginalPrice() {
@@ -197,24 +142,84 @@ public class CustomerOrder extends BaseModel {
         this.payPrice = payPrice;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Location getFrom() {
+        return from;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public Location getTo() {
+        return to;
     }
 
-    public List<CustomerOrderDetail> getOrderDetails() {
-        return orderDetails;
+    public void setFrom(Location from) {
+        this.from = from;
     }
 
-    public void setOrderDetails(List<CustomerOrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
+
+    public void setTo(Location to) {
+        this.to = to;
     }
 
-    private String genOrderNo() {
-        return "C" + IDGen.nextId();
+    public List<DeliverOrder> getDeliverOrders() {
+        return deliverOrders;
     }
 
+    public void setDeliverOrders(List<DeliverOrder> deliverOrders) {
+        this.deliverOrders = deliverOrders;
+    }
+
+    public Constant.DeliverType getDeliverType() {
+        return deliverType;
+    }
+
+    public void setDeliverType(Constant.DeliverType deliverType) {
+        this.deliverType = deliverType;
+    }
+
+    public String getCustomerOrderNo() {
+        return customerOrderNo;
+    }
+
+    public void setCustomerOrderNo(String customerOrderNo) {
+        this.customerOrderNo = customerOrderNo;
+    }
+
+    public Long getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Long distance) {
+        this.distance = distance;
+    }
+
+    public Constant.OrderState getState() {
+        return state;
+    }
+
+    public void setState(Constant.OrderState state) {
+        this.state = state;
+    }
+
+    public Constant.OrderSource getSource() {
+        return source;
+    }
+
+    public void setSource(Constant.OrderSource source) {
+        this.source = source;
+    }
+
+    public String getCustomerRemark() {
+        return customerRemark;
+    }
+
+    public void setCustomerRemark(String customerRemark) {
+        this.customerRemark = customerRemark;
+    }
+
+    public String getInnerRemark() {
+        return innerRemark;
+    }
+
+    public void setInnerRemark(String innerRemark) {
+        this.innerRemark = innerRemark;
+    }
 }

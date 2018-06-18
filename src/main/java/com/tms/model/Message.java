@@ -1,6 +1,8 @@
 package com.tms.model;
 
 
+import com.tms.common.Constant;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,11 +10,11 @@ public class Message extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private MsgType msgType;
+    private Constant.MsgType msgType;
     @ManyToOne
     @JoinColumn
     private Customer customer;
-    private MsgAuth msgAuth;
+    private Constant.MsgAuth msgAuth;
     private Boolean isRead;
 //    @ManyToOne
 //    @JoinColumn
@@ -22,10 +24,10 @@ public class Message extends BaseModel {
     private Driver driver;
     @ManyToOne
     @JoinColumn
-    private CustomerOrder customerOrder;
+    private Payment payment;
     @ManyToOne
     @JoinColumn
-    private CustomerOrderDetail customerOrderDetail;
+    private CustomerOrder customerOrder;
     @ManyToOne
     @JoinColumn
     private DeliverOrder deliverOrder;
@@ -36,14 +38,6 @@ public class Message extends BaseModel {
         preInsert();
     }
 
-    public enum MsgType {
-        NEW_ORDER
-    }
-
-    public enum MsgAuth {
-        CUSTOMER, MANAGER, DRIVER
-    }
-
     public Driver getDriver() {
         return driver;
     }
@@ -52,9 +46,6 @@ public class Message extends BaseModel {
         this.driver = driver;
     }
 
-    public MsgAuth getMsgAuth() {
-        return msgAuth;
-    }
 //
 //    public SysUser getSysUser() {
 //        return sysUser;
@@ -64,7 +55,20 @@ public class Message extends BaseModel {
 //        this.sysUser = sysUser;
 //    }
 
-    public void setMsgAuth(MsgAuth msgAuth) {
+
+    public Constant.MsgType getMsgType() {
+        return msgType;
+    }
+
+    public void setMsgType(Constant.MsgType msgType) {
+        this.msgType = msgType;
+    }
+
+    public Constant.MsgAuth getMsgAuth() {
+        return msgAuth;
+    }
+
+    public void setMsgAuth(Constant.MsgAuth msgAuth) {
         this.msgAuth = msgAuth;
     }
 
@@ -84,14 +88,6 @@ public class Message extends BaseModel {
         this.id = id;
     }
 
-    public MsgType getMsgType() {
-        return msgType;
-    }
-
-    public void setMsgType(MsgType msgType) {
-        this.msgType = msgType;
-    }
-
     public Customer getCustomer() {
         return customer;
     }
@@ -108,20 +104,20 @@ public class Message extends BaseModel {
         isRead = read;
     }
 
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
     public CustomerOrder getCustomerOrder() {
         return customerOrder;
     }
 
     public void setCustomerOrder(CustomerOrder customerOrder) {
         this.customerOrder = customerOrder;
-    }
-
-    public CustomerOrderDetail getCustomerOrderDetail() {
-        return customerOrderDetail;
-    }
-
-    public void setCustomerOrderDetail(CustomerOrderDetail customerOrderDetail) {
-        this.customerOrderDetail = customerOrderDetail;
     }
 
     public DeliverOrder getDeliverOrder() {

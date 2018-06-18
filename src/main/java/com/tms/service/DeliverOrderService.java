@@ -2,7 +2,7 @@ package com.tms.service;
 
 
 import com.tms.controller.vo.request.QueryDeliverOrderRequestVo;
-import com.tms.model.CustomerOrderDetail;
+import com.tms.model.CustomerOrder;
 import com.tms.model.DeliverOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface DeliverOrderService {
-    List<DeliverOrder> createDeliverOrder(CustomerOrderDetail customerOrderDetail);
+    List<DeliverOrder> createDeliverOrder(CustomerOrder customerOrder);
 
     void spreadDeliverOrder(DeliverOrder deliverOrder);
 

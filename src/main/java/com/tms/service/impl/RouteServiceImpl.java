@@ -1,7 +1,7 @@
 package com.tms.service.impl;
 
 
-import com.tms.model.CustomerOrderDetail;
+import com.tms.model.CustomerOrder;
 import com.tms.model.DeliverOrder;
 import com.tms.repository.SysCodeRepository;
 import com.tms.service.MQProducer;
@@ -21,11 +21,11 @@ public class RouteServiceImpl implements RouteService {
     private MQProducer mqProducer;
 
     @Override
-    public List<DeliverOrder> designRoute(CustomerOrderDetail customerOrderDetail) {
+    public List<DeliverOrder> designRoute(CustomerOrder customerOrder) {
         List<DeliverOrder> deliverOrders = new ArrayList<>();
-        switch (customerOrderDetail.getDeliverType()) {
+        switch (customerOrder.getDeliverType()) {
             case SAME_CITY:
-                DeliverOrder deliverOrder = new DeliverOrder(customerOrderDetail, 0);
+                DeliverOrder deliverOrder = new DeliverOrder(customerOrder, 0);
                 deliverOrders.add(deliverOrder);
                 break;
             case NATIONAL://TODO 生成中转运单列表

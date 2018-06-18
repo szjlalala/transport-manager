@@ -1,18 +1,19 @@
 package com.tms.controller.vo.response;
 
-import com.tms.model.DeliverOrder;
-import com.tms.model.Driver;
-import com.tms.model.Location;
-import com.tms.model.Vehicle;
+import com.tms.common.Constant;
+import com.tms.model.*;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 import java.util.Date;
-
+@NoArgsConstructor
+@Data
 public class DeliverOrderResponseVo implements Serializable {
-    @ApiModelProperty(value = "运单号", name = "deliverOrderNo")
-    private String deliverOrderNo;
+    @ApiModelProperty(value = "运单号", name = "id")
+    private String id;
     @ApiModelProperty(value = "开始地址", name = "from")
     private LocationResponseVo from;
     @ApiModelProperty(value = "结束地址", name = "to")
@@ -26,97 +27,56 @@ public class DeliverOrderResponseVo implements Serializable {
     @ApiModelProperty(value = "车辆", name = "vehicle")
     private VehicleResponseVo vehicle;
     @ApiModelProperty(value = "运单状态", name = "deliverOrderState")
-    private DeliverOrder.DeliverOrderState deliverOrderState;
+    private Constant.DeliverOrderState deliverOrderState;
     @ApiModelProperty(value = "序列", name = "sequence")
     private Integer sequence;
+    @ApiModelProperty(value = "距离", name = "distance")
+    private Long distance;
+    @ApiModelProperty(value = "用户订单", name = "customerOrder")
+    private OrderListResponseVo customerOrder;
 
-    public DeliverOrderResponseVo() {
-    }
 
-    public String getDeliverOrderNo() {
-        return deliverOrderNo;
-    }
-
-    public void setDeliverOrderNo(String deliverOrderNo) {
-        this.deliverOrderNo = deliverOrderNo;
-    }
-
-    public LocationResponseVo getFrom() {
-        return from;
-    }
-
-    public void setFrom(Location from) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (from != null) {
-            BeanUtils.copyProperties(from, locationResponseVo);
-        }
-        this.from = locationResponseVo;
+    public DeliverOrderResponseVo(DeliverOrder deliverOrder) {
+        BeanUtils.copyProperties(deliverOrder,this);
+        this.id = deliverOrder.getDeliverOrderNo();
+        this.setFrom(deliverOrder.getFrom());
+        this.setTo(deliverOrder.getTo());
+        this.setVehicle(deliverOrder.getVehicle());
+        this.setCustomerOrder(deliverOrder.getCustomerOrder());
+        this.setDriver(deliverOrder.getDriver());
 
     }
 
-    public LocationResponseVo getTo() {
-        return to;
-    }
-
-    public void setTo(Location to) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (to != null) {
-            BeanUtils.copyProperties(to, locationResponseVo);
-        }
-        this.to = locationResponseVo;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public DriverResponseVo getDriver() {
-        return driver;
-    }
-
-    public void setDriver(Driver driver) {
+    private void setDriver(Driver driver) {
         DriverResponseVo driverResponseVo = new DriverResponseVo();
         if (driver != null)
             BeanUtils.copyProperties(driver, driverResponseVo);
         this.driver = driverResponseVo;
     }
 
-    public VehicleResponseVo getVehicle() {
-        return vehicle;
+    private void setCustomerOrder(CustomerOrder customerOrder) {
+        OrderListResponseVo orderListResponseVo = new OrderListResponseVo(customerOrder);
+        this.customerOrder = orderListResponseVo;
     }
 
-    public void setVehicle(Vehicle vehicle) {
+    private void setVehicle(Vehicle vehicle) {
         VehicleResponseVo vehicleResponseVo = new VehicleResponseVo();
         if (vehicle != null)
             BeanUtils.copyProperties(vehicle, vehicleResponseVo);
         this.vehicle = vehicleResponseVo;
     }
 
-    public DeliverOrder.DeliverOrderState getDeliverOrderState() {
-        return deliverOrderState;
+    public void setFrom(Location from) {
+        LocationResponseVo locationResponseVo = new LocationResponseVo();
+        if (from != null)
+            BeanUtils.copyProperties(from, locationResponseVo);
+        this.from = locationResponseVo;
     }
 
-    public void setDeliverOrderState(DeliverOrder.DeliverOrderState deliverOrderState) {
-        this.deliverOrderState = deliverOrderState;
-    }
-
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
+    public void setTo(Location to) {
+        LocationResponseVo locationResponseVo = new LocationResponseVo();
+        if (to != null)
+            BeanUtils.copyProperties(to, locationResponseVo);
+        this.to = locationResponseVo;
     }
 }

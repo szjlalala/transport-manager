@@ -1,6 +1,7 @@
 package com.tms.service.impl;
 
 
+import com.tms.common.Constant;
 import com.tms.controller.vo.request.CreateDriverRequestVo;
 import com.tms.controller.vo.request.QueryDriverRequestVo;
 import com.tms.controller.vo.response.DriverResponseVo;
@@ -11,7 +12,6 @@ import com.tms.repository.SysDriverRepository;
 import com.tms.service.DriverService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -61,7 +61,7 @@ public class DriverServiceImpl implements DriverService {
                 predicate.add(criteriaBuilder.equal(root.get("education"), queryDriverRequestVo.getEducation()));
             }
             if (queryDriverRequestVo.getGender() != null) {
-                predicate.add(criteriaBuilder.equal(root.get("gender").as(Driver.Gender.class), queryDriverRequestVo.getGender()));
+                predicate.add(criteriaBuilder.equal(root.get("gender").as(Constant.Gender.class), queryDriverRequestVo.getGender()));
             }
             if (queryDriverRequestVo.getId() != null) {
                 predicate.add(criteriaBuilder.equal(root.get("id"), queryDriverRequestVo.getId()));
@@ -89,7 +89,7 @@ public class DriverServiceImpl implements DriverService {
             return criteriaQuery.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
         }, page);
 
-        Page voPage = domainPage.map((Converter<Driver, DriverResponseVo>) driver -> {
+        Page voPage = domainPage.map(driver -> {
             DriverResponseVo driverResponseVo = new DriverResponseVo();
             BeanUtils.copyProperties(driver, driverResponseVo);
             return driverResponseVo;

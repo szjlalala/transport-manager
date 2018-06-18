@@ -1,8 +1,12 @@
 package com.tms.model;
 
-import com.tms.controller.vo.request.CreateOrderLocationRequestVo;
+import com.tms.common.Constant;
+import com.tms.controller.vo.request.PostOrderDto;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.geo.Point;
 
 import javax.persistence.*;
 
@@ -14,17 +18,56 @@ public class Location extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocationType locationType;
+    private Constant.LocationType locationType;
     private String name;
     private String phone;
-    private Long provinceCode;
-    private Long cityCode;
-    private Long districtCode;
+    private Long province;
+    private Long city;
+    private Long district;
     private String address;
-    @Column(columnDefinition = "Point")
+    @Column(columnDefinition = "POINT")
     private Point geo;
 
+    public Location(PostOrderDto.PostLocationDto locationDto) {
+        BeanUtils.copyProperties(locationDto, this);
+        this.geo = new GeometryFactory().createPoint(new Coordinate(locationDto.getX(), locationDto.getY()));
+        this.city = Long.parseLong(locationDto.getDistrict().toString().substring(0, 4) + "00");
+        this.province = Long.parseLong(locationDto.getDistrict().toString().substring(0, 2) + "0000");
+    }
+
     public Location() {
+    }
+
+    public Long getProvince() {
+        return province;
+    }
+
+    public void setProvince(Long province) {
+        this.province = province;
+    }
+
+    public Long getCity() {
+        return city;
+    }
+
+    public void setCity(Long city) {
+        this.city = city;
+    }
+
+    public Long getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(Long district) {
+        this.district = district;
+    }
+
+    public Constant.LocationType getLocationType() {
+        return locationType;
+    }
+
+    public void setLocationType(Constant.LocationType locationType) {
+        this.locationType = locationType;
     }
 
     public Point getGeo() {
@@ -35,28 +78,12 @@ public class Location extends BaseModel {
         this.geo = geo;
     }
 
-    public Location(CreateOrderLocationRequestVo locationRequestVo) {
-        BeanUtils.copyProperties(locationRequestVo, this);
-    }
-
-    public enum LocationType {
-        CUSTOMER, DISTRIBUTION
-    }
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LocationType getLocationType() {
-        return locationType;
-    }
-
-    public void setLocationType(LocationType locationType) {
-        this.locationType = locationType;
     }
 
     public String getName() {
@@ -75,29 +102,6 @@ public class Location extends BaseModel {
         this.phone = phone;
     }
 
-    public Long getProvinceCode() {
-        return provinceCode;
-    }
-
-    public void setProvinceCode(Long provinceCode) {
-        this.provinceCode = provinceCode;
-    }
-
-    public Long getCityCode() {
-        return cityCode;
-    }
-
-    public void setCityCode(Long cityCode) {
-        this.cityCode = cityCode;
-    }
-
-    public Long getDistrictCode() {
-        return districtCode;
-    }
-
-    public void setDistrictCode(Long districtCode) {
-        this.districtCode = districtCode;
-    }
 
     public String getAddress() {
         return address;

@@ -31,10 +31,10 @@ public class DriverController {
 
     @ApiOperation(value = "承接运单", response = Results.class)
     @RequestMapping(value = "/execute", method = RequestMethod.PUT)
-    public Results executeDeliverOrder(@ApiParam(name = "订单号", required = true) String orderDetailNo,
+    public Results executeDeliverOrder(@ApiParam(name = "订单号", required = true) String customerOrderNo,
                                        @ApiParam(name = "车辆编号", required = true) Long vehicleId,
                                        @ApiParam(name = "司机编号", required = true) Long driverId) {
-        deliverOrderService.allocateVehicleAndDriver(orderDetailNo, vehicleId, driverId);
+        deliverOrderService.allocateVehicleAndDriver(customerOrderNo, vehicleId, driverId);
         return Results.setSuccessMessage(null);
     }
 

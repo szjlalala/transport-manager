@@ -2,7 +2,8 @@ package com.tms.exception.handler;
 
 import com.tms.common.BizException;
 import com.tms.common.Results;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
@@ -23,7 +24,7 @@ import java.util.Date;
 @ControllerAdvice(annotations = Controller.class)
 @Order(2)
 public class GlobalExceptionHandler {
-    private Logger logger = Logger.getLogger(GlobalExceptionHandler.class);
+    private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * 对于所有参数进行转换

@@ -1,21 +1,29 @@
 package com.tms.service;
 
 
-import com.tms.controller.vo.request.CreateOrderRequestVo;
+import com.tms.controller.vo.request.PostOrderDto;
+import com.tms.controller.vo.request.QueryOrderDto;
 import com.tms.controller.vo.request.QueryOrderRequestVo;
+import com.tms.controller.vo.response.OrderListResponseVo;
 import com.tms.controller.vo.response.OrderResponseVo;
+import com.tms.controller.vo.response.PaymentResponseVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 
 public interface CustomerOrderService {
-    String createCustomerOrder(@Validated CreateOrderRequestVo createOrderRequestVo);
+    Long createCustomerOrder(@Validated PostOrderDto postOrderDto);
 
-    boolean cancelCustomerOrderDetail(String orderDetailNo);
+    boolean cancelCustomerOrderDetail(String customerOrderNo);
 
-    void startCustomerOrderDetail(String orderDetailNo);
+    void startCustomerOrderDetail(String customerOrderNo);
 
-    void completeCustomerOrderDetail(String orderDetailNo);
+    void completeCustomerOrderDetail(String customerOrderNo);
 
-    Page<OrderResponseVo> queryOrder(QueryOrderRequestVo queryOrderRequestVo, Pageable page);
+    Page<PaymentResponseVo> queryOrder(QueryOrderRequestVo queryOrderRequestVo, Pageable page);
+
+    Page<OrderListResponseVo> queryCustomerOrder(QueryOrderDto queryOrderDto, Pageable page);
+
+
+    OrderResponseVo queryOrder(String id);
 }

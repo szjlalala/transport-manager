@@ -1,12 +1,10 @@
 package com.tms.controller.vo.response;
 
-import com.tms.controller.vo.BaseVo;
-import com.tms.model.Customer;
-import com.tms.model.CustomerOrder;
-import com.tms.model.CustomerOrderDetail;
-import com.tms.model.Payment;
-import io.swagger.annotations.ApiModel;
+import com.tms.common.Constant;
+import com.tms.model.*;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
@@ -15,167 +13,129 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@ApiModel(value = "查询订单详情返回结果")
-public class OrderResponseVo extends BaseVo implements Serializable {
-    @ApiModelProperty(value = "订单状态", name = "state")
-    private CustomerOrder.OrderState state;
-    @ApiModelProperty(value = "订单号", name = "customerOrderNo")
-    private String customerOrderNo;
-    @ApiModelProperty(value = "支付状态", name = "payState")
-    private Payment.PayState payState;
-    @ApiModelProperty(value = "支付方式", name = "payType")
-    private Payment.PayType payType;
-    @ApiModelProperty(value = "用户备注", name = "customerRemark")
-    private String customerRemark;
-    @ApiModelProperty(value = "内部备注", name = "innerRemark")
-    private String innerRemark;
-    @ApiModelProperty(value = "完成时间", name = "finishTime")
-    private Date finishTime;
-    @ApiModelProperty(value = "订单来源", name = "source")
-    private CustomerOrder.OrderSource source;//订单来源
-    @ApiModelProperty(value = "过期时间", name = "expireTime")
-    private Date expireTime;
-    @ApiModelProperty(value = "订单应付金额", name = "originalPrice")
-    private BigDecimal originalPrice;//
-    @ApiModelProperty(value = "订单实付金额", name = "payPrice")
-    private BigDecimal payPrice;//
-    @ApiModelProperty(value = "用户", name = "customer")
-    private CustomerResponseVo customer;
-    @ApiModelProperty(value = "支付信息", name = "payments")
-    private List<PaymentResponseVo> payments;
-    @ApiModelProperty(value = "订单详情", name = "orderDetails")
-    private List<OrderDetailResponseVo> orderDetails;
+@NoArgsConstructor
+@Data
+public class OrderResponseVo implements Serializable {
+    @ApiModelProperty(value = "运单id", name = "id")
+    private String id;
+    @ApiModelProperty(value = "货物", name = "cargoes")
+    private List<CargoResponseVo> cargoes;
+    @ApiModelProperty(value = "订单详情状态", name = "state")
+    private Constant.OrderState state;
+    @ApiModelProperty(value = "金额", name = "payment")
+    private Payment payment;
+    @ApiModelProperty(value = "发货人", name = "from")
+    private LocationResponseVo from;
+    @ApiModelProperty(value = "收货人", name = "to")
+    private LocationResponseVo to;
+    @ApiModelProperty(value = "运单", name = "deliverOrders")
+    private List<DeliverOrderResponseVo> deliverOrders;
+    @ApiModelProperty(value = "配送方式", name = "deliverType")
+    private Constant.DeliverType deliverType;
+    @ApiModelProperty(value = "创建时间", name = "createTime")
+    private Date createTime;
+    @ApiModelProperty(value = "用户id", name = "customerId")
+    private Long customerId;
+    @ApiModelProperty(value = "司机id", name = "driverId")
+    private Long driverId;
+    @ApiModelProperty(value = "距离", name = "distance")
+    private Long distance;
 
-    public String getCustomerRemark() {
-        return customerRemark;
+    public OrderResponseVo(CustomerOrder customerOrder) {
+        BeanUtils.copyProperties(customerOrder, this);
+        this.setId(customerOrder.getCustomerOrderNo());
+        this.setFrom(customerOrder.getFrom());
+        this.setTo(customerOrder.getTo());
+        this.setCargoes(customerOrder.getCargoes());
+        this.setPayment(customerOrder);
+        this.setDeliverOrders(customerOrder.getDeliverOrders());
     }
 
-    public void setCustomerRemark(String customerRemark) {
-        this.customerRemark = customerRemark;
-    }
-
-    public String getInnerRemark() {
-        return innerRemark;
-    }
-
-    public void setInnerRemark(String innerRemark) {
-        this.innerRemark = innerRemark;
-    }
-
-    public Date getFinishTime() {
-        return finishTime;
-    }
-
-    public void setFinishTime(Date finishTime) {
-        this.finishTime = finishTime;
-    }
-
-    public CustomerOrder.OrderSource getSource() {
-        return source;
-    }
-
-    public void setSource(CustomerOrder.OrderSource source) {
-        this.source = source;
-    }
-
-    public Date getExpireTime() {
-        return expireTime;
-    }
-
-    public void setExpireTime(Date expireTime) {
-        this.expireTime = expireTime;
-    }
-
-    public BigDecimal getOriginalPrice() {
-        return originalPrice;
-    }
-
-    public void setOriginalPrice(BigDecimal originalPrice) {
-        this.originalPrice = originalPrice;
-    }
-
-    public BigDecimal getPayPrice() {
-        return payPrice;
-    }
-
-    public void setPayPrice(BigDecimal payPrice) {
-        this.payPrice = payPrice;
-    }
-
-    public CustomerResponseVo getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        CustomerResponseVo customerResponseVo = new CustomerResponseVo();
-        if (customer != null)
-            BeanUtils.copyProperties(customer, customerResponseVo);
-        this.customer = customerResponseVo;
-    }
-
-    public List<PaymentResponseVo> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(List<Payment> payments) {
-        List<PaymentResponseVo> temp = new ArrayList<>();
-        payments.forEach(payment -> {
-            PaymentResponseVo paymentResponseVo = new PaymentResponseVo();
-            BeanUtils.copyProperties(payment, paymentResponseVo);
-            temp.add(paymentResponseVo);
+    public void setCargoes(List<Cargo> cargoes) {
+        List<CargoResponseVo> temp = new ArrayList<>();
+        cargoes.forEach(cargo -> {
+            CargoResponseVo cargoResponseVo = new CargoResponseVo();
+            BeanUtils.copyProperties(cargo, cargoResponseVo);
+            temp.add(cargoResponseVo);
         });
-        this.payments = temp;
+        this.cargoes = temp;
     }
 
-    public List<OrderDetailResponseVo> getOrderDetails() {
-        return orderDetails;
+
+    public void setFrom(Location from) {
+        LocationResponseVo locationResponseVo = new LocationResponseVo();
+        if (from != null)
+            BeanUtils.copyProperties(from, locationResponseVo);
+        this.from = locationResponseVo;
     }
 
-    public void setOrderDetails(List<CustomerOrderDetail> orderDetails) {
-        List<OrderDetailResponseVo> temp = new ArrayList<>();
-        orderDetails.forEach(orderDetail -> {
-            OrderDetailResponseVo responseVo = new OrderDetailResponseVo();
-            BeanUtils.copyProperties(orderDetail, responseVo);
-            temp.add(responseVo);
+    public void setTo(Location to) {
+        LocationResponseVo locationResponseVo = new LocationResponseVo();
+        if (to != null)
+            BeanUtils.copyProperties(to, locationResponseVo);
+        this.to = locationResponseVo;
+    }
+
+    public void setDeliverOrders(List<DeliverOrder> deliverOrders) {
+        List<DeliverOrderResponseVo> temp = new ArrayList<>();
+        deliverOrders.forEach(deliverOrder -> {
+            DeliverOrderResponseVo deliverOrderResponseVo = new DeliverOrderResponseVo(deliverOrder);
+            temp.add(deliverOrderResponseVo);
         });
-        this.orderDetails = temp;
+        this.deliverOrders = temp;
     }
 
-    public CustomerOrder.OrderState getState() {
-        return state;
+    public void setPayment(CustomerOrder customerOrder) {
+        Payment payment = new Payment();
+        BeanUtils.copyProperties(customerOrder, payment);
+        payment.setItems(customerOrder.getPayment().getPaymentItems());
+        this.payment = payment;
     }
 
-    public void setState(CustomerOrder.OrderState state) {
-        this.state = state;
+    @NoArgsConstructor
+    @Data
+    class Payment {
+        @ApiModelProperty(value = "实付金额", name = "payPrice")
+        private BigDecimal deliverPrice;
+        private BigDecimal insurancePrice;
+        private BigDecimal payPrice;
+        private BigDecimal originalPrice;
+        private Constant.PayType payType;
+        private Constant.PayState payState;
+        private List<PaymentItemResponseVo> items;
+
+        public Payment(BigDecimal payPrice) {
+            this.payPrice = payPrice;
+        }
+
+        public void setItems(List<PaymentItem> paymentItems) {
+            List<PaymentItemResponseVo> temp = new ArrayList<>();
+            paymentItems.forEach(paymentItem -> {
+                PaymentItemResponseVo paymentItemResponseVo = new PaymentItemResponseVo();
+                BeanUtils.copyProperties(paymentItem, paymentItemResponseVo);
+                temp.add(paymentItemResponseVo);
+            });
+            this.items = temp;
+        }
     }
 
-    public String getCustomerOrderNo() {
-        return customerOrderNo;
-    }
 
-    public void setCustomerOrderNo(String customerOrderNo) {
-        this.customerOrderNo = customerOrderNo;
-    }
+    @NoArgsConstructor
+    @Data
+    class PaymentItemResponseVo implements Serializable {
+        @ApiModelProperty(value = "id", name = "id")
+        private String id;
+        @ApiModelProperty(value = "支付状态", name = "payState")
+        private Constant.PayState payState;
+        @ApiModelProperty(value = "应支付价格", name = "payPrice")
+        private BigDecimal payPrice;
+        @ApiModelProperty(value = "支付方式", name = "payChannel")
+        private Constant.PayChannel payChannel;
+        @ApiModelProperty(value = "交易完成时间", name = "finishTime")
+        private Date finishTime;
+        @ApiModelProperty(value = "交易流水号", name = "tradeNo")
+        private String tradeNo;
 
-
-    public Payment.PayState getPayState() {
-        return payState;
-    }
-
-    public void setPayState(Payment.PayState payState) {
-        this.payState = payState;
-    }
-
-    public Payment.PayType getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Payment.PayType payType) {
-        this.payType = payType;
-    }
-
-
-    public OrderResponseVo() {
     }
 
 }

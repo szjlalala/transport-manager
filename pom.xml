@@ -96,6 +96,11 @@
 			<artifactId>netty-all</artifactId>
 			<version>4.1.17.Final</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-spatial</artifactId>
+			<version>5.2.5.Final</version>
+		</dependency>
 	</dependencies>
 
 	<build>

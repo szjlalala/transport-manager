@@ -12,11 +12,11 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @ApiModel(value = "查询订单详情请求参数")
-public class QueryOrderRequestVo implements Serializable {
+public class QueryOrderDto implements Serializable {
     @ApiModelProperty(value = "订单状态", name = "state")
     private Constant.OrderState state;
-    @ApiModelProperty(value = "订单号", name = "customerOrderNo")
-    private String customerOrderNo;
+    @ApiModelProperty(value = "订单号", name = "id")
+    private String id;
     @ApiModelProperty(value = "用户Id", name = "customerId")
     private Long customerId;
     @ApiModelProperty(value = "开始时间", name = "startTime")

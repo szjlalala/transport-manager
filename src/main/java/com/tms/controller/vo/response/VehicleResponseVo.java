@@ -1,10 +1,15 @@
 package com.tms.controller.vo.response;
 
+import com.tms.common.Constant;
 import com.tms.model.Vehicle;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
 public class VehicleResponseVo implements Serializable {
     @ApiModelProperty(value = "id", name = "id")
     private Long id;
@@ -19,7 +24,7 @@ public class VehicleResponseVo implements Serializable {
     @ApiModelProperty(value = "运营证", name = "operatorLicense")
     private String operatorLicense;
     @ApiModelProperty(value = "车辆状态", name = "state")
-    private Vehicle.VehicleState state;
+    private Constant.VehicleState state;
     @ApiModelProperty(value = "商标", name = "brand")
     private String brand;
     @ApiModelProperty(value = "所属公司", name = "company")
@@ -31,103 +36,4 @@ public class VehicleResponseVo implements Serializable {
     @ApiModelProperty(value = "载重量", name = "loads")
     private Float loads;
 
-    public VehicleResponseVo() {
-    }
-
-    public Long getVehicleType() {
-        return vehicleType;
-    }
-
-    public void setVehicleType(Long vehicleType) {
-        this.vehicleType = vehicleType;
-    }
-
-    public Long getVehicleSubType() {
-        return vehicleSubType;
-    }
-
-    public void setVehicleSubType(Long vehicleSubType) {
-        this.vehicleSubType = vehicleSubType;
-    }
-
-    public Vehicle.VehicleState getState() {
-        return state;
-    }
-
-    public void setState(Vehicle.VehicleState state) {
-        this.state = state;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public String getOwnerPhone() {
-        return ownerPhone;
-    }
-
-    public void setOwnerPhone(String ownerPhone) {
-        this.ownerPhone = ownerPhone;
-    }
-
-    public Float getLoads() {
-        return loads;
-    }
-
-    public void setLoads(Float loads) {
-        this.loads = loads;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public String getPlateNumber() {
-        return plateNumber;
-    }
-
-    public void setPlateNumber(String plateNumber) {
-        this.plateNumber = plateNumber;
-    }
-
-    public String getDriveLicense() {
-        return driveLicense;
-    }
-
-    public void setDriveLicense(String driveLicense) {
-        this.driveLicense = driveLicense;
-    }
-
-    public String getOperatorLicense() {
-        return operatorLicense;
-    }
-
-    public void setOperatorLicense(String operatorLicense) {
-        this.operatorLicense = operatorLicense;
-    }
 }

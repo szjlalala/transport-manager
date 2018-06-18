@@ -1,5 +1,6 @@
 package com.tms.model;
 
+import com.tms.common.Constant;
 import com.tms.controller.vo.request.CreateVehicleRequestVo;
 import org.springframework.beans.BeanUtils;
 
@@ -19,7 +20,7 @@ public class Vehicle extends BaseModel {
     private String plateNumber;//牌号
     private String driveLicense;//行驶证
     private String operatorLicense;//运营证
-    private VehicleState state;
+    private Constant.VehicleState state;
     private String brand;//商标
     private String company;//所属公司
     private String owner;//车主
@@ -37,11 +38,7 @@ public class Vehicle extends BaseModel {
 //        this.operatorLicense = createVehicleRequestVo.getOperatorLicense();
 //        this.owner = createVehicleRequestVo.getOwner();
 //        this.ownerPhone = createVehicleRequestVo.getOwnerPhone();
-        this.state = VehicleState.OFF;
-    }
-
-    public enum VehicleState {
-        ON, OFF
+        this.state = Constant.VehicleState.OFF;
     }
 
     public Vehicle() {
@@ -103,11 +100,11 @@ public class Vehicle extends BaseModel {
         this.ownerPhone = ownerPhone;
     }
 
-    public VehicleState getState() {
+    public Constant.VehicleState getState() {
         return state;
     }
 
-    public void setState(VehicleState state) {
+    public void setState(Constant.VehicleState state) {
         this.state = state;
     }
 
