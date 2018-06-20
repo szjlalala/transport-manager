@@ -1,20 +1,20 @@
 package com.tms.pay.alipay.util.httpClient;
 
-import framework.alipay.config.AlipayConfig;
+import com.tms.pay.alipay.config.AlipayConfig;
 import org.apache.commons.httpclient.Header;
 
 import java.io.UnsupportedEncodingException;
 
-/* *
- *类名：HttpResponse
- *功能：Http返回对象的封装
- *详细：封装Http返回信息
- *版本：3.3
- *日期：2011-08-17
- *说明：
- *以下代码只是为了方便商户测试而提供的样例代码，商户可以根据自己网站的需要，按照技术文档编写,并非一定要使用该代码。
- *该代码仅供学习和研究支付宝接口使用，只是提供一个参考。
- */
+        /* *
+         *类名：HttpResponse
+         *功能：Http返回对象的封装
+         *详细：封装Http返回信息
+         *版本：3.3
+         *日期：2011-08-17
+         *说明：
+         *以下代码只是为了方便商户测试而提供的样例代码，商户可以根据自己网站的需要，按照技术文档编写,并非一定要使用该代码。
+         *该代码仅供学习和研究支付宝接口使用，只是提供一个参考。
+         */
 
 public class HttpResponse {
 
@@ -26,12 +26,12 @@ public class HttpResponse {
     /**
      * String类型的result
      */
-    private String   stringResult;
+    private String stringResult;
 
     /**
      * btye类型的result
      */
-    private byte[]   byteResult;
+    private byte[] byteResult;
 
     public Header[] getResponseHeaders() {
         return responseHeaders;
