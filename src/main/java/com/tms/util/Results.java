@@ -9,8 +9,6 @@ import java.io.Serializable;
 
 /**
  * 
- * @author LiuKS
- * @date 2016年4月25日上午11:00:39
  * @Description 响应结果集类
  */
 @JsonInclude(Include.ALWAYS)

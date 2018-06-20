@@ -1,10 +1,6 @@
 /**
-* Project Name：phoenix-core
 * File Name：MapUtils.java
-* Date：2016年8月29日 上午10:09:54
 * Description：
-* @author YuanWenLong
-* @version 1.0
 * @since JDK 1.7
 */
 package com.tms.util;

@@ -14,9 +14,6 @@ import java.util.*;
 /**
  * 文件上传工具类
  *
- * @author yangdc
- * @date Apr 18, 2012
- *
  * <pre>
  * </pre>
  */

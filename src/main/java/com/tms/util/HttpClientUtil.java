@@ -3,8 +3,6 @@
  * File Name：HttpClientUtil.java
  * Date：2016年1月20日 上午9:36:45
  * Description：
- * @author YuanWenLong
- * @version 1.0
  * @since JDK 1.7
  */
 package com.tms.util;

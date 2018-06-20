@@ -1,9 +1,6 @@
 /**
  * Project Name：phoenix-core
  * File Name：PropertiesUtil.java
- * Date：2016年6月17日 上午10:07:45
- * Description：
- * @author YuanWenLong
  * @version 1.0
  * @since JDK 1.7
  */

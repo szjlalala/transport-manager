@@ -7,8 +7,6 @@ import java.util.Date;
 
 /**
  * 时间计算工具类
- * @author XYUU
- * @version 2013-11-03
  */
 public class TimeUtils {
 

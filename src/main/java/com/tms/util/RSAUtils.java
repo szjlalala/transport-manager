@@ -1,9 +1,6 @@
 /**
 * Project Name：phoenix-core
 * File Name：RSAUtils.java
-* Date：2016年5月19日 上午10:48:00
-* Description：
-* @author YuanWenLong
 * @version 1.0
 * @since JDK 1.7
 */

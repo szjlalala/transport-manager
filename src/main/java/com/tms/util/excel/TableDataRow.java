@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author liukongshuo
  * 数据行对象
  * Description: 封装了数据导出到excel中的行对象，包括行中列数据对象的操作方法等<br>
  *

@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author liukongshuo
  * 表格数据对象
  * 
  * Description: 封装了单个Sheet里除了表格标题及副标题等信息外的对象，包括表格表头对象、数据行对象集合及其操作方法等<br>

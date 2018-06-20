@@ -5,12 +5,6 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import java.text.ParseException;
 import java.util.Date;
 
-/**
- * 日期工具类, 继承org.apache.commons.lang.time.DateUtils类
- * 
- * @author XYUU
- * @version 2014-4-15
- */
 public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
     public static String[] parsePatterns = { "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM",

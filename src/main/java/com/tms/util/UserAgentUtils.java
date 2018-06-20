@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户代理字符串识别工具
- * @author XYUU
- * @version 2014-6-13
  */
 public class UserAgentUtils {
 

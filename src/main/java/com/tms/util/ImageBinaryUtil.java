@@ -1,9 +1,6 @@
 /**
 * Project Name：phoenix-core
 * File Name：Image.java
-* Date：2016年8月19日 上午10:36:07
-* Description：
-* @author YuanWenLong
 * @version 1.0
 * @since JDK 1.7
 */

@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 
 /**
  * 数字处理工具
- * @author yuncheng.gao
- * @version 2013-05-22
  */
 public class NumberUtils {
 

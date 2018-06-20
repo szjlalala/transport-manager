@@ -9,8 +9,6 @@ import java.net.UnknownHostException;
 /**
  * MAC地址工具
  *
- * @author XYUU
- * @version 2013-12-21
  */
 public class MacUtils {
 

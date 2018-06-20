@@ -8,12 +8,6 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-/**
- * @Author ZJJ
- * @Date Nov 19, 2011
- * @Time 11:04:45 AM 类说明
- */
 public class ChineseSpelling {
 	/**
 	 * Logger for this class

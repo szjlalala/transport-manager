@@ -7,11 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-/**
- * Cookie工具类
- * @author XYUU
- * @version 2013-01-15
- */
 public class CookieUtils {
 
 	/**

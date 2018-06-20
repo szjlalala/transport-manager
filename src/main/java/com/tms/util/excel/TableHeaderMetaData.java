@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author liukongshuo
  * Description: 表头对象，用于创建excel表头，支持多层表头<br>
  *
  */

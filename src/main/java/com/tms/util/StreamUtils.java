@@ -4,8 +4,6 @@ import java.io.*;
 
 /**
  *
- * @author Andy.Chen
- * @mail Chenjunjun.ZJ@gmail.com
  *
  */
 public class StreamUtils {

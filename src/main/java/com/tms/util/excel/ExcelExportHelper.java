@@ -20,7 +20,6 @@ import java.util.List;
 
 /**
  * excel导出,单个工作表,多个工作表导出
- * @author liukongshuo
  *
  */
 public class ExcelExportHelper {

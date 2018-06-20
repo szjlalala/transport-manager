@@ -7,9 +7,6 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 
 /**
- * 对象操作工具类, 继承com.ylpw.common.util.ObjectUtils类
- * @author XYUU
- * @version 2014-6-29
  */
 public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
 

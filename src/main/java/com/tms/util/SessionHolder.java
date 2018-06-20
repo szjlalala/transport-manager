@@ -1,10 +1,5 @@
 /**
  * <p>Title: SessionHolder.java</p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2016, zj7687362@gmail.com All Rights Reserved. </p>
- * <p>Company: www.jcore.cn</p>
- * @author 张嘉杰
- * @date 2016年5月25日 下午2:45:27
  */
 package com.tms.util;
 
@@ -14,9 +9,6 @@ import java.io.Serializable;
 
 /**
  * <p>Title: SessionHolder.java</p>
- * <p>Description: </p>
- * @author 张嘉杰
- * @date 2016年5月25日 下午2:45:27
  */
 public class SessionHolder {
 	
