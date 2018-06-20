@@ -96,6 +96,16 @@
 			<artifactId>hibernate-spatial</artifactId>
 			<version>5.2.5.Final</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180130</version>
+        </dependency>
 	</dependencies>
 
 	<build>
