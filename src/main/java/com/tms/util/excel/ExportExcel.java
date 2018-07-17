@@ -1,11 +1,11 @@
 package com.tms.util.excel;
 
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import javax.mail.internet.MimeUtility;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -247,7 +247,7 @@ public class ExportExcel implements Serializable {
     public static HSSFCellStyle createStyle(HSSFWorkbook workbook) {
         // 生成一个样式
         HSSFCellStyle style = workbook.createCellStyle();
-        // 设置这些样式  
+        // 设置这些样式
         style.setFillForegroundColor(HSSFColor.SKY_BLUE.index);
         style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
         style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
@@ -255,14 +255,14 @@ public class ExportExcel implements Serializable {
         style.setBorderRight(HSSFCellStyle.BORDER_THIN);
         style.setBorderTop(HSSFCellStyle.BORDER_THIN);
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        // 生成一个字体  
+        // 生成一个字体
         HSSFFont font = workbook.createFont();
         font.setColor(HSSFColor.WHITE.index);
         font.setFontHeightInPoints((short) 12);
         font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-        // 把字体应用到当前的样式  
+        // 把字体应用到当前的样式
         style.setFont(font);
-        // 生成并设置另一个样式  
+        // 生成并设置另一个样式
         HSSFCellStyle style2 = workbook.createCellStyle();
         style2.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
         style2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
@@ -272,10 +272,10 @@ public class ExportExcel implements Serializable {
         style2.setBorderTop(HSSFCellStyle.BORDER_THIN);
         style2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         style2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-        // 生成另一个字体  
+        // 生成另一个字体
         HSSFFont font2 = workbook.createFont();
         font2.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
-        // 把字体应用到当前的样式  
+        // 把字体应用到当前的样式
         style2.setFont(font2);
         return style;
     }
@@ -283,7 +283,7 @@ public class ExportExcel implements Serializable {
     private HSSFSheet createSheet(String title) {
         // 生成一个表格
         HSSFSheet sheet = workbook.createSheet(title);
-        // 设置表格默认列宽度为15个字节  
+        // 设置表格默认列宽度为15个字节
         sheet.setDefaultColumnWidth(10);
 
         return sheet;
@@ -304,7 +304,7 @@ public class ExportExcel implements Serializable {
      */
     public void save(HttpServletResponse response, String saveDir, String excelName) throws IOException {
 		/*OutputStream ouputStream = response.getOutputStream();
-		response.setContentType("application/vnd.ms-excel");    
+		response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-disposition", "attachment;filename=" + excelName);
     	getWorkbook().write(ouputStream);
     	ouputStream.flush();*/
