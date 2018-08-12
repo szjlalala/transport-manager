@@ -7,6 +7,8 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.BlockingQueue;
+
 @Configuration
 public class RabbitMqConfig {
     public final static String EXCHANGE = "tms-exchange";
@@ -38,6 +40,7 @@ public class RabbitMqConfig {
 
     @Bean
     Binding bindingDriver(Queue driverOrderQueue, DirectExchange tmsExchange) {
+//        BlockingQueue
         return BindingBuilder.bind(driverOrderQueue).to(tmsExchange).with(DRIVER_ORDER_QUEUE);
     }
 

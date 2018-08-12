@@ -30,7 +30,7 @@ public class Location extends BaseModel {
 
     public Location(PostOrderDto.PostLocationDto locationDto) {
         BeanUtils.copyProperties(locationDto, this);
-        this.geo = new GeometryFactory().createPoint(new Coordinate(locationDto.getX(), locationDto.getY()));
+        this.geo = new GeometryFactory().createPoint(new Coordinate(locationDto.getAddress().getX(), locationDto.getAddress().getY()));
         this.city = Long.parseLong(locationDto.getDistrict().toString().substring(0, 4) + "00");
         this.province = Long.parseLong(locationDto.getDistrict().toString().substring(0, 2) + "0000");
     }
