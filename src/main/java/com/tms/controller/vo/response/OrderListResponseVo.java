@@ -14,6 +14,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import static com.tms.controller.vo.response.LocationResponseVo.genLocationResponseVoFromLocation;
+
 @NoArgsConstructor
 @Data
 @ApiModel(value = "用户订单列表返回值")
@@ -47,28 +49,11 @@ public class OrderListResponseVo implements Serializable {
     }
 
     public void setFrom(Location from) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (from != null)
-            BeanUtils.copyProperties(from, locationResponseVo);
-        Address address = new Address();
-        address.setX(from.getGeo().getX());
-        address.setY(from.getGeo().getY());
-        address.setStr(from.getDetail());
-        locationResponseVo.setAddress(address);
-//        this.from.setDistrict(from.getDistrict());
-        this.from = locationResponseVo;
+        this.from = genLocationResponseVoFromLocation(from);
     }
 
     public void setTo(Location to) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (to != null)
-            BeanUtils.copyProperties(to, locationResponseVo);
-        Address address = new Address();
-        address.setX(to.getGeo().getX());
-        address.setY(to.getGeo().getY());
-        address.setStr(to.getDetail());
-        locationResponseVo.setAddress(address);
-        this.to= locationResponseVo;
+        this.to = genLocationResponseVoFromLocation(to);
     }
 
     @NoArgsConstructor

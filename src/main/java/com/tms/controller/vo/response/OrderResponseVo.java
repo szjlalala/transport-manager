@@ -87,7 +87,7 @@ public class OrderResponseVo implements Serializable {
 
     public void setPayment(CustomerOrder customerOrder) {
         Payment payment = new Payment();
-        BeanUtils.copyProperties(customerOrder, payment);
+        BeanUtils.copyProperties(customerOrder.getPayment(), payment);
         payment.setItems(customerOrder.getPayment().getPaymentItems());
         this.payment = payment;
     }

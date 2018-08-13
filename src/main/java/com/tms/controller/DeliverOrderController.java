@@ -4,6 +4,7 @@ import com.tms.common.Results;
 import com.tms.controller.vo.request.QueryDeliverOrderRequestVo;
 import com.tms.controller.vo.request.QueryOrderRequestVo;
 import com.tms.controller.vo.response.DeliverOrderResponseVo;
+import com.tms.model.DeliverOrder;
 import com.tms.service.DeliverOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "/customerOrder", description = "运单API")
+@Api(value = "/deliveries", description = "运单API")
 @RestController
-@RequestMapping("deliverOrder")
+@RequestMapping("/api/v1")
 public class DeliverOrderController {
     @Autowired
     private DeliverOrderService deliverOrderService;
@@ -49,10 +50,17 @@ public class DeliverOrderController {
     }
 
     @ApiOperation(value = "查询运单", response = Results.class)
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @RequestMapping(value = "/deliveries", method = RequestMethod.GET)
     public Results queryOrder(QueryDeliverOrderRequestVo deliverOrderRequestVo,
                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) {
         Page<DeliverOrderResponseVo> responseVoPage =  deliverOrderService.queryDeliverOrder(deliverOrderRequestVo,page);
         return Results.setSuccessMessage(responseVoPage);
+    }
+
+    @ApiOperation(value = "查询运单", response = Results.class)
+    @RequestMapping(value = "/deliveries/{number}", method = RequestMethod.GET)
+    public Results queryOrder(@PathVariable String number) {
+        DeliverOrderResponseVo vo = new DeliverOrderResponseVo(deliverOrderService.queryDeliverOrderByNo(number));
+        return Results.setSuccessMessage(vo);
     }
 }
