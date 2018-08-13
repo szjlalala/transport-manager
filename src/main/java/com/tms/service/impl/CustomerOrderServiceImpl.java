@@ -22,6 +22,7 @@ import com.tms.service.DeliverOrderService;
 import com.tms.service.MQProducer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -101,19 +102,26 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public void startCustomerOrderDetail(String customerOrderNo) {
-        CustomerOrder customerOrder = customerOrderRepository.findByCustomerOrderNo(customerOrderNo);
-        customerOrder.setState(Constant.OrderState.TRANSPORTING);
-        customerOrder.preUpdate();
-        customerOrderRepository.save(customerOrder);
+        changeCustomerOrderStatus(customerOrderNo, Constant.OrderState.NOT_RECEIVED);
+    }
+
+    @Override
+    public void undergoCustomerOrderDetail(String customerOrderNo) {
+        changeCustomerOrderStatus(customerOrderNo, Constant.OrderState.ONBOARD);
     }
 
     @Override
     public void completeCustomerOrderDetail(String customerOrderNo) {
+        changeCustomerOrderStatus(customerOrderNo, Constant.OrderState.COMPLETED);
+    }
+
+    public void changeCustomerOrderStatus(String customerOrderNo, Constant.OrderState orderState){
         CustomerOrder customerOrder = customerOrderRepository.findByCustomerOrderNo(customerOrderNo);
-        customerOrder.setState(Constant.OrderState.COMPLETE);
+        customerOrder.setState(orderState);
         customerOrder.preUpdate();
         customerOrderRepository.save(customerOrder);
     }
+
 
     @Override
     public Page<PaymentResponseVo> queryOrder(QueryOrderRequestVo queryOrderRequestVo, Pageable page) {

@@ -3,7 +3,7 @@ package com.tms.common;
 public class Constant {
 
     public enum OrderState {
-        TEMP, UNALLOCATED, TRANSPORTING, COMPLETE, INVALID
+        NOT_PAID, NOT_DISTRIBUTED, NOT_RECEIVED, ONBOARD, COMPLETED, CONFIRMED, INVALID
     }
 
     public enum OrderSource {

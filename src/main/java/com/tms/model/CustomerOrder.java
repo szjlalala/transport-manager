@@ -26,10 +26,6 @@ public class CustomerOrder extends BaseModel {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerOrder", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<Cargo> cargoes;
-    private BigDecimal deliverPrice;//运费
-    private BigDecimal insurancePrice;//保价金额
-    private BigDecimal originalPrice;//应付金额
-    private BigDecimal payPrice;//实付金额
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private Location from;
@@ -55,19 +51,14 @@ public class CustomerOrder extends BaseModel {
         for (PostOrderDto.OrderDto orderDto : postOrderDto.getOrders()) {
             CustomerOrder domain = new CustomerOrder();
             if (postOrderDto.getPayment().getPayType().equals(Constant.PayType.SENDER_PAY)) {
-                domain.state = Constant.OrderState.TEMP;
+                domain.state = Constant.OrderState.NOT_PAID;
             } else {
-                domain.state = Constant.OrderState.UNALLOCATED;
+                domain.state = Constant.OrderState.NOT_DISTRIBUTED;
             }
             domain.from = new Location(postOrderDto.getFrom());
             domain.to = new Location(orderDto.getTo());
             domain.customerOrderNo = genOrderNo();
             domain.cargoes = Cargo.formatCargoes(orderDto.getCargoes(), domain);
-            domain.originalPrice = orderDto.getPayment().getPayPrice();
-            domain.payPrice = orderDto.getPayment().getPayPrice();
-            domain.insurancePrice = orderDto.getPayment().getInsurancePrice();
-            domain.deliverPrice = orderDto.getPayment().getDeliverPrice();
-            domain.payPrice = orderDto.getPayment().getPayPrice();
             domain.deliverType = domain.from.getCity().equals(domain.to.getCity()) ? Constant.DeliverType.SAME_CITY : Constant.DeliverType.NATIONAL;
             domain.distance = orderDto.getDistance();
             domain.preInsert();
@@ -108,38 +99,6 @@ public class CustomerOrder extends BaseModel {
 
     public void setCargoes(List<Cargo> cargoes) {
         this.cargoes = cargoes;
-    }
-
-    public BigDecimal getDeliverPrice() {
-        return deliverPrice;
-    }
-
-    public void setDeliverPrice(BigDecimal deliverPrice) {
-        this.deliverPrice = deliverPrice;
-    }
-
-    public BigDecimal getInsurancePrice() {
-        return insurancePrice;
-    }
-
-    public void setInsurancePrice(BigDecimal insurancePrice) {
-        this.insurancePrice = insurancePrice;
-    }
-
-    public BigDecimal getOriginalPrice() {
-        return originalPrice;
-    }
-
-    public void setOriginalPrice(BigDecimal originalPrice) {
-        this.originalPrice = originalPrice;
-    }
-
-    public BigDecimal getPayPrice() {
-        return payPrice;
-    }
-
-    public void setPayPrice(BigDecimal payPrice) {
-        this.payPrice = payPrice;
     }
 
     public Location getFrom() {

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Address {
-    @ApiModelProperty(value = "详细地址", name = "address", required = true)
+    @ApiModelProperty(value = "详细地址", name = "str", required = true)
     private String str;
     @ApiModelProperty(value = "X坐标", name = "x", required = true)
     private Double x;
