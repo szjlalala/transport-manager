@@ -16,4 +16,7 @@ public class Address {
     private Double x;
     @ApiModelProperty(value = "Y坐标", name = "y", required = true)
     private Double y;
+    public String toString(){
+        return str;
+    }
 }
