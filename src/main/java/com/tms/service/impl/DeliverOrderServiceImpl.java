@@ -176,5 +176,8 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         return voPage;
     }
 
-
+    @Override
+    public DeliverOrder queryDeliverOrderByNo(String number) {
+        return deliverOrderRepository.findByDeliverOrderNo(number);
+    }
 }

@@ -22,4 +22,5 @@ public interface DeliverOrderService {
 
     Page queryDeliverOrder(QueryDeliverOrderRequestVo queryDeliverOrderRequestVo, Pageable page);
 
+    DeliverOrder queryDeliverOrderByNo(String number);
 }

@@ -52,19 +52,17 @@ public class PostOrderDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class PostLocationDto implements Serializable {
+        @ApiModelProperty(value = "地址", name = "address", required = true)
+        private Address address;
         @ApiModelProperty(value = "姓名", name = "name", required = true)
         private String name;
         @ApiModelProperty(value = "电话", name = "phone", required = true)
         private String phone;
         @ApiModelProperty(value = "区编码", name = "district", required = true, example = "110101")
         private Long district;
-        @ApiModelProperty(value = "详细地址", name = "address", required = true)
-        private String address;
-        @ApiModelProperty(value = "X坐标", name = "x", required = true)
-        private Double x;
-        @ApiModelProperty(value = "Y坐标", name = "y", required = true)
-        private Double y;
+
     }
+
 
     @Data
     @NoArgsConstructor

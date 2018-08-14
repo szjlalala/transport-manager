@@ -20,6 +20,8 @@ public interface CustomerOrderService {
 
     void completeCustomerOrderDetail(String customerOrderNo);
 
+    void undergoCustomerOrderDetail(String customerOrderNo);
+
     Page<PaymentResponseVo> queryOrder(QueryOrderRequestVo queryOrderRequestVo, Pageable page);
 
     Page<OrderListResponseVo> queryCustomerOrder(QueryOrderDto queryOrderDto, Pageable page);

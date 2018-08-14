@@ -1,8 +1,11 @@
 package com.tms.controller.vo.response;
 
+import com.tms.controller.vo.request.Address;
+import com.tms.model.Location;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.geo.Point;
 
 import java.io.Serializable;
@@ -14,13 +17,20 @@ public class LocationResponseVo implements Serializable {
     private String name;
     @ApiModelProperty(value = "电话", name = "phone")
     private String phone;
-    @ApiModelProperty(value = "区编码", name = "district")
-    private Long district;
-    @ApiModelProperty(value = "详细地址", name = "address")
-    private String address;
-    @ApiModelProperty(value = "X坐标", name = "x")
-    private Double x;
-    @ApiModelProperty(value = "Y坐标", name = "y")
-    private Double y;
+    @ApiModelProperty(value = "地区", name = "district")
+    private long district;
+    @ApiModelProperty(value = "地址", name = "address", required = true)
+    private Address address;
 
+    public static LocationResponseVo genLocationResponseVoFromLocation(Location location){
+        LocationResponseVo locationResponseVo = new LocationResponseVo();
+        if (location != null)
+            BeanUtils.copyProperties(location, locationResponseVo);
+        Address address = new Address();
+        address.setX(location.getGeo().getX());
+        address.setY(location.getGeo().getY());
+        address.setStr(location.getDetail());
+        locationResponseVo.setAddress(address);
+        return locationResponseVo;
+    }
 }

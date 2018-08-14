@@ -1,5 +1,6 @@
 package com.tms.security;
 
+import com.tms.controller.vo.request.PayloadDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,11 +13,13 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Collections.emptyList;
 
-class TokenAuthenticationService {
+public class TokenAuthenticationService {
     static final long EXPIRATIONTIME = 432_000_000;     // 5天
     static final String SECRET = "P@ssw02d";            // JWT密码
     static final String TOKEN_PREFIX = "Bearer";        // Token前缀
@@ -59,5 +62,24 @@ class TokenAuthenticationService {
                     null;
         }
         return null;
+    }
+
+    public static String signToken(PayloadDto payloadDto) {
+        Map<String,Object> claims = new HashMap<String,Object>();//创建payload的私有声明（根据特定的业务需要添加，如果要拿这个做验证，一般是需要和jwt的接收方提前沟通好验证方式的）
+        claims.put("username", payloadDto.getUsername());
+        claims.put("id", payloadDto.getId());
+        claims.put("role", payloadDto.getRole());
+        claims.put("visit", payloadDto.getVisit());
+
+        String JWT = Jwts.builder()
+                // 保存权限（角色）
+                .setClaims(claims)
+                // 有效期设置
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
+                // 签名设置
+                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .compact();
+        // 将 JWT 写入 header
+        return JWT;
     }
 }

@@ -24,7 +24,7 @@ public class SwaggerConfig {
         ParameterBuilder tokenPar = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<>();
         tokenPar.name("Authorization").description("JWT令牌").modelRef(new ModelRef("string")).parameterType("header").required(true).build();
-        pars.add(tokenPar.build());
+//        pars.add(tokenPar.build());
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()

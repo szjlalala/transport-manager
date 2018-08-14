@@ -1,6 +1,7 @@
 package com.tms.controller.vo.response;
 
 import com.tms.common.Constant;
+import com.tms.controller.vo.request.Address;
 import com.tms.model.CustomerOrder;
 import com.tms.model.Location;
 import io.swagger.annotations.ApiModel;
@@ -12,6 +13,8 @@ import org.springframework.beans.BeanUtils;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import static com.tms.controller.vo.response.LocationResponseVo.genLocationResponseVoFromLocation;
 
 @NoArgsConstructor
 @Data
@@ -34,41 +37,30 @@ public class OrderListResponseVo implements Serializable {
     private Long customerId;
 
     public OrderListResponseVo(CustomerOrder customerOrder) {
-        BeanUtils.copyProperties(customerOrder, this);
+        BeanUtils.copyProperties(customerOrder, this, new String[]{"from", "to", "payment"});
         this.setFrom(customerOrder.getFrom());
         this.setTo(customerOrder.getTo());
         this.setId(customerOrder.getCustomerOrderNo());
-        this.setPayment(customerOrder.getPayPrice());
+        this.setPayment(new Payment(customerOrder.getPayment().getPayPrice()));
     }
 
-    public void setPayment(BigDecimal payPrice) {
-        this.payment = new Payment(payPrice);
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public void setFrom(Location from) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (from != null)
-            BeanUtils.copyProperties(from, locationResponseVo);
-        locationResponseVo.setX(from.getGeo().getX());
-        locationResponseVo.setY(from.getGeo().getY());
-        this.from = locationResponseVo;
+        this.from = genLocationResponseVoFromLocation(from);
     }
 
     public void setTo(Location to) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (to != null)
-            BeanUtils.copyProperties(to, locationResponseVo);
-        locationResponseVo.setX(to.getGeo().getX());
-        locationResponseVo.setY(to.getGeo().getY());
-        this.to= locationResponseVo;
+        this.to = genLocationResponseVoFromLocation(to);
     }
 
     @NoArgsConstructor
     @Data
      class Payment {
-        @ApiModelProperty(value = "实付金额", name = "payPrice")
+        @ApiModelProperty(value = "订单列表显示金额", name = "payPrice")
         private BigDecimal payPrice;
-
         public Payment(BigDecimal payPrice) {
             this.payPrice = payPrice;
         }

@@ -30,7 +30,7 @@ public class Results<T> implements Serializable {
     private String sub_msg;
 
     @ApiModelProperty(value = "数据对象", name = "数据对象")
-    private T result;
+    private T data;
 
     public Results(ErrorCode errorCode) {
         this.code = CODE.INTERNAL_SERVER_ERROR.getCode();
@@ -46,20 +46,20 @@ public class Results<T> implements Serializable {
         this.sub_msg = errorCode.getMessage();
     }
 
-    public Results(CODE code, ErrorCode errorCode, T result) {
+    public Results(CODE code, ErrorCode errorCode, T data) {
         this.code = code.getCode();
         this.msg = code.getMsg();
         this.sub_code = errorCode.getCode();
         this.sub_msg = errorCode.getMessage();
-        this.result = result;
+        this.data = data;
     }
 
-    public Results(String code, String msg, String sub_code, String sub_msg, T result) {
+    public Results(String code, String msg, String sub_code, String sub_msg, T data) {
         this.code = code;
         this.msg = msg;
         this.sub_code = sub_code;
         this.sub_msg = sub_msg;
-        this.result = result;
+        this.data = data;
     }
 
     public String getCode() {
@@ -94,12 +94,12 @@ public class Results<T> implements Serializable {
         this.sub_msg = sub_msg;
     }
 
-    public Object getResult() {
-        return result;
+    public Object getData() {
+        return data;
     }
 
-    public void setResult(T result) {
-        this.result = result;
+    public void setData(T data) {
+        this.data = data;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class Results<T> implements Serializable {
                 ", msg='" + msg + '\'' +
                 ", sub_code='" + sub_code + '\'' +
                 ", sub_msg='" + sub_msg + '\'' +
-                ", result=" + result +
+                ", data=" + data +
                 '}';
     }
 

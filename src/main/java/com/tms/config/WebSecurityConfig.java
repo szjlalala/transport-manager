@@ -17,12 +17,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // 关闭csrf验证
-        http.csrf().disable()
+        http.csrf().disable();
+        /*http.csrf().disable()
                 // 对请求进行认证
                 .authorizeRequests()
                 // 所有 swagger 的所有请求 都放行
-                .antMatchers( "/", "/login","/js/**", "/css/**", "/images/**", "/api/**"
-                        , "/webjars/**", "/swagger-ui.html", "/v2/api-docs", "/swagger-resources/**",
+                .antMatchers( "/", "/login","/js*//**", "/css*//**", "/images*//**", "/api*//**", "/static*//**"
+                        , "/webjars*//**", "/swagger-ui.html", "/v2/api-docs", "/swagger-resources*//**",
                         "/configuration/ui",  "/configuration/security"
                 ).permitAll()
                 // 所有 /login 的POST请求 都放行
@@ -39,13 +40,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         UsernamePasswordAuthenticationFilter.class)
                 // 添加一个过滤器验证其他请求的Token是否合法
                 .addFilterBefore(new JWTAuthenticationFilter(),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class);*/
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 使用自定义身份验证组件
-        auth.authenticationProvider(new CustomAuthenticationProvider());
+//        auth.authenticationProvider(new CustomAuthenticationProvider());
 
     }
 }

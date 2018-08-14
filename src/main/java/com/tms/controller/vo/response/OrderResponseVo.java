@@ -63,17 +63,11 @@ public class OrderResponseVo implements Serializable {
 
 
     public void setFrom(Location from) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (from != null)
-            BeanUtils.copyProperties(from, locationResponseVo);
-        this.from = locationResponseVo;
+        this.from = LocationResponseVo.genLocationResponseVoFromLocation(from);
     }
 
     public void setTo(Location to) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (to != null)
-            BeanUtils.copyProperties(to, locationResponseVo);
-        this.to = locationResponseVo;
+        this.to = LocationResponseVo.genLocationResponseVoFromLocation(to);
     }
 
     public void setDeliverOrders(List<DeliverOrder> deliverOrders) {
@@ -87,7 +81,7 @@ public class OrderResponseVo implements Serializable {
 
     public void setPayment(CustomerOrder customerOrder) {
         Payment payment = new Payment();
-        BeanUtils.copyProperties(customerOrder, payment);
+        BeanUtils.copyProperties(customerOrder.getPayment(), payment);
         payment.setItems(customerOrder.getPayment().getPaymentItems());
         this.payment = payment;
     }
