@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.tms.util.PageRequestBuilder.buildPageRequest;
+
 @Api(value = "/Driver", description = "司机API")
 @RestController
-@RequestMapping("driver")
+@RequestMapping("/api/v1/drivers")
 public class DriverController {
     @Autowired
     private DriverService driverService;
@@ -56,7 +58,7 @@ public class DriverController {
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Results queryVehicle(@ApiParam(name = "查询司机参数", value = "传入json格式") QueryDriverRequestVo queryDriverRequestVo,
                                 @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) {
-        Page<DriverResponseVo> voPage = driverService.queryDriver(queryDriverRequestVo, page);
+        Page<DriverResponseVo> voPage = driverService.queryDriver(queryDriverRequestVo, buildPageRequest(page));
         return Results.setSuccessMessage(voPage);
     }
 

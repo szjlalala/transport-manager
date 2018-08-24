@@ -169,8 +169,7 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         }, page);
 
         Page voPage = domainPage.map((Converter<DeliverOrder, DeliverOrderResponseVo>) deliverOrder -> {
-            DeliverOrderResponseVo deliverOrderResponseVo = new DeliverOrderResponseVo();
-            BeanUtils.copyProperties(deliverOrder, deliverOrderResponseVo);
+            DeliverOrderResponseVo deliverOrderResponseVo = new DeliverOrderResponseVo(deliverOrder);
             return deliverOrderResponseVo;
         });
         return voPage;

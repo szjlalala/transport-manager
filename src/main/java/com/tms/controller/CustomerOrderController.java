@@ -21,15 +21,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+import static com.tms.util.PageRequestBuilder.buildPageRequest;
+
 @Api(value = "/orders", description = "用户订单API")
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/orders")
 public class CustomerOrderController {
     @Autowired
     private CustomerOrderService customerOrderService;
 
     @ApiOperation(value = "创建订单", response = Results.class)
-    @RequestMapping(value = "/orders", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public Results createOrder(@ApiParam(name = "创建订单参数", value = "传入json格式", required = true) @RequestBody PostOrderDto postOrderDto) {
         if(postOrderDto.getPayment().getPayType() == null)
             postOrderDto.getPayment().setPayType(Constant.PayType.SENDER_PAY);
@@ -51,10 +53,10 @@ public class CustomerOrderController {
     }
 
     @ApiOperation(value = "查询用户订单", response = Results.class)
-    @RequestMapping(value = "/orders", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public Results queryOrderList( QueryOrderDto queryOrderDto,
                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) {
-        Page<OrderListResponseVo> customerOrderPage = customerOrderService.queryCustomerOrder(queryOrderDto, page);
+        Page<OrderListResponseVo> customerOrderPage = customerOrderService.queryCustomerOrder(queryOrderDto, buildPageRequest(page));
         return Results.setSuccessMessage(customerOrderPage);
     }
 }
