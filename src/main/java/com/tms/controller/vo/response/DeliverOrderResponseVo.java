@@ -67,16 +67,10 @@ public class DeliverOrderResponseVo implements Serializable {
     }
 
     public void setFrom(Location from) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (from != null)
-            BeanUtils.copyProperties(from, locationResponseVo);
-        this.from = locationResponseVo;
+        this.from = LocationResponseVo.genLocationResponseVoFromLocation(from);
     }
 
     public void setTo(Location to) {
-        LocationResponseVo locationResponseVo = new LocationResponseVo();
-        if (to != null)
-            BeanUtils.copyProperties(to, locationResponseVo);
-        this.to = locationResponseVo;
+        this.to = LocationResponseVo.genLocationResponseVoFromLocation(to);
     }
 }

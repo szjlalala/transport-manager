@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
+import static com.tms.util.PageRequestBuilder.buildPageRequest;
+
 @Api(value = "/Vehicle", description = "车辆API")
 @RestController
-@RequestMapping("vehicle")
+@RequestMapping("/api/v1/vehicles")
 public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
@@ -49,7 +51,7 @@ public class VehicleController {
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Results queryVehicle(@ApiParam(name = "查询车辆参数", value = "传入json格式") QueryVehicleRequestVo queryVehicleRequestVo,
                                 @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) {
-        Page<VehicleResponseVo> voPage = vehicleService.queryVehicle(queryVehicleRequestVo, page);
+        Page<VehicleResponseVo> voPage = vehicleService.queryVehicle(queryVehicleRequestVo, buildPageRequest(page));
         return Results.setSuccessMessage(voPage);
     }
 
