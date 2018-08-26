@@ -58,7 +58,7 @@ public class CustomerOrderController {
     }
 
     @ApiOperation(value = "根据用户订单号查询支付信息", response = Results.class)
-    @RequestMapping(value = "/paymentId", method = RequestMethod.GET)
+    @RequestMapping(value = "/payment", method = RequestMethod.GET)
     public Results queryPaymentOrderByOrderNo(@RequestBody String customerOrderNo) {
         PaymentResponseVo payment = customerOrderService.queryPaymentOrderByOrderNo(customerOrderNo);
         return Results.setSuccessMessage(payment);
