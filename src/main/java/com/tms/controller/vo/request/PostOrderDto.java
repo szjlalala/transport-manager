@@ -33,7 +33,7 @@ public class PostOrderDto implements Serializable {
         @ApiModelProperty(value = "支付信息", name = "payment", required = true)
         private PaymentDto payment;
         @ApiModelProperty(value = "距离", name = "distance", required = true)
-        private Long distance;
+        private Double distance;
     }
 
     @Data

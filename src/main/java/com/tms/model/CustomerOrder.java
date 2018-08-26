@@ -37,7 +37,7 @@ public class CustomerOrder extends BaseModel {
     private List<DeliverOrder> deliverOrders;
     private Constant.DeliverType deliverType;
     private String customerOrderNo;
-    private Long distance;
+    private Double distance;
     private Constant.OrderState state;
     private Constant.OrderSource source;//订单来源
     private String customerRemark;//用户备注
@@ -142,11 +142,11 @@ public class CustomerOrder extends BaseModel {
         this.customerOrderNo = customerOrderNo;
     }
 
-    public Long getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
-    public void setDistance(Long distance) {
+    public void setDistance(Double distance) {
         this.distance = distance;
     }
 

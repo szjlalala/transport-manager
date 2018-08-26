@@ -5,6 +5,7 @@ import com.tms.common.Constant;
 import com.tms.util.IDGen;
 
 import javax.persistence.*;
+import java.nio.DoubleBuffer;
 import java.util.Date;
 
 @Entity
@@ -34,7 +35,7 @@ public class DeliverOrder extends BaseModel {
     private Constant.DeliverOrderState deliverOrderState;
 
     private Integer sequence;
-    private Long distance;
+    private Double distance;
 
     public DeliverOrder(CustomerOrder customerOrder, Integer sequence) {
         this.deliverOrderNo = genOrderNo();
@@ -46,11 +47,11 @@ public class DeliverOrder extends BaseModel {
         preInsert();
     }
 
-    public Long getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
-    public void setDistance(Long distance) {
+    public void setDistance(Double distance) {
         this.distance = distance;
     }
 
