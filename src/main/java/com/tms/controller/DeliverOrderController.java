@@ -60,6 +60,12 @@ public class DeliverOrderController {
     }
 
     @ApiOperation(value = "查询运单", response = Results.class)
+    @RequestMapping(value = ":id", method = RequestMethod.GET)
+    public Results queryOrder() {
+        return null;
+    }
+
+    @ApiOperation(value = "查询运单", response = Results.class)
     @RequestMapping(value = "/{number}", method = RequestMethod.GET)
     public Results queryOrder(@PathVariable String number) {
         DeliverOrderResponseVo vo = new DeliverOrderResponseVo(deliverOrderService.queryDeliverOrderByNo(number));
