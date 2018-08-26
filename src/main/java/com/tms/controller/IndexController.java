@@ -33,6 +33,16 @@ public class IndexController {
         return "index";
     }
 
+    @GetMapping("/dashboard/**")
+    public String dashboard() {
+        return "index";
+    }
+
+    @GetMapping("/vehicle/**")
+    public String vehicle() {
+        return "index";
+    }
+
     @GetMapping("/error")
     public String error() {
         return "index";
