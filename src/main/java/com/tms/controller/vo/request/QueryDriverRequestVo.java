@@ -29,8 +29,8 @@ public class QueryDriverRequestVo implements Serializable {
     private String bankCard;
     @ApiModelProperty(value = "电话", name = "phone")
     private String phone;
-    @ApiModelProperty(value = "司机状态", name = "sysDriver")
-    private SysDriverRequestVo sysDriver;
+    @ApiModelProperty(value = "司机状态", name = "status")
+    private Constant.DriverState status;
     @ApiModelProperty(value = "开始时间", name = "startTime")
     private Date startTime;
     @ApiModelProperty(value = "结束时间", name = "endTime")

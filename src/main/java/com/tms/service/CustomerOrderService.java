@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 public interface CustomerOrderService {
     Long createCustomerOrder(@Validated PostOrderDto postOrderDto);
 
@@ -28,4 +30,10 @@ public interface CustomerOrderService {
 
 
     OrderResponseVo queryOrder(String id);
+
+    void paid(Long id);
+
+    List<OrderResponseVo> queryOrderByPaymentId(Long id);
+
+    PaymentResponseVo queryPaymentOrderByOrderNo(String customerOrderNo);
 }

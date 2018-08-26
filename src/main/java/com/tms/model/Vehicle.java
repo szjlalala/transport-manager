@@ -1,7 +1,7 @@
 package com.tms.model;
 
 import com.tms.common.Constant;
-import com.tms.controller.vo.request.CreateVehicleRequestVo;
+import com.tms.controller.vo.request.VehicleRequestDto;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
@@ -27,18 +27,8 @@ public class Vehicle extends BaseModel {
     private String ownerPhone;//车主电话
     private Float loads;//载重量
 
-    public Vehicle(CreateVehicleRequestVo createVehicleRequestVo) {
-        BeanUtils.copyProperties(createVehicleRequestVo,this);
-//        this.id = createVehicleRequestVo.getId();
-//        this.plateNumber = createVehicleRequestVo.getPlateNumber();
-//        this.brand = createVehicleRequestVo.getBrand();
-//        this.company = createVehicleRequestVo.getCompany();
-//        this.driveLicense = createVehicleRequestVo.getDriveLicense();
-//        this.loads = createVehicleRequestVo.getLoads();
-//        this.operatorLicense = createVehicleRequestVo.getOperatorLicense();
-//        this.owner = createVehicleRequestVo.getOwner();
-//        this.ownerPhone = createVehicleRequestVo.getOwnerPhone();
-        this.state = Constant.VehicleState.OFF;
+    public Vehicle(VehicleRequestDto vehicleRequestDto) {
+        BeanUtils.copyProperties(vehicleRequestDto,this,"id");
     }
 
     public Vehicle() {

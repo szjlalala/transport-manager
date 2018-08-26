@@ -2,7 +2,6 @@ package com.tms.model;
 
 import com.tms.common.Constant;
 import com.tms.controller.vo.request.PostOrderDto;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -26,13 +25,13 @@ public class Location extends BaseModel {
     private Long province;
     private Long city;
     private Long district;
-    private String detail;
+    private String address;
     @Column(columnDefinition = "POINT")
     private Point geo;
 
     public Location(PostOrderDto.PostLocationDto locationDto) {
         BeanUtils.copyProperties(locationDto, this);
-        this.detail = locationDto.getAddress().getStr();
+        this.address = locationDto.getAddress().getStr();
         this.geo = new GeometryFactory().createPoint(new Coordinate(locationDto.getAddress().getX(), locationDto.getAddress().getY()));
         this.city = Long.parseLong(locationDto.getDistrict().toString().substring(0, 4) + "00");
         this.province = Long.parseLong(locationDto.getDistrict().toString().substring(0, 2) + "0000");
@@ -105,12 +104,11 @@ public class Location extends BaseModel {
         this.phone = phone;
     }
 
-
-    public String getDetail() {
-        return detail;
+    public String getAddress() {
+        return address;
     }
 
-    public void setDetail(String detail) {
-        this.detail = detail;
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

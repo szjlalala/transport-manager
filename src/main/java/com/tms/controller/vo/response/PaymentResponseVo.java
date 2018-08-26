@@ -4,6 +4,7 @@ import com.tms.common.Constant;
 import com.tms.controller.vo.BaseVo;
 import com.tms.model.Customer;
 import com.tms.model.CustomerOrder;
+import com.tms.model.Payment;
 import com.tms.model.PaymentItem;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -49,6 +50,10 @@ public class PaymentResponseVo extends BaseVo implements Serializable {
     private List<PaymentItemResponseVo> payments;
     @ApiModelProperty(value = "订单详情", name = "orderDetails")
     private List<OrderResponseVo> orderDetails;
+
+    public PaymentResponseVo(Payment payment) {
+        BeanUtils.copyProperties(payment,this);
+    }
 
 
     public void setCustomer(Customer customer) {

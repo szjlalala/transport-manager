@@ -14,9 +14,9 @@ import java.util.Date;
 @ApiModel(value = "查询运单详情请求参数")
 public class QueryDeliverOrderRequestVo implements Serializable {
     @ApiModelProperty(value = "运单状态", name = "state")
-    private Constant.DeliverOrderState state;
-    @ApiModelProperty(value = "运单号", name = "deliverOrderNo")
-    private String deliverOrderNo;
+    private Constant.OrderState deliverOrderState;
+    @ApiModelProperty(value = "运单号", name = "id")
+    private String id;
     @ApiModelProperty(value = "开始时间", name = "startTime")
     private Date startTime;
     @ApiModelProperty(value = "结束时间", name = "endTime")

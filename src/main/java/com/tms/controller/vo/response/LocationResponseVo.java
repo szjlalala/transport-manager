@@ -29,7 +29,7 @@ public class LocationResponseVo implements Serializable {
         Address address = new Address();
         address.setX(location.getGeo().getX());
         address.setY(location.getGeo().getY());
-        address.setStr(location.getDetail());
+        address.setStr(location.getAddress());
         locationResponseVo.setAddress(address);
         return locationResponseVo;
     }

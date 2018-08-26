@@ -14,7 +14,6 @@ import com.tms.service.CustomerOrderService;
 import com.tms.service.DeliverOrderService;
 import com.tms.service.MQProducer;
 import com.tms.service.RouteService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
@@ -90,7 +89,7 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         deliverOrder.setDriver(driver);
         deliverOrder.setVehicle(vehicle);
         deliverOrder.preUpdate();
-        deliverOrder.setDeliverOrderState(Constant.DeliverOrderState.UNLOAD);
+        deliverOrder.setDeliverOrderState(Constant.OrderState.NOT_RECEIVED);
         deliverOrder.setStartTime(new Date());
         deliverOrderRepository.save(deliverOrder);
         customerOrderService.startCustomerOrderDetail(deliverOrder.getCustomerOrder().getCustomerOrderNo());
@@ -103,7 +102,7 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         if (deliverOrder == null) {
             throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
         }
-        deliverOrder.setDeliverOrderState(Constant.DeliverOrderState.TRANSPORTING);
+        deliverOrder.setDeliverOrderState(Constant.OrderState.ONBOARD);
         deliverOrder.preUpdate();
         deliverOrderRepository.save(deliverOrder);
     }
@@ -115,14 +114,14 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         if (deliverOrder == null) {
             throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
         }
-        deliverOrder.setDeliverOrderState(Constant.DeliverOrderState.COMPLETE);
+        deliverOrder.setDeliverOrderState(deliverOrder.getCustomerOrder().getPayment().getPayType().equals(Constant.PayType.SENDER_PAY) ? Constant.OrderState.COMPLETED : Constant.OrderState.NOT_PAID);
         deliverOrder.setEndTime(new Date());
         deliverOrder.preUpdate();
         deliverOrderRepository.save(deliverOrder);
         boolean isComplete = true;
         List<DeliverOrder> deliverOrders = deliverOrder.getCustomerOrder().getDeliverOrders();
         for (DeliverOrder deliverOrder1 : deliverOrders) {
-            if (deliverOrder1.getDeliverOrderState() != Constant.DeliverOrderState.COMPLETE) {
+            if (deliverOrder1.getDeliverOrderState() != Constant.OrderState.COMPLETED) {
                 isComplete = false;
                 break;
             }
@@ -137,41 +136,44 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
 
         Page domainPage = deliverOrderRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicate = new ArrayList<>();
-            if (!StringUtils.isEmpty(queryDeliverOrderRequestVo.getDeliverOrderNo())) {
-                predicate.add(criteriaBuilder.equal(root.get("deliverOrderNo"), queryDeliverOrderRequestVo.getDeliverOrderNo()));
+            if (!StringUtils.isEmpty(queryDeliverOrderRequestVo.getId())) {
+                predicate.add(criteriaBuilder.equal(root.get("deliverOrderNo"), queryDeliverOrderRequestVo.getId()));
             }
             if (queryDeliverOrderRequestVo.getFrom() != null) {
                 if (!StringUtils.isEmpty(queryDeliverOrderRequestVo.getFrom().getName())) {
-                    predicate.add(criteriaBuilder.equal(root.join("customerOrderDetail").join("from").get("name"), queryDeliverOrderRequestVo.getFrom().getName()));
+                    predicate.add(criteriaBuilder.like(root.join("from").get("name"), "%" + queryDeliverOrderRequestVo.getFrom().getName() + "%"));
                 }
                 if (!StringUtils.isEmpty(queryDeliverOrderRequestVo.getFrom().getPhone())) {
-                    predicate.add(criteriaBuilder.equal(root.join("customerOrderDetail").join("from").get("phone"), queryDeliverOrderRequestVo.getFrom().getPhone()));
+                    predicate.add(criteriaBuilder.equal(root.join("from").get("phone"), queryDeliverOrderRequestVo.getFrom().getPhone()));
+                }
+                if (!StringUtils.isEmpty(queryDeliverOrderRequestVo.getFrom().getAddress())) {
+                    predicate.add(criteriaBuilder.like(root.join("from").get("address"), "%" + queryDeliverOrderRequestVo.getFrom().getAddress() + "%"));
                 }
             }
             if (queryDeliverOrderRequestVo.getTo() != null) {
                 if (!StringUtils.isEmpty(queryDeliverOrderRequestVo.getTo().getName())) {
-                    predicate.add(criteriaBuilder.equal(root.join("customerOrderDetail").join("to").get("name"), queryDeliverOrderRequestVo.getTo().getName()));
+                    predicate.add(criteriaBuilder.like(root.join("to").get("name"), "%" + queryDeliverOrderRequestVo.getTo().getName() + "%"));
                 }
                 if (!StringUtils.isEmpty(queryDeliverOrderRequestVo.getTo().getPhone())) {
-                    predicate.add(criteriaBuilder.equal(root.join("customerOrderDetail").join("to").get("phone"), queryDeliverOrderRequestVo.getTo().getPhone()));
+                    predicate.add(criteriaBuilder.equal(root.join("to").get("phone"), queryDeliverOrderRequestVo.getTo().getPhone()));
+                }
+                if (!StringUtils.isEmpty(queryDeliverOrderRequestVo.getTo().getAddress())) {
+                    predicate.add(criteriaBuilder.like(root.join("to").get("address"), "%" + queryDeliverOrderRequestVo.getTo().getAddress() + "%"));
                 }
             }
             if (queryDeliverOrderRequestVo.getStartTime() != null) {
                 predicate.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class), queryDeliverOrderRequestVo.getStartTime()));
             }
             if (queryDeliverOrderRequestVo.getEndTime() != null) {
-                predicate.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class), queryDeliverOrderRequestVo.getEndTime()));
+                predicate.add(criteriaBuilder.lessThanOrEqualTo(root.get("createTime").as(Date.class), queryDeliverOrderRequestVo.getEndTime()));
             }
-            if (queryDeliverOrderRequestVo.getState() != null) {
-                predicate.add(criteriaBuilder.equal(root.get("state").as(Constant.DeliverOrderState.class), queryDeliverOrderRequestVo.getState()));
+            if (queryDeliverOrderRequestVo.getDeliverOrderState() != null) {
+                predicate.add(criteriaBuilder.equal(root.get("deliverOrderState").as(Constant.OrderState.class), queryDeliverOrderRequestVo.getDeliverOrderState()));
             }
             return criteriaQuery.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
         }, page);
 
-        Page voPage = domainPage.map((Converter<DeliverOrder, DeliverOrderResponseVo>) deliverOrder -> {
-            DeliverOrderResponseVo deliverOrderResponseVo = new DeliverOrderResponseVo(deliverOrder);
-            return deliverOrderResponseVo;
-        });
+        Page voPage = domainPage.map((Converter<DeliverOrder, DeliverOrderResponseVo>) deliverOrder -> new DeliverOrderResponseVo(deliverOrder));
         return voPage;
     }
 

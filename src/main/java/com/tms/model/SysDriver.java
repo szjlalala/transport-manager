@@ -22,16 +22,15 @@ public class SysDriver extends BaseModel {
     @JoinColumn
     private Driver driver;
 
-    public SysDriver() {
-    }
-
-    public SysDriver(Driver driver) {
+    public SysDriver(Driver driver, Constant.DriverState status) {
         this.driver = driver;
         this.userName = driver.getPhone();
         this.password = MD5Encoder.encode("123456".getBytes());
-        this.driverState = Constant.DriverState.OFF;
+        this.driverState = status;
     }
 
+    public SysDriver() {
+    }
 
     public Driver getDriver() {
         return driver;

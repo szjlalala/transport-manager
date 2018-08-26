@@ -32,7 +32,7 @@ public class DeliverOrder extends BaseModel {
     @JoinColumn(name = "customer_order_id")
     private CustomerOrder customerOrder;
 
-    private Constant.DeliverOrderState deliverOrderState;
+    private Constant.OrderState deliverOrderState;
 
     private Integer sequence;
     private Double distance;
@@ -43,7 +43,7 @@ public class DeliverOrder extends BaseModel {
         this.from = customerOrder.getFrom();
         this.to = customerOrder.getTo();
         this.customerOrder = customerOrder;
-        this.deliverOrderState = Constant.DeliverOrderState.UNALLOCATED;
+        this.deliverOrderState = customerOrder.getState();
         preInsert();
     }
 
@@ -139,11 +139,11 @@ public class DeliverOrder extends BaseModel {
         this.vehicle = vehicle;
     }
 
-    public Constant.DeliverOrderState getDeliverOrderState() {
+    public Constant.OrderState getDeliverOrderState() {
         return deliverOrderState;
     }
 
-    public void setDeliverOrderState(Constant.DeliverOrderState deliverOrderState) {
+    public void setDeliverOrderState(Constant.OrderState deliverOrderState) {
         this.deliverOrderState = deliverOrderState;
     }
 

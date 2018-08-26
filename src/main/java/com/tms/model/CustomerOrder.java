@@ -59,7 +59,9 @@ public class CustomerOrder extends BaseModel {
             domain.to = new Location(orderDto.getTo());
             domain.customerOrderNo = genOrderNo();
             domain.cargoes = Cargo.formatCargoes(orderDto.getCargoes(), domain);
-            domain.deliverType = domain.from.getCity().equals(domain.to.getCity()) ? Constant.DeliverType.SAME_CITY : Constant.DeliverType.NATIONAL;
+            domain.deliverType = Constant.DeliverType.SAME_CITY;
+            //TODO 异地需要拆多段运单 现在默认同城
+//            domain.deliverType = domain.from.getCity().equals(domain.to.getCity()) ? Constant.DeliverType.SAME_CITY : Constant.DeliverType.NATIONAL;
             domain.distance = orderDto.getDistance();
             domain.preInsert();
             domain.setPayment(payment);

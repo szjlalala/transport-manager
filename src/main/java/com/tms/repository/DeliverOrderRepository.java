@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface DeliverOrderRepository extends CrudRepository<DeliverOrder, Long>, JpaSpecificationExecutor {
-    List<DeliverOrder> findByCustomerOrderAndDeliverOrderStateOrderBySequenceAsc(CustomerOrder customerOrder, Constant.DeliverOrderState deliverOrderState);
+    List<DeliverOrder> findByCustomerOrderAndDeliverOrderStateOrderBySequenceAsc(CustomerOrder customerOrder, Constant.OrderState deliverOrderState);
 
     DeliverOrder findByDeliverOrderNo(String deliverOrderNo);
 }

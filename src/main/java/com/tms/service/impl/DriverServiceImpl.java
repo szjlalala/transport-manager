@@ -2,7 +2,7 @@ package com.tms.service.impl;
 
 
 import com.tms.common.Constant;
-import com.tms.controller.vo.request.CreateDriverRequestVo;
+import com.tms.controller.vo.request.DriverRequestDto;
 import com.tms.controller.vo.request.QueryDriverRequestVo;
 import com.tms.controller.vo.response.DriverResponseVo;
 import com.tms.model.Driver;
@@ -12,6 +12,7 @@ import com.tms.repository.SysDriverRepository;
 import com.tms.service.DriverService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,20 +32,25 @@ public class DriverServiceImpl implements DriverService {
     private SysDriverRepository sysDriverRepository;
 
     @Override
-    public void createDriver(CreateDriverRequestVo createDriverRequestVo) {
-        Driver driver = new Driver(createDriverRequestVo);
+    public void createDriver(DriverRequestDto driverRequestDto) {
+        Driver driver = new Driver(driverRequestDto);
         driver.preInsert();
         driverRepository.save(driver);
-        SysDriver sysDriver = new SysDriver(driver);
+        SysDriver sysDriver = new SysDriver(driver, driverRequestDto.getStatus());
         sysDriver.preInsert();
         sysDriverRepository.save(sysDriver);
     }
 
     @Override
-    public void updateDriver(CreateDriverRequestVo driverRequestVo) {
-        Driver driver = new Driver(driverRequestVo);
+    public void updateDriver(DriverRequestDto driverRequestVo) {
+        Driver driver = driverRepository.findOne(driverRequestVo.getId());
+        BeanUtils.copyProperties(driverRequestVo, driver, "id");
         driver.preUpdate();
         driverRepository.save(driver);
+        SysDriver sysDriver = sysDriverRepository.findByDriver(driver);
+        sysDriver.preUpdate();
+        sysDriver.setDriverState(driverRequestVo.getStatus());
+        sysDriverRepository.save(sysDriver);
     }
 
     @Override
@@ -79,21 +85,27 @@ public class DriverServiceImpl implements DriverService {
                 predicate.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class), queryDriverRequestVo.getStartTime()));
             }
             if (queryDriverRequestVo.getEndTime() != null) {
-                predicate.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class), queryDriverRequestVo.getEndTime()));
+                predicate.add(criteriaBuilder.lessThanOrEqualTo(root.get("createTime").as(Date.class), queryDriverRequestVo.getEndTime()));
             }
-            if (queryDriverRequestVo.getSysDriver() != null) {
-                if (queryDriverRequestVo.getSysDriver().getDriverState() != null) {
-                    predicate.add(criteriaBuilder.equal(root.join("sysDriver").get("state"), queryDriverRequestVo.getSysDriver().getDriverState()));
-                }
+            if (queryDriverRequestVo.getStatus() != null) {
+                    predicate.add(criteriaBuilder.equal(root.join("sysDriver").get("driverState"), queryDriverRequestVo.getStatus()));
             }
             return criteriaQuery.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
         }, page);
 
-        Page voPage = domainPage.map(driver -> {
-            DriverResponseVo driverResponseVo = new DriverResponseVo();
-            BeanUtils.copyProperties(driver, driverResponseVo);
+        Page voPage = domainPage.map((Converter<Driver, DriverResponseVo>) driver -> {
+            DriverResponseVo driverResponseVo = new DriverResponseVo(driver);
+            driverResponseVo.setStatus(sysDriverRepository.findByDriver(driver).getDriverState());
             return driverResponseVo;
         });
         return voPage;
+    }
+
+    @Override
+    public DriverResponseVo queryDriver(Long id) {
+        Driver driver = driverRepository.findOne(id);
+        DriverResponseVo driverResponseVo = new DriverResponseVo(driver);
+        driverResponseVo.setStatus(sysDriverRepository.findByDriver(driver).getDriverState());
+        return driverResponseVo;
     }
 }

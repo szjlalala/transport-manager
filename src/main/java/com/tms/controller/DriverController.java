@@ -1,7 +1,7 @@
 package com.tms.controller;
 
 import com.tms.common.Results;
-import com.tms.controller.vo.request.CreateDriverRequestVo;
+import com.tms.controller.vo.request.DriverRequestDto;
 import com.tms.controller.vo.request.QueryDriverRequestVo;
 import com.tms.controller.vo.response.DriverResponseVo;
 import com.tms.service.DeliverOrderService;
@@ -14,10 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import static com.tms.util.PageRequestBuilder.buildPageRequest;
 
@@ -41,23 +42,35 @@ public class DriverController {
     }
 
     @ApiOperation(value = "创建司机", response = Results.class)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Results createVehicle(@ApiParam(name = "创建司机参数", value = "传入json格式", required = true) @RequestBody CreateDriverRequestVo createDriverRequestVo) {
-        driverService.createDriver(createDriverRequestVo);
+    @RequestMapping(method = RequestMethod.POST)
+    public Results createDriver(@ApiParam(name = "创建司机参数", value = "传入json格式", required = true) @RequestBody DriverRequestDto driverRequestDto) {
+        driverService.createDriver(driverRequestDto);
         return Results.setSuccessMessage(null);
     }
 
     @ApiOperation(value = "更新司机", response = Results.class)
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Results updateVehicle(@ApiParam(name = "更新司机参数", value = "传入json格式", required = true) @RequestBody CreateDriverRequestVo createDriverRequestVo) {
-        driverService.updateDriver(createDriverRequestVo);
+    @RequestMapping(value = "/{id}",method = RequestMethod.PUT)
+    public Results updateDriver(@ApiParam(name = "更新司机参数", value = "传入json格式", required = true)@PathVariable Long id, @RequestBody DriverRequestDto driverRequestDto) {
+        driverRequestDto.setId(id);
+        driverService.updateDriver(driverRequestDto);
         return Results.setSuccessMessage(null);
     }
 
+    @ApiOperation(value = "根据id查询司机", response = Results.class)
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public Results queryDriverById(@PathVariable Long id) {
+        return Results.setSuccessMessage(driverService.queryDriver(id));
+    }
     @ApiOperation(value = "查询司机", response = Results.class)
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Results queryVehicle(@ApiParam(name = "查询司机参数", value = "传入json格式") QueryDriverRequestVo queryDriverRequestVo,
-                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) {
+    @RequestMapping(method = RequestMethod.GET)
+    public Results queryDriver(HttpServletRequest request,@ApiParam(name = "查询司机参数", value = "传入json格式") QueryDriverRequestVo queryDriverRequestVo,
+                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) throws ParseException {
+        String[] dates = request.getParameterValues("createTime");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (dates != null && dates.length > 0) {
+            queryDriverRequestVo.setStartTime(sdf.parse(dates[0]));
+            queryDriverRequestVo.setEndTime(sdf.parse(dates[1]));
+        }
         Page<DriverResponseVo> voPage = driverService.queryDriver(queryDriverRequestVo, buildPageRequest(page));
         return Results.setSuccessMessage(voPage);
     }

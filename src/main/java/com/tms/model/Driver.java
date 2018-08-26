@@ -1,7 +1,7 @@
 package com.tms.model;
 
 import com.tms.common.Constant;
-import com.tms.controller.vo.request.CreateDriverRequestVo;
+import com.tms.controller.vo.request.DriverRequestDto;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
@@ -24,8 +24,9 @@ public class Driver extends BaseModel {
     public Driver() {
     }
 
-    public Driver(CreateDriverRequestVo createDriverRequestVo) {
-        BeanUtils.copyProperties(createDriverRequestVo,this);
+    public Driver(DriverRequestDto driverRequestDto) {
+        BeanUtils.copyProperties(driverRequestDto,this,"gender","id");
+        this.gender = Constant.Gender.getInstance(driverRequestDto.getGender());
     }
 
 
@@ -91,5 +92,13 @@ public class Driver extends BaseModel {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Constant.Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Constant.Gender gender) {
+        this.gender = gender;
     }
 }

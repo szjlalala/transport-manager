@@ -27,7 +27,7 @@ public class DeliverOrderResponseVo implements Serializable {
     @ApiModelProperty(value = "车辆", name = "vehicle")
     private VehicleResponseVo vehicle;
     @ApiModelProperty(value = "运单状态", name = "deliverOrderState")
-    private Constant.DeliverOrderState deliverOrderState;
+    private Constant.OrderState deliverOrderState;
     @ApiModelProperty(value = "序列", name = "sequence")
     private Integer sequence;
     @ApiModelProperty(value = "距离", name = "distance")

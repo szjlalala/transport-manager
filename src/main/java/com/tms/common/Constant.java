@@ -3,7 +3,7 @@ package com.tms.common;
 public class Constant {
 
     public enum OrderState {
-        NOT_PAID, NOT_DISTRIBUTED, NOT_RECEIVED, ONBOARD, COMPLETED, CONFIRMED, INVALID
+        NOT_PAID, NOT_DISTRIBUTED, NOT_RECEIVED, ONBOARD, COMPLETED, CONFIRMED, INVALID,SPLITTED
     }
 
     public enum OrderSource {
@@ -32,10 +32,6 @@ public class Constant {
         NORMAL, FRAGILE,FROZEN
     }
 
-    public enum DeliverOrderState {
-        UNALLOCATED, UNLOAD, TRANSPORTING, COMPLETE, CANCEL
-    }
-
     public enum LocationType {
         CUSTOMER, DISTRIBUTION
     }
@@ -51,7 +47,22 @@ public class Constant {
         AUTO,MANUAL,COMPETE
     }
     public enum Gender {
-        MALE, FEMALE
+        MALE("男"), FEMALE("女");
+        private String desc;
+        Gender(String desc){
+            this.desc = desc;
+        }
+        public static Gender getInstance(String desc){
+            for(Gender gender : Gender.class.getEnumConstants()){
+                if(desc.equals(gender.getDesc())){
+                    return gender;
+                }
+            }
+            return null;
+        }
+        public String getDesc() {
+            return desc;
+        }
     }
 
     public enum DriverState {
@@ -70,7 +81,7 @@ public class Constant {
         private String channel;
         private String desc;
 
-        private PayChannel(String channel, String desc) {
+        PayChannel(String channel, String desc) {
             this.channel = channel;
             this.desc = desc;
         }

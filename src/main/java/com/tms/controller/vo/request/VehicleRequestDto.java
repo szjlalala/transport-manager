@@ -12,9 +12,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 @ApiModel(value = "创建车辆请求参数")
-public class CreateVehicleRequestVo implements Serializable {
+public class VehicleRequestDto implements Serializable {
+    @ApiModelProperty(value = "id", name = "id")
+    private Long id;
     @ApiModelProperty(value = "车型", name = "vehicleType")
-    private Long vehicleType;
+    private String vehicleType;
     @ApiModelProperty(value = "品牌", name = "vehicleSubType")
     private Long vehicleSubType;
     @ApiModelProperty(value = "牌号", name = "plateNumber")

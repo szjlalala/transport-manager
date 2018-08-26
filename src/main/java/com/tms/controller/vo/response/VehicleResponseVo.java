@@ -5,6 +5,7 @@ import com.tms.model.Vehicle;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -36,4 +37,7 @@ public class VehicleResponseVo implements Serializable {
     @ApiModelProperty(value = "载重量", name = "loads")
     private Float loads;
 
+    public VehicleResponseVo(Vehicle vehicle) {
+        BeanUtils.copyProperties(vehicle,this);
+    }
 }

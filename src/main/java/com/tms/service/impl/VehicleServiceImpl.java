@@ -1,6 +1,6 @@
 package com.tms.service.impl;
 
-import com.tms.controller.vo.request.CreateVehicleRequestVo;
+import com.tms.controller.vo.request.VehicleRequestDto;
 import com.tms.controller.vo.request.QueryVehicleRequestVo;
 import com.tms.controller.vo.response.TraceResponseVo;
 import com.tms.controller.vo.response.VehicleResponseVo;
@@ -32,19 +32,20 @@ public class VehicleServiceImpl implements VehicleService {
     private TraceRepository traceRepository;
 
     @Override
-    public void createVehicle(CreateVehicleRequestVo createVehicleRequestVo) {
-        Vehicle vehicle = new Vehicle(createVehicleRequestVo);
-        vehicle.setVehicleType(sysCodeRepository.findOne(createVehicleRequestVo.getVehicleType()));
-        vehicle.setVehicleSubType(sysCodeRepository.findOne(createVehicleRequestVo.getVehicleSubType()));
+    public void createVehicle(VehicleRequestDto vehicleRequestDto) {
+        Vehicle vehicle = new Vehicle(vehicleRequestDto);
+        vehicle.setVehicleType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleType()));
+//        vehicle.setVehicleSubType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleSubType()));
         vehicle.preInsert();
         vehicleRepository.save(vehicle);
     }
 
     @Override
-    public void updateVehicle(CreateVehicleRequestVo createVehicleRequestVo) {
-        Vehicle vehicle = new Vehicle(createVehicleRequestVo);
-        vehicle.setVehicleType(sysCodeRepository.findOne(createVehicleRequestVo.getVehicleType()));
-        vehicle.setVehicleSubType(sysCodeRepository.findOne(createVehicleRequestVo.getVehicleSubType()));
+    public void updateVehicle(VehicleRequestDto vehicleRequestDto) {
+        Vehicle vehicle =vehicleRepository.findOne(vehicleRequestDto.getId());
+        BeanUtils.copyProperties(vehicleRequestDto,vehicle);
+        vehicle.setVehicleType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleType()));
+//        vehicle.setVehicleSubType(sysCodeRepository.findOne(vehicleRequestDto.getVehicleSubType()));
         vehicle.preUpdate();
         vehicleRepository.save(vehicle);
     }
@@ -95,11 +96,7 @@ public class VehicleServiceImpl implements VehicleService {
             return criteriaQuery.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
         }, page);
 
-        Page voPage = domainPage.map((Converter<Vehicle, VehicleResponseVo>) vehicle -> {
-            VehicleResponseVo vehicleResponseVo = new VehicleResponseVo();
-            BeanUtils.copyProperties(vehicle, vehicleResponseVo);
-            return vehicleResponseVo;
-        });
+        Page voPage = domainPage.map((Converter<Vehicle, VehicleResponseVo>) vehicle -> new VehicleResponseVo(vehicle));
         return voPage;
     }
 
@@ -119,5 +116,10 @@ public class VehicleServiceImpl implements VehicleService {
             responseVos.add(responseVo);
         });
         return responseVos;
+    }
+
+    @Override
+    public VehicleResponseVo queryVehicle(Long id) {
+        return new VehicleResponseVo(vehicleRepository.findOne(id));
     }
 }

@@ -1,7 +1,7 @@
 package com.tms.controller;
 
 import com.tms.common.Results;
-import com.tms.controller.vo.request.CreateVehicleRequestVo;
+import com.tms.controller.vo.request.VehicleRequestDto;
 import com.tms.controller.vo.request.QueryVehicleRequestVo;
 import com.tms.controller.vo.response.TraceResponseVo;
 import com.tms.controller.vo.response.VehicleResponseVo;
@@ -18,6 +18,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -34,25 +37,38 @@ public class VehicleController {
     DeliverOrderService deliverOrderService;
 
     @ApiOperation(value = "创建车辆", response = Results.class)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Results createVehicle(@ApiParam(name = "创建车辆参数", value = "传入json格式", required = true) @RequestBody CreateVehicleRequestVo createVehicleRequestVo) {
-        vehicleService.createVehicle(createVehicleRequestVo);
+    @RequestMapping(method = RequestMethod.POST)
+    public Results createVehicle(@ApiParam(name = "创建车辆参数", value = "传入json格式", required = true) @RequestBody VehicleRequestDto vehicleRequestDto) {
+        vehicleService.createVehicle(vehicleRequestDto);
         return Results.setSuccessMessage(null);
     }
 
     @ApiOperation(value = "更新车辆", response = Results.class)
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Results updateVehicle(@ApiParam(name = "更新车辆参数", value = "传入json格式", required = true) @RequestBody CreateVehicleRequestVo createVehicleRequestVo) {
-        vehicleService.updateVehicle(createVehicleRequestVo);
+    @RequestMapping(method = RequestMethod.PUT)
+    public Results updateVehicle(@ApiParam(name = "更新车辆参数", value = "传入json格式", required = true) @RequestBody VehicleRequestDto vehicleRequestDto) {
+        vehicleService.updateVehicle(vehicleRequestDto);
         return Results.setSuccessMessage(null);
     }
 
     @ApiOperation(value = "查询车辆", response = Results.class)
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Results queryVehicle(@ApiParam(name = "查询车辆参数", value = "传入json格式") QueryVehicleRequestVo queryVehicleRequestVo,
-                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) {
+    @RequestMapping( method = RequestMethod.GET)
+    public Results queryVehicle(HttpServletRequest request,@ApiParam(name = "查询车辆参数", value = "传入json格式") QueryVehicleRequestVo queryVehicleRequestVo,
+                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) throws ParseException {
+        String[] dates = request.getParameterValues("createTime");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (dates != null && dates.length > 0) {
+            queryVehicleRequestVo.setStartTime(sdf.parse(dates[0]));
+            queryVehicleRequestVo.setEndTime(sdf.parse(dates[1]));
+        }
         Page<VehicleResponseVo> voPage = vehicleService.queryVehicle(queryVehicleRequestVo, buildPageRequest(page));
         return Results.setSuccessMessage(voPage);
+    }
+
+    @ApiOperation(value = "查询单个车辆", response = Results.class)
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public Results queryVehicleById(@PathVariable Long id ){
+        VehicleResponseVo vehicleResponseVo = vehicleService.queryVehicle(id);
+        return Results.setSuccessMessage(vehicleResponseVo);
     }
 
     @ApiOperation(value = "查询车辆轨迹", response = Results.class)
