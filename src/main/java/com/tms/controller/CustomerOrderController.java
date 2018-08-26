@@ -46,7 +46,7 @@ public class CustomerOrderController {
         return Results.setSuccessMessage(result);
     }
 
-    @RequestMapping(value = "/orders/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Results queryOrder( @PathVariable String id) {
         OrderResponseVo order = customerOrderService.queryOrder(id);
         return Results.setSuccessMessage(order);
