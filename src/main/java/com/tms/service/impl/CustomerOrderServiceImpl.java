@@ -65,7 +65,9 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         //将运单广播
         for (CustomerOrder customerOrder : payment.getCustomerOrders()) {
             List<DeliverOrder> deliverOrders = deliverOrderRepository.findByCustomerOrderAndDeliverOrderStateOrderBySequenceAsc(customerOrder, Constant.OrderState.NOT_DISTRIBUTED);
-            deliverOrderService.spreadDeliverOrder(deliverOrders.get(0));
+            if(deliverOrders!=null && deliverOrders.size()>0){
+                deliverOrderService.spreadDeliverOrder(deliverOrders.get(0));
+            }
         }
         return payment.getId();
     }
