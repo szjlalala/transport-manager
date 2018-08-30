@@ -42,6 +42,11 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public Driver findDriver(String id){
+        return driverRepository.findOne(id);
+    }
+
+    @Override
     public void updateDriver(DriverRequestDto driverRequestVo) {
         Driver driver = driverRepository.findOne(driverRequestVo.getId());
         BeanUtils.copyProperties(driverRequestVo, driver, "id");
@@ -102,7 +107,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponseVo queryDriver(Long id) {
+    public DriverResponseVo queryDriver(String id) {
         Driver driver = driverRepository.findOne(id);
         DriverResponseVo driverResponseVo = new DriverResponseVo(driver);
         driverResponseVo.setStatus(sysDriverRepository.findByDriver(driver).getDriverState());

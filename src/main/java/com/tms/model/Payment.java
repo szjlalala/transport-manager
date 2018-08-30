@@ -2,6 +2,7 @@ package com.tms.model;
 
 import com.tms.common.Constant;
 import com.tms.controller.vo.request.PostOrderDto;
+import com.tms.util.IDGen;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class Payment extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String no;
     private Constant.PayState payState;
     private Date finishTime;//完成时间
     private Date expireTime;//过期时间
@@ -39,6 +41,11 @@ public class Payment extends BaseModel {
     public Payment() {
     }
 
+    private static String genNo() {
+        return "P" + IDGen.nextId();
+    }
+
+
     public Payment(PostOrderDto postOrderDto) {
         this.payState = Constant.PayState.UNPAY;
         this.originalPrice = postOrderDto.getPayment().getPayPrice();
@@ -51,6 +58,7 @@ public class Payment extends BaseModel {
         }
 //        this.customer = new Customer(postOrderDto.getCustomerId());
         this.payType = postOrderDto.getPayment().getPayType();
+        this.setNo(genNo());
         preInsert();
     }
 }

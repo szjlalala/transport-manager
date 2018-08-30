@@ -248,6 +248,12 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         return new PaymentResponseVo(customerOrder.getPayment());
     }
 
+    @Override
+    public PaymentResponseVo queryPaymentByPaymentId(long paymentId) {
+        PaymentResponseVo payment = new PaymentResponseVo(paymentRepository.findOne(paymentId));
+        return payment;
+    }
+
     private void validate(PostOrderDto postOrderDto) {
         //TODO
     }

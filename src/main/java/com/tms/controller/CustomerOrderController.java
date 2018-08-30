@@ -45,22 +45,28 @@ public class CustomerOrderController {
 
     @ApiOperation(value = "取消订单", response = Results.class)
     @RequestMapping(value = "/cancel", method = RequestMethod.POST)
-    public Results cancelOrder(@ApiParam(name = "订单号", required = true) @RequestBody String customerOrderNo) {
+    public Results cancelOrder(@ApiParam(name = "订单号", required = true) @RequestParam String customerOrderNo) {
         boolean result = customerOrderService.cancelCustomerOrderDetail(customerOrderNo);
         return Results.setSuccessMessage(result);
     }
 
     @ApiOperation(value = "完成支付", response = Results.class)
     @RequestMapping(value = "/paid", method = RequestMethod.POST)
-    public Results paid(@RequestBody Long paymentId) {
+    public Results paid(@RequestParam Long paymentId) {
         customerOrderService.paid(paymentId);
         return Results.setSuccessMessage(null);
     }
 
     @ApiOperation(value = "根据用户订单号查询支付信息", response = Results.class)
-    @RequestMapping(value = "/payment", method = RequestMethod.GET)
-    public Results queryPaymentOrderByOrderNo(@RequestBody String customerOrderNo) {
+    @RequestMapping(value = "/payment/customerOrderNo", method = RequestMethod.GET)
+    public Results queryPaymentOrderByOrderNo(@RequestParam String customerOrderNo) {
         PaymentResponseVo payment = customerOrderService.queryPaymentOrderByOrderNo(customerOrderNo);
+        return Results.setSuccessMessage(payment);
+    }
+    @ApiOperation(value = "根据用户订单号查询支付信息", response = Results.class)
+    @RequestMapping(value = "/payment/paymentId", method = RequestMethod.GET)
+    public Results queryPaymentOrderByOrderNo(@RequestParam long paymentId) {
+        PaymentResponseVo payment = customerOrderService.queryPaymentByPaymentId(paymentId);
         return Results.setSuccessMessage(payment);
     }
 

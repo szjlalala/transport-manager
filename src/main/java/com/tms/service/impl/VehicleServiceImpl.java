@@ -4,6 +4,7 @@ import com.tms.controller.vo.request.VehicleRequestDto;
 import com.tms.controller.vo.request.QueryVehicleRequestVo;
 import com.tms.controller.vo.response.TraceResponseVo;
 import com.tms.controller.vo.response.VehicleResponseVo;
+import com.tms.model.Driver;
 import com.tms.model.Vehicle;
 import com.tms.repository.SysCodeRepository;
 import com.tms.repository.TraceRepository;
@@ -32,9 +33,10 @@ public class VehicleServiceImpl implements VehicleService {
     private TraceRepository traceRepository;
 
     @Override
-    public void createVehicle(VehicleRequestDto vehicleRequestDto) {
+    public void createVehicle(VehicleRequestDto vehicleRequestDto, List<Driver> drivers) {
         Vehicle vehicle = new Vehicle(vehicleRequestDto);
-        vehicle.setVehicleType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleType()));
+        vehicle.setDriverList(drivers);
+//        vehicle.setVehicleType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleType()));
 //        vehicle.setVehicleSubType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleSubType()));
         vehicle.preInsert();
         vehicleRepository.save(vehicle);
@@ -44,7 +46,7 @@ public class VehicleServiceImpl implements VehicleService {
     public void updateVehicle(VehicleRequestDto vehicleRequestDto) {
         Vehicle vehicle =vehicleRepository.findOne(vehicleRequestDto.getId());
         BeanUtils.copyProperties(vehicleRequestDto,vehicle);
-        vehicle.setVehicleType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleType()));
+//        vehicle.setVehicleType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleType()));
 //        vehicle.setVehicleSubType(sysCodeRepository.findOne(vehicleRequestDto.getVehicleSubType()));
         vehicle.preUpdate();
         vehicleRepository.save(vehicle);

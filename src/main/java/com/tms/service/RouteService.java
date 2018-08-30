@@ -10,5 +10,5 @@ import java.util.Map;
 public interface RouteService {
     List<DeliverOrder> designRoute(CustomerOrder customerOrder);
 
-    Map<String, Long> autoAllocate(DeliverOrder deliverOrder);
+    Map<String, Object> autoAllocate(DeliverOrder deliverOrder);
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @NoArgsConstructor
 @Data
@@ -17,8 +18,6 @@ public class VehicleRequestDto implements Serializable {
     private Long id;
     @ApiModelProperty(value = "车型", name = "vehicleType")
     private String vehicleType;
-    @ApiModelProperty(value = "品牌", name = "vehicleSubType")
-    private Long vehicleSubType;
     @ApiModelProperty(value = "牌号", name = "plateNumber")
     private String plateNumber;
     @ApiModelProperty(value = "行驶证", name = "driveLicense")
@@ -27,7 +26,7 @@ public class VehicleRequestDto implements Serializable {
     private String operatorLicense;
     @ApiModelProperty(value = "车辆状态", name = "state")
     private Constant.VehicleState state;
-    @ApiModelProperty(value = "商标", name = "brand")
+    @ApiModelProperty(value = "品牌", name = "brand")
     private String brand;
     @ApiModelProperty(value = "所属公司", name = "company")
     private String company;
@@ -37,4 +36,6 @@ public class VehicleRequestDto implements Serializable {
     private String ownerPhone;
     @ApiModelProperty(value = "载重量", name = "loads")
     private Float loads;
+    @ApiModelProperty(value = "司机驾照列表", name = "drivers")
+    private List<DriverIdPair> drivers;
 }

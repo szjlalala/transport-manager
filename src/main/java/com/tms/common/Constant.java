@@ -1,6 +1,14 @@
 package com.tms.common;
 
 public class Constant {
+    /*NOT_PAID : "待支付",
+    NOT_DISTRIBUTED : "待分配",
+    NOT_RECEIVED : "待接货",
+    ONBOARD : "配送中",
+    COMPLETED : "送货完成",
+    CONFIRMED : "确认收货",
+    INVALID : "已取消",
+    SPLITTED : "已拆分"*/
 
     public enum OrderState {
         NOT_PAID, NOT_DISTRIBUTED, NOT_RECEIVED, ONBOARD, COMPLETED, CONFIRMED, INVALID,SPLITTED

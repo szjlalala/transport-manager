@@ -13,7 +13,7 @@ import java.io.Serializable;
 @ApiModel(value = "创建司机请求参数")
 public class DriverRequestDto implements Serializable {
     @ApiModelProperty(value = "id", name = "id", required = true)
-    private Long id;
+    private String id;
     @ApiModelProperty(value = "姓名", name = "name", required = true)
     private String name;
     @ApiModelProperty(value = "性别", name = "gender", required = true)

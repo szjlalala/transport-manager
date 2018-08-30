@@ -65,9 +65,9 @@ public class RabbitConsumer {
     @RabbitHandler
     @RabbitListener(queues = RabbitMqConfig.ROUTER_ORDER_QUEUE)
     public void routerReceive(DeliverOrder deliverOrder) {
-        Map<String, Long> result = routeService.autoAllocate(deliverOrder);
+        Map<String, Object> result = routeService.autoAllocate(deliverOrder);
         if (result != null && result.size() > 0) {
-            deliverOrderService.allocateVehicleAndDriver(deliverOrder.getDeliverOrderNo(), result.get("voyageId"), result.get("driverId"));
+            deliverOrderService.allocateVehicleAndDriver(deliverOrder.getDeliverOrderNo(), (long)result.get("voyageId"), (String) result.get("driverId"));
         }
         //TODO 如果自动分配没有结果，那么该订单该怎样？
     }

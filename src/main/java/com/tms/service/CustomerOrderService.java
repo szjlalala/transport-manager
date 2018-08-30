@@ -36,4 +36,6 @@ public interface CustomerOrderService {
     List<OrderResponseVo> queryOrderByPaymentId(Long id);
 
     PaymentResponseVo queryPaymentOrderByOrderNo(String customerOrderNo);
+
+    PaymentResponseVo queryPaymentByPaymentId(long paymentId);
 }

@@ -1,16 +1,20 @@
 package com.tms.controller;
 
 import com.tms.common.Results;
+import com.tms.controller.vo.request.DriverIdPair;
 import com.tms.controller.vo.request.VehicleRequestDto;
 import com.tms.controller.vo.request.QueryVehicleRequestVo;
 import com.tms.controller.vo.response.TraceResponseVo;
 import com.tms.controller.vo.response.VehicleResponseVo;
+import com.tms.model.Driver;
 import com.tms.service.DeliverOrderService;
+import com.tms.service.DriverService;
 import com.tms.service.VehicleService;
 import com.tms.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,10 +41,20 @@ public class VehicleController {
     @Autowired
     DeliverOrderService deliverOrderService;
 
+    @Autowired
+    DriverService driverService;
+
     @ApiOperation(value = "创建车辆", response = Results.class)
     @RequestMapping(method = RequestMethod.POST)
     public Results createVehicle(@ApiParam(name = "创建车辆参数", value = "传入json格式", required = true) @RequestBody VehicleRequestDto vehicleRequestDto) {
-        vehicleService.createVehicle(vehicleRequestDto);
+        List<Driver> drivers = new ArrayList<>();
+        for(DriverIdPair driverId : vehicleRequestDto.getDrivers()){
+            Driver driver = driverService.findDriver(driverId.getId());
+            if(driver != null)
+                drivers.add(driver);
+        }
+        vehicleService.createVehicle(vehicleRequestDto, drivers);
+
         return Results.setSuccessMessage(null);
     }
 
@@ -79,6 +94,14 @@ public class VehicleController {
                 start == null ? new Date(DateUtil.getTimesMonthMorning()) : start,
                 end == null ? new Date() : end);
         return Results.setSuccessMessage(traceList);
+    }
+
+    @ApiOperation(value = "根据运单请款选择候选车辆", response = Results.class)
+    @RequestMapping(value = "/candidate",method = RequestMethod.GET)
+    public Results querySituation(@RequestParam Long deliveryId,  @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page ){
+//        之前业务不明确,可以根据delivery的起点建立空间索引然后候选车辆排序,这里简单只做列表查询.
+        Page<VehicleResponseVo> voPage = vehicleService.queryVehicle(new QueryVehicleRequestVo(), buildPageRequest(page));
+        return Results.setSuccessMessage(voPage);
     }
 
 

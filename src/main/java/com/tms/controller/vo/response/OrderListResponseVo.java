@@ -6,6 +6,7 @@ import com.tms.model.CustomerOrder;
 import com.tms.model.Location;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -29,8 +30,10 @@ public class OrderListResponseVo implements Serializable {
     private LocationResponseVo from;
     @ApiModelProperty(value = "收货人", name = "to")
     private LocationResponseVo to;
-    @ApiModelProperty(value = "运单id", name = "id")
+    @ApiModelProperty(value = "订单id", name = "id")
     private String id;
+    @ApiModelProperty(value = "支付id", name = "id")
+    private String paymentd;
     @ApiModelProperty(value = "创建时间", name = "createTime")
     private Date createTime;
     @ApiModelProperty(value = "用户id", name = "customerId")
@@ -41,7 +44,8 @@ public class OrderListResponseVo implements Serializable {
         this.setFrom(customerOrder.getFrom());
         this.setTo(customerOrder.getTo());
         this.setId(customerOrder.getCustomerOrderNo());
-        this.setPayment(new Payment(customerOrder.getPayment().getPayPrice()));
+        //paymentId 和此order实际金额,不是payment的总金额
+        this.setPayment(new Payment(customerOrder.getPayment().getId(), customerOrder.getPayment().getNo(), customerOrder.getSubPayment().getPayPrice()));
     }
 
     public void setPayment(Payment payment) {
@@ -57,12 +61,12 @@ public class OrderListResponseVo implements Serializable {
     }
 
     @NoArgsConstructor
+    @AllArgsConstructor
     @Data
      class Payment {
         @ApiModelProperty(value = "订单列表显示金额", name = "payPrice")
+        private Long id;
+        private String no;
         private BigDecimal payPrice;
-        public Payment(BigDecimal payPrice) {
-            this.payPrice = payPrice;
-        }
     }
 }

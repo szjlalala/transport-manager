@@ -5,15 +5,15 @@ import com.tms.model.Driver;
 import com.tms.model.Vehicle;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
-import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Created by song on 2018/8/30.
+ */
 @Data
-@NoArgsConstructor
-public class VehicleResponseVo implements Serializable {
+public class VehicleCandidateResponseVo {
     @ApiModelProperty(value = "id", name = "id")
     private Long id;
     @ApiModelProperty(value = "车型", name = "vehicleType")
@@ -36,11 +36,12 @@ public class VehicleResponseVo implements Serializable {
     private String ownerPhone;
     @ApiModelProperty(value = "载重量", name = "loads")
     private Float loads;
-    @ApiModelProperty(value = "司机列表", name = "drivers")
-    private List<Driver> drivers;
+    @ApiModelProperty(value = "当班司机", name = "driver")
+    private DriverResponseVo driver;
 
-    public VehicleResponseVo(Vehicle vehicle) {
+    //TODO
+    public VehicleCandidateResponseVo(Vehicle vehicle) {
         BeanUtils.copyProperties(vehicle,this);
-        this.setDrivers(vehicle.getDriverList());
+//        this.setDrivers(vehicle.getDriverList());
     }
 }

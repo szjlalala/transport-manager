@@ -35,7 +35,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public Map<String,Long> autoAllocate(DeliverOrder deliverOrder) {
+    public Map<String,Object> autoAllocate(DeliverOrder deliverOrder) {
 
         //TODO 自动分配车和司机
         return null;

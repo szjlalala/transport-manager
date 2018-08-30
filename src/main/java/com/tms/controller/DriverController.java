@@ -36,7 +36,7 @@ public class DriverController {
     @RequestMapping(value = "/execute", method = RequestMethod.PUT)
     public Results executeDeliverOrder(@ApiParam(name = "订单号", required = true) String customerOrderNo,
                                        @ApiParam(name = "车辆编号", required = true) Long vehicleId,
-                                       @ApiParam(name = "司机编号", required = true) Long driverId) {
+                                       @ApiParam(name = "司机编号", required = true) String driverId) {
         deliverOrderService.allocateVehicleAndDriver(customerOrderNo, vehicleId, driverId);
         return Results.setSuccessMessage(null);
     }
@@ -50,7 +50,7 @@ public class DriverController {
 
     @ApiOperation(value = "更新司机", response = Results.class)
     @RequestMapping(value = "/{id}",method = RequestMethod.PUT)
-    public Results updateDriver(@ApiParam(name = "更新司机参数", value = "传入json格式", required = true)@PathVariable Long id, @RequestBody DriverRequestDto driverRequestDto) {
+    public Results updateDriver(@ApiParam(name = "更新司机参数", value = "传入json格式", required = true)@PathVariable String id, @RequestBody DriverRequestDto driverRequestDto) {
         driverRequestDto.setId(id);
         driverService.updateDriver(driverRequestDto);
         return Results.setSuccessMessage(null);
@@ -58,7 +58,7 @@ public class DriverController {
 
     @ApiOperation(value = "根据id查询司机", response = Results.class)
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public Results queryDriverById(@PathVariable Long id) {
+    public Results queryDriverById(@PathVariable String id) {
         return Results.setSuccessMessage(driverService.queryDriver(id));
     }
     @ApiOperation(value = "查询司机", response = Results.class)

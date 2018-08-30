@@ -34,7 +34,7 @@ public class DeliverOrderController {
     @RequestMapping(value = "/execute", method = RequestMethod.PUT)
     public Results executeDeliverOrder(@ApiParam(name = "订单号", required = true) String customerOrderNo,
                                        @ApiParam(name = "车辆编号", required = true) Long vehicleId,
-                                       @ApiParam(name = "司机编号", required = true) Long driverId) {
+                                       @ApiParam(name = "司机编号", required = true) String driverId) {
         deliverOrderService.allocateVehicleAndDriver(customerOrderNo, vehicleId, driverId);
         return Results.setSuccessMessage(null);
     }

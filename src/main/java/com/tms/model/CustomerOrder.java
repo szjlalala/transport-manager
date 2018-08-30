@@ -4,6 +4,7 @@ import com.tms.common.Constant;
 import com.tms.controller.vo.request.PostOrderDto;
 import com.tms.controller.vo.response.LocationResponseVo;
 import com.tms.util.IDGen;
+import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * Created by szj on 2017/12/5.
  */
 @Entity
+@Data
 public class CustomerOrder extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +25,8 @@ public class CustomerOrder extends BaseModel {
     @ManyToOne
     @JoinColumn
     private Payment payment;
+    @Embedded
+    private PostOrderDto.PaymentDto subPayment;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerOrder", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<Cargo> cargoes;
@@ -65,6 +69,10 @@ public class CustomerOrder extends BaseModel {
             domain.distance = orderDto.getDistance();
             domain.preInsert();
             domain.setPayment(payment);
+//            orderDto
+            BigDecimal payPrice = orderDto.getPayment().getDeliverPrice().add(orderDto.getPayment().getInsurancePrice());
+            orderDto.getPayment().setPayPrice(payPrice);
+            domain.setSubPayment(orderDto.getPayment());
             domains.add(domain);
         }
         return domains;
@@ -79,108 +87,4 @@ public class CustomerOrder extends BaseModel {
         return "C" + IDGen.nextId();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
-
-    public List<Cargo> getCargoes() {
-        return cargoes;
-    }
-
-    public void setCargoes(List<Cargo> cargoes) {
-        this.cargoes = cargoes;
-    }
-
-    public Location getFrom() {
-        return from;
-    }
-
-    public Location getTo() {
-        return to;
-    }
-
-    public void setFrom(Location from) {
-        this.from = from;
-    }
-
-
-    public void setTo(Location to) {
-        this.to = to;
-    }
-
-    public List<DeliverOrder> getDeliverOrders() {
-        return deliverOrders;
-    }
-
-    public void setDeliverOrders(List<DeliverOrder> deliverOrders) {
-        this.deliverOrders = deliverOrders;
-    }
-
-    public Constant.DeliverType getDeliverType() {
-        return deliverType;
-    }
-
-    public void setDeliverType(Constant.DeliverType deliverType) {
-        this.deliverType = deliverType;
-    }
-
-    public String getCustomerOrderNo() {
-        return customerOrderNo;
-    }
-
-    public void setCustomerOrderNo(String customerOrderNo) {
-        this.customerOrderNo = customerOrderNo;
-    }
-
-    public Double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Double distance) {
-        this.distance = distance;
-    }
-
-    public Constant.OrderState getState() {
-        return state;
-    }
-
-    public void setState(Constant.OrderState state) {
-        this.state = state;
-    }
-
-    public Constant.OrderSource getSource() {
-        return source;
-    }
-
-    public void setSource(Constant.OrderSource source) {
-        this.source = source;
-    }
-
-    public String getCustomerRemark() {
-        return customerRemark;
-    }
-
-    public void setCustomerRemark(String customerRemark) {
-        this.customerRemark = customerRemark;
-    }
-
-    public String getInnerRemark() {
-        return innerRemark;
-    }
-
-    public void setInnerRemark(String innerRemark) {
-        this.innerRemark = innerRemark;
-    }
 }

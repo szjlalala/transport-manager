@@ -3,6 +3,7 @@ package com.tms.service;
 import com.tms.controller.vo.request.DriverRequestDto;
 import com.tms.controller.vo.request.QueryDriverRequestVo;
 import com.tms.controller.vo.response.DriverResponseVo;
+import com.tms.model.Driver;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,5 +14,7 @@ public interface DriverService {
 
     Page<DriverResponseVo> queryDriver(QueryDriverRequestVo queryDriverRequestVo, Pageable page);
 
-    DriverResponseVo queryDriver(Long id);
+    DriverResponseVo queryDriver(String id);
+
+    Driver findDriver(String id);
 }

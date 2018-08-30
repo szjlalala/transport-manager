@@ -72,7 +72,7 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     }
 
     @Override
-    public DeliverOrder allocateVehicleAndDriver(String deliverOrderNo, Long voyageId, Long driverId) {
+    public DeliverOrder allocateVehicleAndDriver(String deliverOrderNo, Long voyageId, String driverId) {
         DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
         if (deliverOrder == null) {
             throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
