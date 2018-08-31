@@ -1,12 +1,16 @@
 package com.tms.controller;
 
+import com.tms.common.Constant;
 import com.tms.common.Results;
 import com.tms.controller.vo.request.DriverIdPair;
 import com.tms.controller.vo.request.VehicleRequestDto;
 import com.tms.controller.vo.request.QueryVehicleRequestVo;
 import com.tms.controller.vo.response.TraceResponseVo;
+import com.tms.controller.vo.response.VehicleCandidateResponseVo;
 import com.tms.controller.vo.response.VehicleResponseVo;
+import com.tms.model.AxisPair;
 import com.tms.model.Driver;
+import com.tms.model.Vehicle;
 import com.tms.service.DeliverOrderService;
 import com.tms.service.DriverService;
 import com.tms.service.VehicleService;
@@ -28,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.tms.util.PageRequestBuilder.buildPageRequest;
 
@@ -59,8 +64,9 @@ public class VehicleController {
     }
 
     @ApiOperation(value = "更新车辆", response = Results.class)
-    @RequestMapping(method = RequestMethod.PUT)
-    public Results updateVehicle(@ApiParam(name = "更新车辆参数", value = "传入json格式", required = true) @RequestBody VehicleRequestDto vehicleRequestDto) {
+    @RequestMapping(value = "/{id}",method = RequestMethod.PUT)
+    public Results updateVehicle(@ApiParam(name = "更新车辆参数", value = "传入json格式", required = true) @PathVariable long id, @RequestBody VehicleRequestDto vehicleRequestDto) {
+        vehicleRequestDto.setId(id);
         vehicleService.updateVehicle(vehicleRequestDto);
         return Results.setSuccessMessage(null);
     }
@@ -99,9 +105,19 @@ public class VehicleController {
     @ApiOperation(value = "根据运单请款选择候选车辆", response = Results.class)
     @RequestMapping(value = "/candidate",method = RequestMethod.GET)
     public Results querySituation(@RequestParam Long deliveryId,  @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page ){
-//        之前业务不明确,可以根据delivery的起点建立空间索引然后候选车辆排序,这里简单只做列表查询.
-        Page<VehicleResponseVo> voPage = vehicleService.queryVehicle(new QueryVehicleRequestVo(), buildPageRequest(page));
-        return Results.setSuccessMessage(voPage);
+//        之前业务不明确,可以根据delivery的起点建立空间索引然后候选车辆排序
+
+//      目前逻辑,查询现在的在岗车辆
+        QueryVehicleRequestVo queryVehicleRequestVo = new QueryVehicleRequestVo();
+        queryVehicleRequestVo.setState(Constant.VehicleState.ON);
+        Page<VehicleResponseVo> voPage = vehicleService.queryVehicle(queryVehicleRequestVo, buildPageRequest(page));
+        //获取车辆行驶轨迹 可设置时间起始点
+        Page<VehicleCandidateResponseVo> vos = voPage.map(vehicleResponseVo -> {
+            List<TraceResponseVo> traceList = vehicleService.queryTrace(vehicleResponseVo.getId(), null, null);
+            List<AxisPair> track = traceList.stream().map(traceResponseVo ->  new AxisPair()).collect(Collectors.toList());
+            return new VehicleCandidateResponseVo(vehicleResponseVo, track);
+        });
+        return Results.setSuccessMessage(vos);
     }
 
 

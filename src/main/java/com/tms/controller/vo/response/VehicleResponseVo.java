@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -37,10 +38,10 @@ public class VehicleResponseVo implements Serializable {
     @ApiModelProperty(value = "载重量", name = "loads")
     private Float loads;
     @ApiModelProperty(value = "司机列表", name = "drivers")
-    private List<Driver> drivers;
+    private List<DriverResponseVo> drivers;
 
     public VehicleResponseVo(Vehicle vehicle) {
         BeanUtils.copyProperties(vehicle,this);
-        this.setDrivers(vehicle.getDriverList());
+        this.setDrivers(vehicle.getDriverList().stream().map(driver -> new DriverResponseVo(driver)).collect(Collectors.toList()));
     }
 }

@@ -3,12 +3,19 @@ package com.tms.model;
 
 import com.tms.common.Constant;
 import com.tms.util.IDGen;
+import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import java.nio.DoubleBuffer;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
+@Data
 public class DeliverOrder extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +39,10 @@ public class DeliverOrder extends BaseModel {
     @JoinColumn(name = "customer_order_id")
     private CustomerOrder customerOrder;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "deliverOrder", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<DeliverCargo> cargoes;
+
     private Constant.OrderState deliverOrderState;
 
     private Integer sequence;
@@ -44,107 +55,14 @@ public class DeliverOrder extends BaseModel {
         this.to = customerOrder.getTo();
         this.customerOrder = customerOrder;
         this.deliverOrderState = customerOrder.getState();
+        List<DeliverCargo> deliveryCargoes = customerOrder.getCargoes().stream().map(cargo -> {
+            DeliverCargo cargo1 = new DeliverCargo();
+            BeanUtils.copyProperties(cargo, cargo1, "customerOrder");
+            cargo1.setDeliverOrder(this);
+            return cargo1;
+        }).collect(Collectors.toList());
+        this.setCargoes(deliveryCargoes);
         preInsert();
-    }
-
-    public Double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Double distance) {
-        this.distance = distance;
-    }
-
-    public String getDeliverOrderNo() {
-        return deliverOrderNo;
-    }
-
-    public void setDeliverOrderNo(String deliverOrderNo) {
-        this.deliverOrderNo = deliverOrderNo;
-    }
-
-    public CustomerOrder getCustomerOrder() {
-        return customerOrder;
-    }
-
-    public void setCustomerOrder(CustomerOrder customerOrder) {
-        this.customerOrder = customerOrder;
-    }
-
-    public DeliverOrder() {
-    }
-
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Location getFrom() {
-        return from;
-    }
-
-    public void setFrom(Location from) {
-        this.from = from;
-    }
-
-    public Location getTo() {
-        return to;
-    }
-
-    public void setTo(Location to) {
-        this.to = to;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-
-    public Driver getDriver() {
-        return driver;
-    }
-
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public Constant.OrderState getDeliverOrderState() {
-        return deliverOrderState;
-    }
-
-    public void setDeliverOrderState(Constant.OrderState deliverOrderState) {
-        this.deliverOrderState = deliverOrderState;
     }
 
     private String genOrderNo() {

@@ -87,4 +87,8 @@ public class CustomerOrder extends BaseModel {
         return "C" + IDGen.nextId();
     }
 
+    public String toString(){
+        return this.getCustomerOrderNo();
+    }
+
 }

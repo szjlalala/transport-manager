@@ -33,7 +33,7 @@ public class Constant {
     }
 
     public enum AttendanceType {
-        ON, OFF
+        OFF, ON
     }
 
     public enum CargoType {
@@ -74,10 +74,10 @@ public class Constant {
     }
 
     public enum DriverState {
-        ON, OFF
+        OFF, ON
     }
     public enum VehicleState {
-        ON, OFF
+        OFF, ON, AVAILABLE, BUSY, BROKEN
     }
 
     public enum PayChannel {

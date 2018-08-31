@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 @NoArgsConstructor
 @Data
 public class DeliverOrderResponseVo implements Serializable {
@@ -34,7 +37,8 @@ public class DeliverOrderResponseVo implements Serializable {
     private Long distance;
     @ApiModelProperty(value = "用户订单", name = "customerOrder")
     private OrderListResponseVo customerOrder;
-
+    @ApiModelProperty(value = "货物", name = "cargoes")
+    private List<CargoResponseVo> cargoes;
 
     public DeliverOrderResponseVo(DeliverOrder deliverOrder) {
         BeanUtils.copyProperties(deliverOrder,this);
@@ -44,7 +48,7 @@ public class DeliverOrderResponseVo implements Serializable {
         this.setVehicle(deliverOrder.getVehicle());
         this.setCustomerOrder(deliverOrder.getCustomerOrder());
         this.setDriver(deliverOrder.getDriver());
-
+        this.setCargoes(deliverOrder.getCargoes());
     }
 
     private void setDriver(Driver driver) {
@@ -64,6 +68,16 @@ public class DeliverOrderResponseVo implements Serializable {
         if (vehicle != null)
             BeanUtils.copyProperties(vehicle, vehicleResponseVo);
         this.vehicle = vehicleResponseVo;
+    }
+
+    public void setCargoes(List<DeliverCargo> cargoes) {
+        List<CargoResponseVo> temp = new ArrayList<>();
+        cargoes.forEach(cargo -> {
+            CargoResponseVo cargoResponseVo = new CargoResponseVo();
+            BeanUtils.copyProperties(cargo, cargoResponseVo);
+            temp.add(cargoResponseVo);
+        });
+        this.cargoes = temp;
     }
 
     public void setFrom(Location from) {

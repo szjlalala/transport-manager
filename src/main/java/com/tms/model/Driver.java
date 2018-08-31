@@ -27,7 +27,7 @@ public class Driver extends BaseModel {
     }
 
     public Driver(DriverRequestDto driverRequestDto) {
-        BeanUtils.copyProperties(driverRequestDto,this,"gender","id");
+        BeanUtils.copyProperties(driverRequestDto,this,"gender");
         this.gender = Constant.Gender.getInstance(driverRequestDto.getGender());
     }
 

@@ -1,10 +1,12 @@
 package com.tms.controller.vo.response;
 
 import com.tms.common.Constant;
+import com.tms.model.AxisPair;
 import com.tms.model.Driver;
 import com.tms.model.Vehicle;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
  * Created by song on 2018/8/30.
  */
 @Data
+@NoArgsConstructor
 public class VehicleCandidateResponseVo {
     @ApiModelProperty(value = "id", name = "id")
     private Long id;
@@ -38,10 +41,11 @@ public class VehicleCandidateResponseVo {
     private Float loads;
     @ApiModelProperty(value = "当班司机", name = "driver")
     private DriverResponseVo driver;
-
+    private List<AxisPair> track;
     //TODO
-    public VehicleCandidateResponseVo(Vehicle vehicle) {
+    public VehicleCandidateResponseVo(VehicleResponseVo vehicle, List<AxisPair> track) {
         BeanUtils.copyProperties(vehicle,this);
-//        this.setDrivers(vehicle.getDriverList());
+        this.setDriver(vehicle.getDrivers().size()==0?null:vehicle.getDrivers().get(0));
+        this.setTrack(track);
     }
 }

@@ -44,6 +44,8 @@ public class DriverController {
     @ApiOperation(value = "创建司机", response = Results.class)
     @RequestMapping(method = RequestMethod.POST)
     public Results createDriver(@ApiParam(name = "创建司机参数", value = "传入json格式", required = true) @RequestBody DriverRequestDto driverRequestDto) {
+        //用驾照编号作为Id
+        driverRequestDto.setDrivingLicense(driverRequestDto.getId());
         driverService.createDriver(driverRequestDto);
         return Results.setSuccessMessage(null);
     }

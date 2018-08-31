@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Data
 public class DriverResponseVo implements Serializable {
     @ApiModelProperty(value = "司机id", name = "id")
-    private Long id;
+    private String id;
     @ApiModelProperty(value = "姓名", name = "name", required = true)
     private String name;
     @ApiModelProperty(value = "性别", name = "gender", required = true)

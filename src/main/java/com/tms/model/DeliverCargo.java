@@ -13,7 +13,7 @@ import java.util.List;
  * Created by szj on 2017/12/5.
  */
 @Entity
-public class Cargo extends BaseModel {
+public class DeliverCargo extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,21 +26,13 @@ public class Cargo extends BaseModel {
     private String remark;//备注
     @ManyToOne
     @JoinColumn
-    private CustomerOrder customerOrder;
+    private DeliverOrder deliverOrder;
 
-    public Cargo() {
+    public DeliverCargo() {
     }
 
-    public Cargo(PostOrderDto.CargoDto cargoDto) {
+    public DeliverCargo(PostOrderDto.CargoDto cargoDto) {
         BeanUtils.copyProperties(cargoDto, this);
-    }
-
-    public CustomerOrder getCustomerOrder() {
-        return customerOrder;
-    }
-
-    public void setCustomerOrder(CustomerOrder customerOrder) {
-        this.customerOrder = customerOrder;
     }
 
     public Constant.CargoType getCargoType() {
@@ -107,12 +99,20 @@ public class Cargo extends BaseModel {
         this.remark = remark;
     }
 
-    public static List<Cargo> formatCargoes(List<PostOrderDto.CargoDto> cargoes, CustomerOrder customerOrder) {
+    public DeliverOrder getDeliverOrder() {
+        return deliverOrder;
+    }
 
-        List<Cargo> domainList = new ArrayList<>();
+    public void setDeliverOrder(DeliverOrder deliverOrder) {
+        this.deliverOrder = deliverOrder;
+    }
+
+    public static List<DeliverCargo> formatCargoes(List<PostOrderDto.CargoDto> cargoes, DeliverOrder deliverOrder) {
+
+        List<DeliverCargo> domainList = new ArrayList<>();
         cargoes.forEach(cargoDto -> {
-            Cargo cargo = new Cargo(cargoDto);
-            cargo.setCustomerOrder(customerOrder);
+            DeliverCargo cargo = new DeliverCargo(cargoDto);
+            cargo.setDeliverOrder(deliverOrder);
             domainList.add(cargo);
         });
         return domainList;
