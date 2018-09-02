@@ -35,6 +35,7 @@ public class Vehicle extends BaseModel {
     private String owner;//车主
     private String ownerPhone;//车主电话
     private Float loads;//载重量
+    private Float remainLoads;//剩余载重
     @OneToMany
     private List<Driver> driverList;
 

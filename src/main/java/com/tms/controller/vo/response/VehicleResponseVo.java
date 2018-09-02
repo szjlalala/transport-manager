@@ -37,6 +37,8 @@ public class VehicleResponseVo implements Serializable {
     private String ownerPhone;
     @ApiModelProperty(value = "载重量", name = "loads")
     private Float loads;
+    @ApiModelProperty(value = "剩余载重量", name = "remainLoads")
+    private Float remainLoads;
     @ApiModelProperty(value = "司机列表", name = "drivers")
     private List<DriverResponseVo> drivers;
 

@@ -29,6 +29,7 @@ import static com.tms.util.PageRequestBuilder.buildPageRequest;
 
 @Api(value = "/orders", description = "用户订单API")
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1/orders")
 public class CustomerOrderController {
     @Autowired

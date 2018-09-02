@@ -10,6 +10,7 @@ import org.hibernate.annotations.FetchMode;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.nio.DoubleBuffer;
 import java.util.Date;
 import java.util.List;
@@ -23,14 +24,17 @@ public class DeliverOrder extends BaseModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String deliverOrderNo;//运单No
+    BigDecimal deliverPrice;//运费
     @OneToOne
     @JoinColumn
     private Location from;
     @OneToOne
     @JoinColumn
     private Location to;
-    private Date startTime;
-    private Date endTime;
+    private Date distributTime;
+    private Date loadTime;
+    private Date arriveTime;
+
     @OneToOne
     @JoinColumn
     private Driver driver;
@@ -57,6 +61,7 @@ public class DeliverOrder extends BaseModel {
         this.to = customerOrder.getTo();
         this.customerOrder = customerOrder;
         this.deliverOrderState = customerOrder.getState();
+        this.deliverPrice = customerOrder.getPayment().getPayPrice();
         List<DeliverCargo> deliveryCargoes = customerOrder.getCargoes().stream().map(cargo -> {
             DeliverCargo cargo1 = new DeliverCargo();
             BeanUtils.copyProperties(cargo, cargo1, "id");

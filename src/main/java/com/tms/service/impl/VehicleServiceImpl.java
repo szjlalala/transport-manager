@@ -12,14 +12,18 @@ import com.tms.repository.SysCodeRepository;
 import com.tms.repository.TraceRepository;
 import com.tms.repository.VehicleRepository;
 import com.tms.service.VehicleService;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+//import org.geotools.geometry.jts.JTSFactoryFinder;
+
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -34,10 +38,14 @@ public class VehicleServiceImpl implements VehicleService {
     private SysCodeRepository sysCodeRepository;
     @Autowired
     private TraceRepository traceRepository;
+//    private GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory( null );
+
+
 
     @Override
     public void createVehicle(VehicleRequestDto vehicleRequestDto, List<Driver> drivers) {
         Vehicle vehicle = new Vehicle(vehicleRequestDto);
+        vehicle.setRemainLoads(vehicle.getLoads());
         vehicle.setDriverList(drivers);
 //        vehicle.setVehicleType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleType()));
 //        vehicle.setVehicleSubType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleSubType()));
@@ -110,8 +118,8 @@ public class VehicleServiceImpl implements VehicleService {
         List traces = traceRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicate = new ArrayList<>();
             predicate.add(criteriaBuilder.equal(root.join("vehicle").get("id"), vehicleId));
-            predicate.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class), start));
-            predicate.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class), start));
+//            predicate.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class), start));
+//            predicate.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class), end));
             return criteriaQuery.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
         });
         List<TraceResponseVo> responseVos = new ArrayList<>();
@@ -135,7 +143,10 @@ public class VehicleServiceImpl implements VehicleService {
         Vehicle vehicle = vehicleRepository.findOne(vehicleTrackRequestDto.getId());
         Trace trace = new Trace();
         trace.setVehicle(vehicle);
-        trace.setGeo(new Point(vehicleTrackRequestDto.getX(), vehicleTrackRequestDto.getY()));
+        Point point = new GeometryFactory().createPoint(new Coordinate( vehicleTrackRequestDto.getX(), vehicleTrackRequestDto.getY()));
+//        Point point = geometryFactory.createPoint( new Coordinate( vehicleTrackRequestDto.getX(), vehicleTrackRequestDto.getY() ) );
+//        trace.setGeo(new Point(vehicleTrackRequestDto.getX(), vehicleTrackRequestDto.getY()));
+        trace.setGeo(point);
         trace.preInsert();
         traceRepository.save(trace);
     }

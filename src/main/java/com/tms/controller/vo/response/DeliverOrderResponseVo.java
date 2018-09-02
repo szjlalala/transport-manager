@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,10 +22,19 @@ public class DeliverOrderResponseVo implements Serializable {
     private LocationResponseVo from;
     @ApiModelProperty(value = "结束地址", name = "to")
     private LocationResponseVo to;
-    @ApiModelProperty(value = "开始时间", name = "startTime")
+    /*@ApiModelProperty(value = "开始时间", name = "startTime")
     private Date startTime;
     @ApiModelProperty(value = "结束时间", name = "endTime")
-    private Date endTime;
+    private Date endTime;*/
+    @ApiModelProperty(value = "开始时间", name = "distributTime")
+    private Date distributTime;
+    @ApiModelProperty(value = "配送时间", name = "loadTime")
+    private Date loadTime;
+    @ApiModelProperty(value = "结束时间", name = "arriveTime")
+    private Date arriveTime;
+
+    @ApiModelProperty(value = "运单运费", name = "deliverPrice")
+    BigDecimal deliverPrice;//运费
     @ApiModelProperty(value = "司机", name = "driver")
     private DriverResponseVo driver;
     @ApiModelProperty(value = "车辆", name = "vehicle")
@@ -39,6 +49,8 @@ public class DeliverOrderResponseVo implements Serializable {
     private OrderListResponseVo customerOrder;
     @ApiModelProperty(value = "货物", name = "cargoes")
     private List<CargoResponseVo> cargoes;
+    @ApiModelProperty(value = "创建时间", name = "createTime")
+    private Date createTime;
 
     public DeliverOrderResponseVo(DeliverOrder deliverOrder) {
         BeanUtils.copyProperties(deliverOrder,this);

@@ -121,7 +121,7 @@ public class VehicleController {
         //获取车辆行驶轨迹 可设置时间起始点
         Page<VehicleCandidateResponseVo> vos = voPage.map(vehicleResponseVo -> {
             List<TraceResponseVo> traceList = vehicleService.queryTrace(vehicleResponseVo.getId(), null, null);
-            List<AxisPair> track = traceList.stream().map(traceResponseVo ->  new AxisPair()).collect(Collectors.toList());
+            List<AxisPair> track = traceList.stream().map(traceResponseVo ->  new AxisPair(traceResponseVo)).collect(Collectors.toList());
             return new VehicleCandidateResponseVo(vehicleResponseVo, track);
         });
         return Results.setSuccessMessage(vos);

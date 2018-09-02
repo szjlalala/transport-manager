@@ -39,6 +39,8 @@ public class VehicleCandidateResponseVo {
     private String ownerPhone;
     @ApiModelProperty(value = "载重量", name = "loads")
     private Float loads;
+    @ApiModelProperty(value = "剩余载重量", name = "remainLoads")
+    private Float remainLoads;
     @ApiModelProperty(value = "当班司机", name = "driver")
     private DriverResponseVo driver;
     private List<AxisPair> track;

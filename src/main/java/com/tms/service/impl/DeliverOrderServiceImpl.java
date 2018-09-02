@@ -86,11 +86,19 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         if (vehicle == null) {
             throw new BizException(Results.ErrorCode.VEHICLE_NOT_EXIST);
         }
+        Float remainLoads = vehicle.getRemainLoads();
+        Float cargoWeight = new Float(deliverOrder.getCargoes().get(0).getVolume().toPlainString());
+        if(cargoWeight.compareTo(remainLoads) == -1){
+            vehicle.setRemainLoads(new Float(0.0));
+        }else{
+            vehicle.setRemainLoads(remainLoads-cargoWeight);
+        }
         deliverOrder.setDriver(driver);
         deliverOrder.setVehicle(vehicle);
         deliverOrder.preUpdate();
         deliverOrder.setDeliverOrderState(Constant.OrderState.NOT_RECEIVED);
-        deliverOrder.setStartTime(new Date());
+        deliverOrder.getCustomerOrder().setState(Constant.OrderState.NOT_RECEIVED);
+        deliverOrder.setDistributTime(new Date());
         deliverOrderRepository.save(deliverOrder);
         customerOrderService.startCustomerOrderDetail(deliverOrder.getCustomerOrder().getCustomerOrderNo());
         return deliverOrder;
@@ -103,6 +111,19 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
             throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
         }
         deliverOrder.setDeliverOrderState(Constant.OrderState.ONBOARD);
+        deliverOrder.getCustomerOrder().setState(Constant.OrderState.ONBOARD);
+        deliverOrder.preUpdate();
+        deliverOrderRepository.save(deliverOrder);
+    }
+
+    @Override
+    public void confirmDeliver(String deliverOrderNo) {
+        DeliverOrder deliverOrder = deliverOrderRepository.findByDeliverOrderNo(deliverOrderNo);
+        if (deliverOrder == null) {
+            throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
+        }
+        deliverOrder.setDeliverOrderState(Constant.OrderState.CONFIRMED);
+        deliverOrder.getCustomerOrder().setState(Constant.OrderState.CONFIRMED);
         deliverOrder.preUpdate();
         deliverOrderRepository.save(deliverOrder);
     }
@@ -115,7 +136,8 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
             throw new BizException(Results.ErrorCode.ORDER_NOT_EXIST);
         }
         deliverOrder.setDeliverOrderState(deliverOrder.getCustomerOrder().getPayment().getPayType().equals(Constant.PayType.SENDER_PAY) ? Constant.OrderState.COMPLETED : Constant.OrderState.NOT_PAID);
-        deliverOrder.setEndTime(new Date());
+        deliverOrder.getCustomerOrder().setState(Constant.OrderState.COMPLETED);
+        deliverOrder.setArriveTime(new Date());
         deliverOrder.preUpdate();
         deliverOrderRepository.save(deliverOrder);
         boolean isComplete = true;
@@ -181,4 +203,5 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
     public DeliverOrder queryDeliverOrderByNo(String number) {
         return deliverOrderRepository.findByDeliverOrderNo(number);
     }
+
 }

@@ -12,10 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -25,13 +22,14 @@ import static com.tms.util.PageRequestBuilder.buildPageRequest;
 
 @Api(value = "/api/v1/deliveries", description = "运单API")
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1/deliveries")
 public class DeliverOrderController {
     @Autowired
     private DeliverOrderService deliverOrderService;
 
     @ApiOperation(value = "分配运单", response = Results.class)
-    @RequestMapping(value = "/assignTo", method = RequestMethod.PUT)
+    @RequestMapping(value = "/assignTo", method = RequestMethod.POST)
     public Results executeDeliverOrder(@ApiParam(name = "运单号", required = true) String deliverOrderNo,
                                        @ApiParam(name = "车辆编号", required = true) Long vehicleId,
                                        @ApiParam(name = "司机编号", required = true) String driverId) {
@@ -39,7 +37,7 @@ public class DeliverOrderController {
         return Results.setSuccessMessage(null);
     }
 
-    @ApiOperation(value = "开始运单", response = Results.class)
+    @ApiOperation(value = "开始运单,即确认接货", response = Results.class)
     @RequestMapping(value = "/start/{deliverOrderNo}", method = RequestMethod.PUT)
     public Results startOrder(@ApiParam(name = "运单号", required = true) @PathVariable String deliverOrderNo) {
         deliverOrderService.startDeliver(deliverOrderNo);
