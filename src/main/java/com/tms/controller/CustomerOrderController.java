@@ -52,7 +52,8 @@ public class CustomerOrderController {
 
     @ApiOperation(value = "完成支付", response = Results.class)
     @RequestMapping(value = "/paid", method = RequestMethod.POST)
-    public Results paid(@RequestParam Long paymentId) {
+    public Results paid(@RequestParam(value = "id") Long paymentId) {
+        //by payment id
         customerOrderService.paid(paymentId);
         return Results.setSuccessMessage(null);
     }
@@ -64,7 +65,7 @@ public class CustomerOrderController {
         return Results.setSuccessMessage(payment);
     }
     @ApiOperation(value = "根据用户订单号查询支付信息", response = Results.class)
-    @RequestMapping(value = "/payment/paymentId", method = RequestMethod.GET)
+    @RequestMapping(value = "/payment", method = RequestMethod.GET)
     public Results queryPaymentOrderByOrderNo(@RequestParam long paymentId) {
         PaymentResponseVo payment = customerOrderService.queryPaymentByPaymentId(paymentId);
         return Results.setSuccessMessage(payment);

@@ -1,11 +1,13 @@
 package com.tms.model;
 
 
+import lombok.Data;
 import org.springframework.data.geo.Point;
 
 import javax.persistence.*;
 
 @Entity
+@Data
 public class Trace extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,43 +17,8 @@ public class Trace extends BaseModel {
     @OneToOne
     @JoinColumn
     private Vehicle vehicle;
-    @OneToOne
+    /*@OneToOne
     @JoinColumn
-    private Driver driver;
+    private Driver driver;*/
 
-
-    public Trace() {
-    }
-
-    public Point getGeo() {
-        return geo;
-    }
-
-    public void setGeo(Point geo) {
-        this.geo = geo;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public Driver getDriver() {
-        return driver;
-    }
-
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

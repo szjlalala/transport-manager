@@ -221,7 +221,8 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             paymentItem.setPayment(payment);
             paymentItem.setPayPrice(payment.getPayPrice());
             paymentItem.setPayState(Constant.PayState.COMPLETE);
-            paymentItem.setTradeNo("1234");
+            // 追踪编号,暂无,需要与三方支付对接 与paymentId一致
+            paymentItem.setTradeNo(""+id);
             for (CustomerOrder customerOrder : payment.getCustomerOrders()) {
                 customerOrder.setState(payment.getPayType().equals(Constant.PayType.SENDER_PAY) ? Constant.OrderState.NOT_DISTRIBUTED : Constant.OrderState.COMPLETED);
                 customerOrderRepository.save(customerOrder);

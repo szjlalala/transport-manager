@@ -32,8 +32,6 @@ public class OrderListResponseVo implements Serializable {
     private LocationResponseVo to;
     @ApiModelProperty(value = "订单id", name = "id")
     private String id;
-    @ApiModelProperty(value = "支付id", name = "id")
-    private String paymentd;
     @ApiModelProperty(value = "创建时间", name = "createTime")
     private Date createTime;
     @ApiModelProperty(value = "用户id", name = "customerId")

@@ -2,9 +2,11 @@ package com.tms.service.impl;
 
 import com.tms.controller.vo.request.VehicleRequestDto;
 import com.tms.controller.vo.request.QueryVehicleRequestVo;
+import com.tms.controller.vo.request.VehicleTrackRequestDto;
 import com.tms.controller.vo.response.TraceResponseVo;
 import com.tms.controller.vo.response.VehicleResponseVo;
 import com.tms.model.Driver;
+import com.tms.model.Trace;
 import com.tms.model.Vehicle;
 import com.tms.repository.SysCodeRepository;
 import com.tms.repository.TraceRepository;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -120,8 +123,20 @@ public class VehicleServiceImpl implements VehicleService {
         return responseVos;
     }
 
+
+
     @Override
     public VehicleResponseVo queryVehicle(Long id) {
         return new VehicleResponseVo(vehicleRepository.findOne(id));
+    }
+
+    @Override
+    public void pushTrace(VehicleTrackRequestDto vehicleTrackRequestDto) {
+        Vehicle vehicle = vehicleRepository.findOne(vehicleTrackRequestDto.getId());
+        Trace trace = new Trace();
+        trace.setVehicle(vehicle);
+        trace.setGeo(new Point(vehicleTrackRequestDto.getX(), vehicleTrackRequestDto.getY()));
+        trace.preInsert();
+        traceRepository.save(trace);
     }
 }

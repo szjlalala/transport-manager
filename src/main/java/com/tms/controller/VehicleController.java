@@ -5,6 +5,7 @@ import com.tms.common.Results;
 import com.tms.controller.vo.request.DriverIdPair;
 import com.tms.controller.vo.request.VehicleRequestDto;
 import com.tms.controller.vo.request.QueryVehicleRequestVo;
+import com.tms.controller.vo.request.VehicleTrackRequestDto;
 import com.tms.controller.vo.response.TraceResponseVo;
 import com.tms.controller.vo.response.VehicleCandidateResponseVo;
 import com.tms.controller.vo.response.VehicleResponseVo;
@@ -91,6 +92,12 @@ public class VehicleController {
         VehicleResponseVo vehicleResponseVo = vehicleService.queryVehicle(id);
         return Results.setSuccessMessage(vehicleResponseVo);
     }
+    @ApiOperation(value = "添加车辆位置", response = Results.class)
+    @RequestMapping(value = "/trace", method = RequestMethod.POST)
+    public Results pushTrace(@ApiParam(name = "添加车辆位置", value = "传入json格式", required = true) @RequestBody VehicleTrackRequestDto vehicleTrackRequestDto) {
+        vehicleService.pushTrace(vehicleTrackRequestDto);
+        return Results.setSuccessMessage(null);
+    }
 
     @ApiOperation(value = "查询车辆轨迹", response = Results.class)
     @RequestMapping(value = "/trace/{vehicleId}", method = RequestMethod.GET)
@@ -104,7 +111,7 @@ public class VehicleController {
 
     @ApiOperation(value = "根据运单请款选择候选车辆", response = Results.class)
     @RequestMapping(value = "/candidate",method = RequestMethod.GET)
-    public Results querySituation(@RequestParam Long deliveryId,  @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page ){
+    public Results querySituation(@RequestParam(value = "id") String deliveryNo,  @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page ){
 //        之前业务不明确,可以根据delivery的起点建立空间索引然后候选车辆排序
 
 //      目前逻辑,查询现在的在岗车辆

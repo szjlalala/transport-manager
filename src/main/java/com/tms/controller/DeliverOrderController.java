@@ -31,26 +31,32 @@ public class DeliverOrderController {
     private DeliverOrderService deliverOrderService;
 
     @ApiOperation(value = "分配运单", response = Results.class)
-    @RequestMapping(value = "/execute", method = RequestMethod.PUT)
-    public Results executeDeliverOrder(@ApiParam(name = "订单号", required = true) String customerOrderNo,
+    @RequestMapping(value = "/assignTo", method = RequestMethod.PUT)
+    public Results executeDeliverOrder(@ApiParam(name = "运单号", required = true) String deliverOrderNo,
                                        @ApiParam(name = "车辆编号", required = true) Long vehicleId,
                                        @ApiParam(name = "司机编号", required = true) String driverId) {
-        deliverOrderService.allocateVehicleAndDriver(customerOrderNo, vehicleId, driverId);
+        deliverOrderService.allocateVehicleAndDriver(deliverOrderNo, vehicleId, driverId);
         return Results.setSuccessMessage(null);
     }
 
     @ApiOperation(value = "开始运单", response = Results.class)
-    @RequestMapping(value = "/start/{customerOrderNo}", method = RequestMethod.PUT)
-    public Results startOrder(@ApiParam(name = "订单号", required = true) @PathVariable String customerOrderNo) {
-        deliverOrderService.startDeliver(customerOrderNo);
+    @RequestMapping(value = "/start/{deliverOrderNo}", method = RequestMethod.PUT)
+    public Results startOrder(@ApiParam(name = "运单号", required = true) @PathVariable String deliverOrderNo) {
+        deliverOrderService.startDeliver(deliverOrderNo);
         return Results.setSuccessMessage(null);
     }
 
     @ApiOperation(value = "完成运单", response = Results.class)
-    @RequestMapping(value = "/complete/{customerOrderNo}", method = RequestMethod.PUT)
-    public Results completeOrder(@ApiParam(name = "订单号", required = true) @PathVariable String customerOrderNo) {
-        deliverOrderService.completeDeliver(customerOrderNo);
+    @RequestMapping(value = "/complete/{deliverOrderNo}", method = RequestMethod.PUT)
+    public Results completeOrder(@ApiParam(name = "运单号", required = true) @PathVariable String deliverOrderNo) {
+        deliverOrderService.completeDeliver(deliverOrderNo);
         return Results.setSuccessMessage(null);
+    }
+
+    @ApiOperation(value = "运单详情页空数据处理", response = Results.class)
+    @RequestMapping(value = "/:id", method = RequestMethod.GET)
+    public Results dead() {
+        return Results.setSuccessMessage("");
     }
 
     @ApiOperation(value = "查询运单", response = Results.class)

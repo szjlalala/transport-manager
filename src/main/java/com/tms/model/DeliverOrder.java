@@ -4,6 +4,7 @@ package com.tms.model;
 import com.tms.common.Constant;
 import com.tms.util.IDGen;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class DeliverOrder extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +59,7 @@ public class DeliverOrder extends BaseModel {
         this.deliverOrderState = customerOrder.getState();
         List<DeliverCargo> deliveryCargoes = customerOrder.getCargoes().stream().map(cargo -> {
             DeliverCargo cargo1 = new DeliverCargo();
-            BeanUtils.copyProperties(cargo, cargo1, "customerOrder");
+            BeanUtils.copyProperties(cargo, cargo1, "id");
             cargo1.setDeliverOrder(this);
             return cargo1;
         }).collect(Collectors.toList());
