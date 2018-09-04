@@ -4,6 +4,7 @@ import com.tms.common.BizException;
 import com.tms.common.Constant;
 import com.tms.common.Results;
 import com.tms.controller.vo.request.QueryDeliverOrderRequestVo;
+import com.tms.controller.vo.request.SplitDto;
 import com.tms.controller.vo.response.DeliverOrderResponseVo;
 import com.tms.model.*;
 import com.tms.repository.DeliverOrderRepository;
@@ -14,6 +15,8 @@ import com.tms.service.CustomerOrderService;
 import com.tms.service.DeliverOrderService;
 import com.tms.service.MQProducer;
 import com.tms.service.RouteService;
+import com.tms.util.IDGen;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
@@ -25,6 +28,7 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DeliverOrderServiceImpl implements DeliverOrderService {
@@ -87,8 +91,9 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
             throw new BizException(Results.ErrorCode.VEHICLE_NOT_EXIST);
         }
         Float remainLoads = vehicle.getRemainLoads();
-        Float cargoWeight = new Float(deliverOrder.getCargoes().get(0).getVolume().toPlainString());
-        if(cargoWeight.compareTo(remainLoads) == -1){
+        Float cargoWeight = new Float(deliverOrder.getCargoes().get(0).getWeight().toPlainString());
+        //如果货物重量大于载重
+        if(cargoWeight.compareTo(remainLoads) > 0){
             vehicle.setRemainLoads(new Float(0.0));
         }else{
             vehicle.setRemainLoads(remainLoads-cargoWeight);
@@ -128,6 +133,34 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         deliverOrderRepository.save(deliverOrder);
     }
 
+    @Override
+    public void split(SplitDto splitDto) {
+        DeliverOrder originalOrder = deliverOrderRepository.findByDeliverOrderNo(splitDto.getId());
+        splitDto.getSplitCubes().forEach(splitTuple -> {
+            DeliverOrder deliverOrder = new DeliverOrder();
+            BeanUtils.copyProperties(originalOrder, deliverOrder, "id", "deliverOrderNo", "cargoes");
+            List<DeliverCargo> deliveryCargoes = originalOrder.getCargoes().stream().map(cargo -> {
+                DeliverCargo cargo1 = new DeliverCargo();
+                BeanUtils.copyProperties(cargo, cargo1, "id", "deliverOrder");
+                cargo1.setWeight(splitTuple.getWeight());
+                cargo1.setVolume(splitTuple.getVolume());
+                cargo1.setDeliverOrder(deliverOrder);
+                return cargo1;
+            }).collect(Collectors.toList());
+            deliverOrder.setCargoes(deliveryCargoes);
+
+            deliverOrder.setDeliverPrice(splitTuple.getDeliverPrice());
+            deliverOrder.setDeliverOrderNo(deliverOrder.genOrderNo());
+            deliverOrder.setDeliverOrderState(Constant.OrderState.NOT_DISTRIBUTED);
+            deliverOrder.setParentNo(originalOrder.getDeliverOrderNo());
+            deliverOrder.preInsert();
+            deliverOrderRepository.save(deliverOrder);
+        });
+        originalOrder.setDeliverOrderState(Constant.OrderState.SPLITTED);
+        deliverOrderRepository.save(originalOrder);
+
+    }
+
 
     @Override
     public void completeDeliver(String deliverOrderNo) {
@@ -139,8 +172,18 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         deliverOrder.getCustomerOrder().setState(Constant.OrderState.COMPLETED);
         deliverOrder.setArriveTime(new Date());
         deliverOrder.preUpdate();
+        //运单结束后恢复车辆载重
+        Float addLoads = deliverOrder.getCargoes().get(0).getWeight().floatValue();
+        Float remainLoads= deliverOrder.getVehicle().getRemainLoads().floatValue() + addLoads;
+        if(remainLoads.compareTo(deliverOrder.getVehicle().getLoads())>0)
+            remainLoads = deliverOrder.getVehicle().getLoads();
+        deliverOrder.getVehicle().setRemainLoads(remainLoads);
+
         deliverOrderRepository.save(deliverOrder);
         boolean isComplete = true;
+
+
+
         List<DeliverOrder> deliverOrders = deliverOrder.getCustomerOrder().getDeliverOrders();
         for (DeliverOrder deliverOrder1 : deliverOrders) {
             if (deliverOrder1.getDeliverOrderState() != Constant.OrderState.COMPLETED) {
@@ -151,6 +194,8 @@ public class DeliverOrderServiceImpl implements DeliverOrderService {
         if (isComplete) {
             customerOrderService.completeCustomerOrderDetail(deliverOrder.getCustomerOrder().getCustomerOrderNo());
         }
+        //需要根据订单的体积重量修改汽车的
+
     }
 
     @Override

@@ -50,6 +50,8 @@ public class Payment extends BaseModel {
         this.payState = Constant.PayState.UNPAY;
         this.originalPrice = postOrderDto.getPayment().getPayPrice();
         this.payPrice = postOrderDto.getPayment().getPayPrice();
+        this.deliverPrice = postOrderDto.getPayment().getDeliverPrice();
+        this.insurancePrice = postOrderDto.getPayment().getInsurancePrice();
         this.customerOrders = CustomerOrder.buildOrders(postOrderDto,this);
         if (postOrderDto.getPayment().getPayType().equals(Constant.PayType.SENDER_PAY)) {
             Calendar calendar = Calendar.getInstance();

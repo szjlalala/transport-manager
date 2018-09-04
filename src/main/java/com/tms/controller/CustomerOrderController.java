@@ -6,6 +6,7 @@ import com.tms.controller.vo.request.PostOrderDto;
 import com.tms.controller.vo.request.QueryOrderDto;
 import com.tms.controller.vo.response.OrderListResponseVo;
 import com.tms.controller.vo.response.OrderResponseVo;
+import com.tms.controller.vo.response.PageWrapper;
 import com.tms.controller.vo.response.PaymentResponseVo;
 import com.tms.model.CustomerOrder;
 import com.tms.model.Payment;
@@ -46,7 +47,7 @@ public class CustomerOrderController {
 
     @ApiOperation(value = "取消订单", response = Results.class)
     @RequestMapping(value = "/cancel", method = RequestMethod.POST)
-    public Results cancelOrder(@ApiParam(name = "订单号", required = true) @RequestParam String customerOrderNo) {
+    public Results cancelOrder(@ApiParam(name = "订单号", required = true) @RequestParam(value = "id") String customerOrderNo) {
         boolean result = customerOrderService.cancelCustomerOrderDetail(customerOrderNo);
         return Results.setSuccessMessage(result);
     }
@@ -96,6 +97,6 @@ public class CustomerOrderController {
             queryOrderDto.setEndTime(sdf.parse(dates[1]));
         }
         Page<OrderListResponseVo> customerOrderPage = customerOrderService.queryCustomerOrder(queryOrderDto, buildPageRequest(page));
-        return Results.setSuccessMessage(customerOrderPage);
+        return Results.setSuccessMessage(new PageWrapper(customerOrderPage));
     }
 }

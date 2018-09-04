@@ -4,6 +4,7 @@ import com.tms.common.Results;
 import com.tms.controller.vo.request.DriverRequestDto;
 import com.tms.controller.vo.request.QueryDriverRequestVo;
 import com.tms.controller.vo.response.DriverResponseVo;
+import com.tms.controller.vo.response.PageWrapper;
 import com.tms.service.DeliverOrderService;
 import com.tms.service.DriverService;
 import io.swagger.annotations.Api;
@@ -66,15 +67,15 @@ public class DriverController {
     @ApiOperation(value = "查询司机", response = Results.class)
     @RequestMapping(method = RequestMethod.GET)
     public Results queryDriver(HttpServletRequest request,@ApiParam(name = "查询司机参数", value = "传入json格式") QueryDriverRequestVo queryDriverRequestVo,
-                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) throws ParseException {
+                               @RequestParam(required = false,defaultValue = "0") int page, @RequestParam(required = false,defaultValue = "0") int pageSize) throws ParseException {
         String[] dates = request.getParameterValues("createTime");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if (dates != null && dates.length > 0) {
             queryDriverRequestVo.setStartTime(sdf.parse(dates[0]));
             queryDriverRequestVo.setEndTime(sdf.parse(dates[1]));
         }
-        Page<DriverResponseVo> voPage = driverService.queryDriver(queryDriverRequestVo, buildPageRequest(page));
-        return Results.setSuccessMessage(voPage);
+        Page<DriverResponseVo> voPage = driverService.queryDriver(queryDriverRequestVo, buildPageRequest(page, pageSize));
+        return Results.setSuccessMessage(new PageWrapper(voPage));
     }
 
 }

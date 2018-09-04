@@ -10,8 +10,10 @@ Payment与CustomerOrder关系类似于母账户和子账户的关系.
 关联关系是 Payment一对多关联CustomerOrder， CustomerOrder一对多关联DeliveryOrder（如果没有发生拆单等情况，实际上一条CustomerOrder只对应了一条DeliverOrder）
 
 数据库mysql 数据文件tms.sql 在resource中<br> 
-需安装rabbitmq<br> 
+需安装rabbitmq<br>
+
 springboot 项目可直接运行，访问 http://localhost:8864/swagger-ui.html 查看接口<br>
+
 ## jwt鉴权：<br>
 ### 访问接口需要鉴权：可以模拟post请求login：
         curl -v -H "Content-Type: application/json" -X POST -d       '{"username":"admin","password":"123456"}' http://127.0.0.1:8010/login 
@@ -20,5 +22,8 @@ springboot 项目可直接运行，访问 http://localhost:8864/swagger-ui.html 
 ### 这里得到了相关的JWT，Bearer是前缀，后面是真正的内容，解码Base64之后,就是下面的内容，标准JWT。
         {"alg":"HS512"}{"authorities":"ROLE_ADMIN,AUTH_WRITE","sub":"admin","exp":1493782240}ͽ]BS`pS6~hCVH%ଖoE5р
 ### 将得到的Authorization填写到请求header中即可正常访问，swagger中请求参数Authorization必填。
+
+
+## 接口调试: http://127.0.0.1:8864/swagger-ui.html
 
 

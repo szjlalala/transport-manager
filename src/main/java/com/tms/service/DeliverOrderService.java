@@ -2,6 +2,7 @@ package com.tms.service;
 
 
 import com.tms.controller.vo.request.QueryDeliverOrderRequestVo;
+import com.tms.controller.vo.request.SplitDto;
 import com.tms.model.CustomerOrder;
 import com.tms.model.DeliverOrder;
 import org.springframework.data.domain.Page;
@@ -26,4 +27,5 @@ public interface DeliverOrderService {
 
     void confirmDeliver(String deliverOrderNo);
 
+    void split(SplitDto splitDto);
 }

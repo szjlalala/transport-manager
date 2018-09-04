@@ -55,7 +55,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     public Long createCustomerOrder(PostOrderDto postOrderDto) {
         //验证
         validate(postOrderDto);
-        //生成用户订单
+        //生成用户支付订单
         Payment payment = new Payment(postOrderDto);
         payment = paymentRepository.save(payment);
         //生成运单
@@ -92,6 +92,11 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
                     customerOrderRepository.save(order);
                     for (DeliverOrder deliverOrder : order.getDeliverOrders()) {
                         deliverOrder.setDeliverOrderState(Constant.OrderState.INVALID);
+                        Float addLoads = deliverOrder.getCargoes().get(0).getWeight().floatValue();
+                        Float remainLoads= deliverOrder.getVehicle().getRemainLoads().floatValue() + addLoads;
+                        if(remainLoads.compareTo(deliverOrder.getVehicle().getLoads())>0)
+                            remainLoads = deliverOrder.getVehicle().getLoads();
+                        deliverOrder.getVehicle().setRemainLoads(remainLoads);
                         deliverOrder.preUpdate();
                         deliverOrderRepository.save(deliverOrder);
                     }

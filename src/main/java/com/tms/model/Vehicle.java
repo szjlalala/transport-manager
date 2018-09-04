@@ -5,6 +5,8 @@ import com.tms.controller.vo.request.VehicleRequestDto;
 import com.tms.service.DriverService;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ public class Vehicle extends BaseModel {
     private Float loads;//载重量
     private Float remainLoads;//剩余载重
     @OneToMany
+    @JoinColumn(name = "vehicle_id")
     private List<Driver> driverList;
 
     public Vehicle(VehicleRequestDto vehicleRequestDto) {

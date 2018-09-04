@@ -21,7 +21,11 @@ public interface VehicleService {
 
     List<TraceResponseVo> queryTrace(Long vehicleId, Date start, Date end);
 
+    List<TraceResponseVo> queryTrace(String plateNumber, Date start, Date end);
+
     VehicleResponseVo queryVehicle(Long id);
+
+    VehicleResponseVo queryVehicle(String plateNumber);
 
     void pushTrace(VehicleTrackRequestDto vehicleTrackRequestDto);
 }

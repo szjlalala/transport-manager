@@ -39,7 +39,7 @@ public class OrderResponseVo implements Serializable {
     @ApiModelProperty(value = "司机id", name = "driverId")
     private Long driverId;
     @ApiModelProperty(value = "距离", name = "distance")
-    private Long distance;
+    private Double distance;
 
     public OrderResponseVo(CustomerOrder customerOrder) {
         BeanUtils.copyProperties(customerOrder, this);
@@ -89,6 +89,8 @@ public class OrderResponseVo implements Serializable {
     @NoArgsConstructor
     @Data
     class Payment {
+        private Long id;
+        private String no;
         @ApiModelProperty(value = "实付金额", name = "payPrice")
         private BigDecimal deliverPrice;
         private BigDecimal insurancePrice;

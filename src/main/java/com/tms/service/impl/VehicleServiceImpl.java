@@ -8,6 +8,7 @@ import com.tms.controller.vo.response.VehicleResponseVo;
 import com.tms.model.Driver;
 import com.tms.model.Trace;
 import com.tms.model.Vehicle;
+import com.tms.repository.DriverRepository;
 import com.tms.repository.SysCodeRepository;
 import com.tms.repository.TraceRepository;
 import com.tms.repository.VehicleRepository;
@@ -35,6 +36,8 @@ public class VehicleServiceImpl implements VehicleService {
     @Autowired
     private VehicleRepository vehicleRepository;
     @Autowired
+    private DriverRepository driverRepository;
+    @Autowired
     private SysCodeRepository sysCodeRepository;
     @Autowired
     private TraceRepository traceRepository;
@@ -59,6 +62,14 @@ public class VehicleServiceImpl implements VehicleService {
         BeanUtils.copyProperties(vehicleRequestDto,vehicle);
 //        vehicle.setVehicleType(sysCodeRepository.findByCode(vehicleRequestDto.getVehicleType()));
 //        vehicle.setVehicleSubType(sysCodeRepository.findOne(vehicleRequestDto.getVehicleSubType()));
+        List<Driver> drivers = new ArrayList<>();
+        vehicleRequestDto.getDrivers().stream().forEach(driverIdPair -> {
+            Driver driver = driverRepository.findOne(driverIdPair.getId());
+            if(driver != null){
+                drivers.add(driver);
+            }
+        });
+        vehicle.setDriverList(drivers);
         vehicle.preUpdate();
         vehicleRepository.save(vehicle);
     }
@@ -131,12 +142,32 @@ public class VehicleServiceImpl implements VehicleService {
         return responseVos;
     }
 
+    @Override
+    public List<TraceResponseVo> queryTrace(String plateNumber, Date start, Date end) {
+        List traces = traceRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
+            List<Predicate> predicate = new ArrayList<>();
+            predicate.add(criteriaBuilder.equal(root.join("vehicle").get("plateNumber"), plateNumber));
+            return criteriaQuery.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
+        });
+        List<TraceResponseVo> responseVos = new ArrayList<>();
+        traces.forEach(trace -> {
+            TraceResponseVo responseVo = new TraceResponseVo();
+            BeanUtils.copyProperties(trace, responseVo);
+            responseVos.add(responseVo);
+        });
+        return responseVos;
+    }
 
 
     @Override
     public VehicleResponseVo queryVehicle(Long id) {
         return new VehicleResponseVo(vehicleRepository.findOne(id));
     }
+    @Override
+    public VehicleResponseVo queryVehicle(String plateNumber) {
+        return new VehicleResponseVo(vehicleRepository.findByPlateNumber(plateNumber));
+    }
+
 
     @Override
     public void pushTrace(VehicleTrackRequestDto vehicleTrackRequestDto) {

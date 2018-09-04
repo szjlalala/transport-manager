@@ -24,6 +24,8 @@ public class DeliverOrder extends BaseModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String deliverOrderNo;//运单No
+    private String parentNo; //如果存在拆分记录母运单号
+
     BigDecimal deliverPrice;//运费
     @OneToOne
     @JoinColumn
@@ -61,10 +63,10 @@ public class DeliverOrder extends BaseModel {
         this.to = customerOrder.getTo();
         this.customerOrder = customerOrder;
         this.deliverOrderState = customerOrder.getState();
-        this.deliverPrice = customerOrder.getPayment().getPayPrice();
+        this.deliverPrice = customerOrder.getPayment().getDeliverPrice();
         List<DeliverCargo> deliveryCargoes = customerOrder.getCargoes().stream().map(cargo -> {
             DeliverCargo cargo1 = new DeliverCargo();
-            BeanUtils.copyProperties(cargo, cargo1, "id");
+            BeanUtils.copyProperties(cargo, cargo1, "id","deliverOrder");
             cargo1.setDeliverOrder(this);
             return cargo1;
         }).collect(Collectors.toList());
@@ -72,7 +74,7 @@ public class DeliverOrder extends BaseModel {
         preInsert();
     }
 
-    private String genOrderNo() {
+    public String genOrderNo() {
         return "D" + IDGen.nextId();
     }
 }

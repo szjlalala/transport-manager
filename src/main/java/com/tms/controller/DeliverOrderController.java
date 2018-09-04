@@ -1,8 +1,11 @@
 package com.tms.controller;
 
+import com.tms.common.PageParam;
 import com.tms.common.Results;
 import com.tms.controller.vo.request.QueryDeliverOrderRequestVo;
+import com.tms.controller.vo.request.SplitDto;
 import com.tms.controller.vo.response.DeliverOrderResponseVo;
+import com.tms.controller.vo.response.PageWrapper;
 import com.tms.service.DeliverOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,15 +42,22 @@ public class DeliverOrderController {
 
     @ApiOperation(value = "开始运单,即确认接货", response = Results.class)
     @RequestMapping(value = "/start/{deliverOrderNo}", method = RequestMethod.PUT)
-    public Results startOrder(@ApiParam(name = "运单号", required = true) @PathVariable String deliverOrderNo) {
+    public Results startOrder(@PathVariable String deliverOrderNo) {
         deliverOrderService.startDeliver(deliverOrderNo);
         return Results.setSuccessMessage(null);
     }
 
     @ApiOperation(value = "完成运单", response = Results.class)
     @RequestMapping(value = "/complete/{deliverOrderNo}", method = RequestMethod.PUT)
-    public Results completeOrder(@ApiParam(name = "运单号", required = true) @PathVariable String deliverOrderNo) {
+    public Results completeOrder(@PathVariable String deliverOrderNo) {
         deliverOrderService.completeDeliver(deliverOrderNo);
+        return Results.setSuccessMessage(null);
+    }
+
+    @ApiOperation(value = "用户确认", response = Results.class)
+    @RequestMapping(value = "/confirm/{deliverOrderNo}", method = RequestMethod.PUT)
+    public Results confirmOrder(@PathVariable String deliverOrderNo) {
+        deliverOrderService.confirmDeliver(deliverOrderNo);
         return Results.setSuccessMessage(null);
     }
 
@@ -60,21 +70,29 @@ public class DeliverOrderController {
     @ApiOperation(value = "查询运单", response = Results.class)
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Results queryOrder(HttpServletRequest request, QueryDeliverOrderRequestVo deliverOrderRequestVo,
-                              @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) throws ParseException {
+                              @RequestParam(required = false,defaultValue = "0") int page, @RequestParam(required = false,defaultValue = "0") int pageSize) throws ParseException {
         String[] dates = request.getParameterValues("createTime");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if (dates != null && dates.length > 0) {
             deliverOrderRequestVo.setStartTime(sdf.parse(dates[0]));
             deliverOrderRequestVo.setEndTime(sdf.parse(dates[1]));
         }
-        Page<DeliverOrderResponseVo> responseVoPage = deliverOrderService.queryDeliverOrder(deliverOrderRequestVo, buildPageRequest(page));
-        return Results.setSuccessMessage(responseVoPage);
+        Page<DeliverOrderResponseVo> responseVoPage = deliverOrderService.queryDeliverOrder(deliverOrderRequestVo, buildPageRequest(new PageParam(page, pageSize)));
+        return Results.setSuccessMessage(new PageWrapper(responseVoPage));
     }
 
-    @ApiOperation(value = "查询运单", response = Results.class)
+    @ApiOperation(value = "根据Number查询运单", response = Results.class)
     @RequestMapping(value = "/{number}", method = RequestMethod.GET)
     public Results queryOrder(@PathVariable String number) {
         DeliverOrderResponseVo vo = new DeliverOrderResponseVo(deliverOrderService.queryDeliverOrderByNo(number));
         return Results.setSuccessMessage(vo);
     }
+
+    @ApiOperation(value = "拆分", response = Results.class)
+    @RequestMapping(value = "/split", method = RequestMethod.POST)
+    public Results split(@RequestBody SplitDto splitDto) {
+        deliverOrderService.split(splitDto);
+        return Results.setSuccessMessage("");
+    }
+
 }

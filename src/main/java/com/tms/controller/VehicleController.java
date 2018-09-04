@@ -6,6 +6,7 @@ import com.tms.controller.vo.request.DriverIdPair;
 import com.tms.controller.vo.request.VehicleRequestDto;
 import com.tms.controller.vo.request.QueryVehicleRequestVo;
 import com.tms.controller.vo.request.VehicleTrackRequestDto;
+import com.tms.controller.vo.response.PageWrapper;
 import com.tms.controller.vo.response.TraceResponseVo;
 import com.tms.controller.vo.response.VehicleCandidateResponseVo;
 import com.tms.controller.vo.response.VehicleResponseVo;
@@ -75,14 +76,14 @@ public class VehicleController {
     @ApiOperation(value = "查询车辆", response = Results.class)
     @RequestMapping( method = RequestMethod.GET)
     public Results queryVehicle(HttpServletRequest request,@ApiParam(name = "查询车辆参数", value = "传入json格式") QueryVehicleRequestVo queryVehicleRequestVo,
-                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page) throws ParseException {
+                                @RequestParam(required = false,defaultValue = "0") int page, @RequestParam(required = false,defaultValue = "0") int pageSize) throws ParseException {
         String[] dates = request.getParameterValues("createTime");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if (dates != null && dates.length > 0) {
             queryVehicleRequestVo.setStartTime(sdf.parse(dates[0]));
             queryVehicleRequestVo.setEndTime(sdf.parse(dates[1]));
         }
-        Page<VehicleResponseVo> voPage = vehicleService.queryVehicle(queryVehicleRequestVo, buildPageRequest(page));
+        Page<VehicleResponseVo> voPage = vehicleService.queryVehicle(queryVehicleRequestVo, buildPageRequest(page, pageSize));
         return Results.setSuccessMessage(voPage);
     }
 
@@ -92,6 +93,8 @@ public class VehicleController {
         VehicleResponseVo vehicleResponseVo = vehicleService.queryVehicle(id);
         return Results.setSuccessMessage(vehicleResponseVo);
     }
+
+    //天安门 坐标 116.307629,40.058359
     @ApiOperation(value = "添加车辆位置", response = Results.class)
     @RequestMapping(value = "/trace", method = RequestMethod.POST)
     public Results pushTrace(@ApiParam(name = "添加车辆位置", value = "传入json格式", required = true) @RequestBody VehicleTrackRequestDto vehicleTrackRequestDto) {
@@ -111,7 +114,7 @@ public class VehicleController {
 
     @ApiOperation(value = "根据运单请款选择候选车辆", response = Results.class)
     @RequestMapping(value = "/candidate",method = RequestMethod.GET)
-    public Results querySituation(@RequestParam(value = "id") String deliveryNo,  @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page ){
+    public Results candidate(@RequestParam(value = "id") String deliveryNo,  @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable page ){
 //        之前业务不明确,可以根据delivery的起点建立空间索引然后候选车辆排序
 
 //      目前逻辑,查询现在的在岗车辆
@@ -124,8 +127,23 @@ public class VehicleController {
             List<AxisPair> track = traceList.stream().map(traceResponseVo ->  new AxisPair(traceResponseVo)).collect(Collectors.toList());
             return new VehicleCandidateResponseVo(vehicleResponseVo, track);
         });
-        return Results.setSuccessMessage(vos);
+        return Results.setSuccessMessage(new PageWrapper(vos));
     }
 
+    @ApiOperation(value = "车辆位置及传感器数据,暂时没有传感器数据,先只返回轨迹信息", response = Results.class)
+    @RequestMapping(value = "/situation",method = RequestMethod.GET)
+    public Results situation(@RequestParam(value = "number") String plateNumber){
+        //车辆信息
+        VehicleResponseVo vehicleResponseVo = vehicleService.queryVehicle(plateNumber);
 
+        //轨迹信息
+        List<TraceResponseVo> traceList = vehicleService.queryTrace(
+                plateNumber, new Date(DateUtil.getTimesMonthMorning()), new Date());
+        List<AxisPair> track = traceList.stream().map(traceResponseVo ->  new AxisPair(traceResponseVo)).collect(Collectors.toList());
+
+        //传感器信息 (暂无)
+
+        VehicleCandidateResponseVo vehicleCandidateResponseVo = new VehicleCandidateResponseVo(vehicleResponseVo, track);
+        return Results.setSuccessMessage(vehicleCandidateResponseVo);
+    }
 }
